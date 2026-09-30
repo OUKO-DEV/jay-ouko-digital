@@ -1,130 +1,174 @@
-/* =========================================================
-   JAY OUKO DIGITAL
-   COMPLETE WEBSITE JAVASCRIPT
-========================================================= */
-
+```javascript
 "use strict";
 
+/* =========================================================
+   JAY OUKO WEBSITE
+   Supabase-connected frontend
+========================================================= */
 
-/* =========================
-   LOADER
-========================= */
+/* =========================================================
+   SUPABASE CONFIGURATION
+========================================================= */
 
-window.addEventListener("load", function () {
+const SUPABASE_URL = "https://slusgnhkjcnuitqcmwag.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
-    const loader =
-        document.getElementById("loader");
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* =========================================================
+   BASIC ELEMENTS
+========================================================= */
+
+const body = document.body;
+const header = document.querySelector(".header");
+const menuToggle = document.querySelector("#menuToggle");
+const navMenu = document.querySelector("#navMenu");
+const themeToggle = document.querySelector("#themeToggle");
+const backToTop = document.querySelector("#backToTop");
+
+
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
+
+window.addEventListener("load", () => {
+    const loader = document.querySelector("#loader");
 
     if (loader) {
-
-        setTimeout(function () {
-
+        setTimeout(() => {
             loader.classList.add("hidden");
-
-        }, 500);
-
+            loader.style.opacity = "0";
+            loader.style.pointerEvents = "none";
+        }, 600);
     }
-
 });
 
 
-/* =========================
-   ELEMENTS
-========================= */
-
-const body =
-    document.body;
-
-const header =
-    document.getElementById("header");
-
-const menuToggle =
-    document.getElementById("menuToggle");
-
-const navMenu =
-    document.getElementById("navMenu");
-
-const themeToggle =
-    document.getElementById("themeToggle");
-
-const backToTop =
-    document.getElementById("backToTop");
-
-
-/* =========================
+/* =========================================================
    MOBILE MENU
-========================= */
+========================================================= */
 
 if (menuToggle && navMenu) {
 
-    menuToggle.addEventListener(
-        "click",
-        function () {
+    menuToggle.addEventListener("click", () => {
 
-            const opened =
-                navMenu.classList.toggle("open");
+        const isOpen = navMenu.classList.toggle("open");
+
+        menuToggle.classList.toggle("active", isOpen);
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+        body.classList.toggle("menu-open", isOpen);
+
+        const icon = menuToggle.querySelector("i");
+
+        if (icon) {
+            icon.className = isOpen
+                ? "fa-solid fa-xmark"
+                : "fa-solid fa-bars";
+        }
+    });
+
+
+    navMenu.querySelectorAll("a").forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            navMenu.classList.remove("open");
+
+            menuToggle.classList.remove("active");
 
             menuToggle.setAttribute(
                 "aria-expanded",
-                opened ? "true" : "false"
+                "false"
             );
 
-            menuToggle.innerHTML =
-                opened
-                ? '<i class="fa-solid fa-xmark"></i>'
-                : '<i class="fa-solid fa-bars"></i>';
+            body.classList.remove("menu-open");
 
-            body.classList.toggle(
-                "menu-open",
-                opened
-            );
+            const icon = menuToggle.querySelector("i");
 
-        }
-    );
-
-
-    document
-        .querySelectorAll(".nav-link")
-        .forEach(function (link) {
-
-            link.addEventListener(
-                "click",
-                function () {
-
-                    navMenu.classList.remove("open");
-
-                    menuToggle.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-
-                    menuToggle.innerHTML =
-                        '<i class="fa-solid fa-bars"></i>';
-
-                    body.classList.remove(
-                        "menu-open"
-                    );
-
-                }
-            );
-
+            if (icon) {
+                icon.className = "fa-solid fa-bars";
+            }
         });
 
+    });
 }
 
 
-/* =========================
-   THEME
-========================= */
+/* =========================================================
+   ESCAPE KEY
+========================================================= */
+
+document.addEventListener("keydown", event => {
+
+    if (event.key !== "Escape") return;
+
+    if (navMenu) {
+        navMenu.classList.remove("open");
+    }
+
+    if (menuToggle) {
+
+        menuToggle.classList.remove("active");
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        const icon = menuToggle.querySelector("i");
+
+        if (icon) {
+            icon.className = "fa-solid fa-bars";
+        }
+    }
+
+    body.classList.remove("menu-open");
+});
+
+
+/* =========================================================
+   HEADER SCROLL
+========================================================= */
+
+function updateHeader() {
+
+    if (!header) return;
+
+    if (window.scrollY > 30) {
+        header.classList.add("scrolled");
+    } else {
+        header.classList.remove("scrolled");
+    }
+}
+
+window.addEventListener(
+    "scroll",
+    updateHeader,
+    { passive: true }
+);
+
+updateHeader();
+
+
+/* =========================================================
+   DARK / LIGHT MODE
+========================================================= */
 
 const savedTheme =
     localStorage.getItem("jayOukoTheme");
 
-
 if (savedTheme === "light") {
-
-    body.classList.add("light");
-
+    body.classList.add("light-theme");
 }
 
 
@@ -137,8 +181,7 @@ function updateThemeIcon() {
 
     if (!icon) return;
 
-
-    if (body.classList.contains("light")) {
+    if (body.classList.contains("light-theme")) {
 
         icon.className =
             "fa-solid fa-moon";
@@ -157,11 +200,8 @@ function updateThemeIcon() {
             "aria-label",
             "Switch to light mode"
         );
-
     }
-
 }
-
 
 updateThemeIcon();
 
@@ -170,14 +210,16 @@ if (themeToggle) {
 
     themeToggle.addEventListener(
         "click",
-        function () {
+        () => {
 
-            body.classList.toggle("light");
+            body.classList.toggle(
+                "light-theme"
+            );
 
             const theme =
-                body.classList.contains("light")
-                ? "light"
-                : "dark";
+                body.classList.contains("light-theme")
+                    ? "light"
+                    : "dark";
 
             localStorage.setItem(
                 "jayOukoTheme",
@@ -185,347 +227,130 @@ if (themeToggle) {
             );
 
             updateThemeIcon();
-
         }
     );
-
 }
 
 
-/* =========================
-   HEADER SCROLL
-========================= */
+/* =========================================================
+   SMOOTH NAVIGATION
+========================================================= */
 
-function updateHeader() {
+document.querySelectorAll(
+    'a[href^="#"]'
+).forEach(link => {
 
-    if (!header) return;
+    link.addEventListener(
+        "click",
+        event => {
 
-    if (window.scrollY > 30) {
+            const targetId =
+                link.getAttribute("href");
 
-        header.classList.add("scrolled");
+            if (
+                !targetId ||
+                targetId === "#"
+            ) return;
 
-    } else {
+            const target =
+                document.querySelector(targetId);
 
-        header.classList.remove("scrolled");
+            if (!target) return;
 
-    }
+            event.preventDefault();
 
-}
-
-window.addEventListener(
-    "scroll",
-    updateHeader,
-    { passive: true }
-);
-
-updateHeader();
-
-
-/* =========================
-   SMOOTH LINKS
-========================= */
-
-document
-    .querySelectorAll('a[href^="#"]')
-    .forEach(function (link) {
-
-        link.addEventListener(
-            "click",
-            function (event) {
-
-                const targetId =
-                    link.getAttribute("href");
-
-                if (
-                    !targetId ||
-                    targetId === "#"
-                ) {
-                    return;
-                }
-
-                const target =
-                    document.querySelector(targetId);
-
-                if (!target) return;
-
-                event.preventDefault();
-
-                const headerHeight =
-                    header
+            const headerHeight =
+                header
                     ? header.offsetHeight
                     : 0;
 
-                const position =
-                    target.offsetTop -
-                    headerHeight;
+            const position =
+                target.offsetTop -
+                headerHeight;
 
-                window.scrollTo({
-
-                    top: position,
-
-                    behavior: "smooth"
-
-                });
-
-            }
-        );
-
-    });
+            window.scrollTo({
+                top: position,
+                behavior: "smooth"
+            });
+        }
+    );
+});
 
 
-/* =========================
+/* =========================================================
    ACTIVE NAVIGATION
-========================= */
+========================================================= */
 
 const sections =
     document.querySelectorAll(
-        "main section[id]"
+        "section[id]"
     );
 
-const navLinks =
+const navigationLinks =
     document.querySelectorAll(
         ".nav-link"
     );
 
 
-function updateActiveNav() {
+function updateActiveNavigation() {
 
-    let current = "";
+    let currentSection = "";
 
-    sections.forEach(function (section) {
+    sections.forEach(section => {
 
-        const top =
+        const sectionTop =
             section.offsetTop - 160;
 
-        const bottom =
-            top + section.offsetHeight;
+        const sectionHeight =
+            section.offsetHeight;
 
         if (
-            window.scrollY >= top &&
-            window.scrollY < bottom
+            window.scrollY >= sectionTop &&
+            window.scrollY <
+                sectionTop + sectionHeight
         ) {
-
-            current = section.id;
-
+            currentSection =
+                section.id;
         }
-
     });
 
 
-    navLinks.forEach(function (link) {
+    navigationLinks.forEach(link => {
 
         link.classList.remove("active");
 
         if (
             link.getAttribute("href") ===
-            "#" + current
+            `#${currentSection}`
         ) {
-
             link.classList.add("active");
-
         }
-
     });
-
 }
 
 
 window.addEventListener(
     "scroll",
-    updateActiveNav,
+    updateActiveNavigation,
     { passive: true }
 );
 
-updateActiveNav();
+updateActiveNavigation();
 
 
-/* =========================
-   SCROLL REVEAL
-========================= */
-
-const revealElements =
-    document.querySelectorAll(".reveal");
-
-
-if ("IntersectionObserver" in window) {
-
-    const observer =
-        new IntersectionObserver(
-            function (entries, obs) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target
-                                .classList
-                                .add("show");
-
-                            obs.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    }
-                );
-
-            },
-            {
-                threshold: 0.12
-            }
-        );
-
-
-    revealElements.forEach(
-        function (element) {
-
-            observer.observe(element);
-
-        }
-    );
-
-} else {
-
-    revealElements.forEach(
-        function (element) {
-
-            element.classList.add("show");
-
-        }
-    );
-
-}
-
-
-/* =========================
-   COUNTERS
-========================= */
-
-const counters =
-    document.querySelectorAll(
-        "[data-count]"
-    );
-
-
-if (
-    "IntersectionObserver" in window &&
-    counters.length
-) {
-
-    const counterObserver =
-        new IntersectionObserver(
-            function (entries, observer) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        if (
-                            !entry.isIntersecting
-                        ) {
-                            return;
-                        }
-
-                        const element =
-                            entry.target;
-
-                        const target =
-                            Number(
-                                element.dataset.count
-                            );
-
-                        let current = 0;
-
-                        const duration = 1200;
-
-                        const start =
-                            performance.now();
-
-
-                        function animate(time) {
-
-                            const progress =
-                                Math.min(
-                                    (
-                                        time - start
-                                    ) / duration,
-                                    1
-                                );
-
-                            current =
-                                Math.floor(
-                                    progress *
-                                    target
-                                );
-
-                            element.textContent =
-                                current;
-
-                            if (progress < 1) {
-
-                                requestAnimationFrame(
-                                    animate
-                                );
-
-                            } else {
-
-                                element.textContent =
-                                    target;
-
-                            }
-
-                        }
-
-                        requestAnimationFrame(
-                            animate
-                        );
-
-                        observer.unobserve(
-                            element
-                        );
-
-                    }
-                );
-
-            },
-            {
-                threshold: 0.5
-            }
-        );
-
-
-    counters.forEach(
-        function (counter) {
-
-            counterObserver.observe(counter);
-
-        }
-    );
-
-}
-
-
-/* =========================
+/* =========================================================
    BACK TO TOP
-========================= */
+========================================================= */
 
 function updateBackToTop() {
 
     if (!backToTop) return;
 
     if (window.scrollY > 500) {
-
         backToTop.classList.add("visible");
-
     } else {
-
         backToTop.classList.remove("visible");
-
     }
-
 }
 
 window.addEventListener(
@@ -541,121 +366,393 @@ if (backToTop) {
 
     backToTop.addEventListener(
         "click",
-        function () {
+        () => {
 
             window.scrollTo({
-
                 top: 0,
-
                 behavior: "smooth"
-
             });
 
         }
     );
-
 }
 
 
-/* =========================
-   SERVICE HIRE BUTTONS
-========================= */
+/* =========================================================
+   TYPING EFFECT
+========================================================= */
 
-document
-    .querySelectorAll(".service-hire")
-    .forEach(function (button) {
+const typingElement =
+    document.querySelector(
+        ".typing-text"
+    );
 
-        button.addEventListener(
-            "click",
-            function () {
+const typingWords = [
+    "Web Developer",
+    "Freelancer",
+    "Graphic Designer",
+    "Digital Marketer",
+    "AI Tools Creator"
+];
 
-                const service =
-                    button.dataset.service ||
-                    "Digital Service";
+let wordIndex = 0;
+let characterIndex = 0;
+let deleting = false;
 
-                const subject =
-                    encodeURIComponent(
-                        "Project enquiry - " +
-                        service
-                    );
 
-                const body =
-                    encodeURIComponent(
-`Hello Jay Ouko,
+function typingEffect() {
 
-I am interested in your ${service} service.
+    if (!typingElement) return;
 
-I would like to discuss my project with you.
+    const word =
+        typingWords[wordIndex];
 
-Thank you.`
-                    );
+    if (!deleting) {
+        characterIndex++;
+    } else {
+        characterIndex--;
+    }
 
-                window.location.href =
-                    "mailto:emmanuelouko21@gmail.com" +
-                    "?subject=" +
-                    subject +
-                    "&body=" +
-                    body;
+    typingElement.textContent =
+        word.substring(
+            0,
+            characterIndex
+        );
 
+    let speed =
+        deleting ? 55 : 90;
+
+    if (
+        !deleting &&
+        characterIndex === word.length
+    ) {
+
+        speed = 1500;
+
+        deleting = true;
+    }
+
+
+    if (
+        deleting &&
+        characterIndex === 0
+    ) {
+
+        deleting = false;
+
+        wordIndex =
+            (wordIndex + 1) %
+            typingWords.length;
+
+        speed = 400;
+    }
+
+
+    setTimeout(
+        typingEffect,
+        speed
+    );
+}
+
+typingEffect();
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+const revealElements =
+    document.querySelectorAll(
+        ".reveal"
+    );
+
+if ("IntersectionObserver" in window) {
+
+    const revealObserver =
+        new IntersectionObserver(
+            (entries, observer) => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        entry.target.classList.add(
+                            "revealed"
+                        );
+
+                        observer.unobserve(
+                            entry.target
+                        );
+                    }
+                });
+
+            },
+            {
+                threshold: 0.12
             }
         );
 
-    });
+    revealElements.forEach(
+        element =>
+            revealObserver.observe(element)
+    );
+
+} else {
+
+    revealElements.forEach(
+        element =>
+            element.classList.add(
+                "revealed"
+            )
+    );
+}
 
 
-/* =========================
+/* =========================================================
+   COUNTERS
+========================================================= */
+
+const counters =
+    document.querySelectorAll(
+        "[data-count]"
+    );
+
+
+function animateCounter(element) {
+
+    const target =
+        Number(element.dataset.count);
+
+    const duration = 1600;
+
+    const startTime =
+        performance.now();
+
+
+    function updateCounter(time) {
+
+        const elapsed =
+            time - startTime;
+
+        const progress =
+            Math.min(
+                elapsed / duration,
+                1
+            );
+
+        const eased =
+            1 -
+            Math.pow(
+                1 - progress,
+                3
+            );
+
+        element.textContent =
+            Math.floor(
+                eased * target
+            );
+
+
+        if (progress < 1) {
+
+            requestAnimationFrame(
+                updateCounter
+            );
+
+        } else {
+
+            element.textContent =
+                target;
+        }
+    }
+
+
+    requestAnimationFrame(
+        updateCounter
+    );
+}
+
+
+if (
+    counters.length &&
+    "IntersectionObserver" in window
+) {
+
+    const counterObserver =
+        new IntersectionObserver(
+            (entries, observer) => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        animateCounter(
+                            entry.target
+                        );
+
+                        observer.unobserve(
+                            entry.target
+                        );
+                    }
+                });
+
+            },
+            {
+                threshold: 0.5
+            }
+        );
+
+
+    counters.forEach(
+        counter =>
+            counterObserver.observe(
+                counter
+            )
+    );
+}
+
+
+/* =========================================================
+   SUPABASE HELPER
+========================================================= */
+
+function showStatus(
+    element,
+    message,
+    type = "success"
+) {
+
+    if (!element) return;
+
+    element.textContent = message;
+
+    element.className =
+        type === "error"
+            ? "form-error"
+            : "form-success";
+}
+
+
+/* =========================================================
+   HIRE ME SERVICE BUTTONS
+========================================================= */
+
+const serviceButtons =
+    document.querySelectorAll(
+        ".service-hire"
+    );
+
+
+serviceButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const service =
+                button.dataset.service ||
+                "Digital Service";
+
+            const contact =
+                document.querySelector(
+                    "#contact"
+                );
+
+            if (contact) {
+
+                contact.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+
+
+            const serviceSelect =
+                document.querySelector(
+                    "#contactService"
+                );
+
+            if (serviceSelect) {
+
+                serviceSelect.value =
+                    service;
+            }
+
+        }
+    );
+});
+
+
+/* =========================================================
    PRICING BUTTONS
-========================= */
+========================================================= */
 
-document
-    .querySelectorAll(".hire-package")
-    .forEach(function (button) {
+const packageButtons =
+    document.querySelectorAll(
+        ".hire-package"
+    );
 
-        button.addEventListener(
-            "click",
-            function () {
 
-                const packageName =
-                    button.dataset.package ||
-                    "Custom Package";
+packageButtons.forEach(button => {
 
-                const subject =
-                    encodeURIComponent(
-                        packageName +
-                        " package enquiry"
-                    );
+    button.addEventListener(
+        "click",
+        () => {
 
-                const body =
-                    encodeURIComponent(
+            const packageName =
+                button.dataset.package ||
+                "Custom Package";
+
+            const contact =
+                document.querySelector(
+                    "#contact"
+                );
+
+            if (contact) {
+
+                contact.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+
+
+            const message =
+                document.querySelector(
+                    "#contactMessage"
+                );
+
+            if (message) {
+
+                message.value =
 `Hello Jay Ouko,
 
-I am interested in your ${packageName} package.
+I am interested in the ${packageName} package.
 
-I would like to discuss my project and requirements.
+I would like to discuss my project, requirements and final price.
 
-Thank you.`
-                    );
-
-                window.location.href =
-                    "mailto:emmanuelouko21@gmail.com" +
-                    "?subject=" +
-                    subject +
-                    "&body=" +
-                    body;
-
+Thank you.`;
             }
-        );
 
-    });
+        }
+    );
+});
 
 
-/* =========================
-   CONTACT FORM
-========================= */
+/* =========================================================
+   CONTACT FORM → SUPABASE
+========================================================= */
 
 const contactForm =
-    document.getElementById(
-        "contactForm"
+    document.querySelector(
+        "#contactForm"
+    );
+
+const contactStatus =
+    document.querySelector(
+        "#contactStatus"
     );
 
 
@@ -663,29 +760,34 @@ if (contactForm) {
 
     contactForm.addEventListener(
         "submit",
-        function (event) {
+        async event => {
 
             event.preventDefault();
 
+
             const name =
-                document.getElementById(
-                    "contactName"
-                ).value.trim();
+                document.querySelector(
+                    "#contactName"
+                )?.value.trim();
+
 
             const email =
-                document.getElementById(
-                    "contactEmail"
-                ).value.trim();
+                document.querySelector(
+                    "#contactEmail"
+                )?.value.trim();
 
-            const service =
-                document.getElementById(
-                    "contactService"
-                ).value;
+
+            const subject =
+                document.querySelector(
+                    "#contactService"
+                )?.value ||
+                "General enquiry";
+
 
             const message =
-                document.getElementById(
-                    "contactMessage"
-                ).value.trim();
+                document.querySelector(
+                    "#contactMessage"
+                )?.value.trim();
 
 
             if (
@@ -694,159 +796,538 @@ if (contactForm) {
                 !message
             ) {
 
-                alert(
-                    "Please complete all required fields."
+                showStatus(
+                    contactStatus,
+                    "Please complete all required fields.",
+                    "error"
                 );
 
                 return;
-
             }
 
 
-            const subject =
-                encodeURIComponent(
-                    "Website enquiry - " +
-                    service
+            showStatus(
+                contactStatus,
+                "Sending your message..."
+            );
+
+
+            try {
+
+                const { error } =
+                    await supabaseClient
+                        .from(
+                            "contact_messages"
+                        )
+                        .insert([
+                            {
+                                name: name,
+                                email: email,
+                                subject: subject,
+                                message: message,
+                                status: "unread"
+                            }
+                        ]);
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                showStatus(
+                    contactStatus,
+                    "Message sent successfully. Jay will review it shortly."
                 );
 
 
-            const body =
-                encodeURIComponent(
-`Hello Jay Ouko,
+                contactForm.reset();
 
-Name: ${name}
 
-Email: ${email}
+            } catch (error) {
 
-Service:
-${service}
-
-Project details:
-${message}
-
-I would like to discuss this project with you.
-
-Thank you.`
+                console.error(
+                    "Contact error:",
+                    error
                 );
 
 
-            const mailto =
-                "mailto:emmanuelouko21@gmail.com" +
-                "?subject=" +
-                subject +
-                "&body=" +
-                body;
-
-
-            const status =
-                document.getElementById(
-                    "contactStatus"
+                showStatus(
+                    contactStatus,
+                    "We could not send your message. Please try again or contact Jay directly.",
+                    "error"
                 );
-
-
-            if (status) {
-
-                status.textContent =
-                    "Opening your email application...";
-
             }
-
-
-            window.location.href =
-                mailto;
 
         }
     );
-
 }
 
 
-/* =========================
-   REVIEWS
-========================= */
+/* =========================================================
+   HIRE REQUEST FORM
+========================================================= */
 
-const reviewForm =
-    document.getElementById(
-        "reviewForm"
+function createHireForm() {
+
+    if (
+        document.querySelector(
+            "#hireRequestForm"
+        )
+    ) return;
+
+
+    const contactSection =
+        document.querySelector(
+            "#contact"
+        );
+
+    if (!contactSection) return;
+
+
+    const contactForm =
+        document.querySelector(
+            "#contactForm"
+        );
+
+    if (!contactForm) return;
+
+
+    const form =
+        document.createElement(
+            "form"
+        );
+
+
+    form.id =
+        "hireRequestForm";
+
+    form.className =
+        "hire-request-form reveal";
+
+
+    form.innerHTML = `
+
+        <h3>Hire Me Directly</h3>
+
+        <p>
+            Send your project details and
+            I will review your request.
+        </p>
+
+        <input
+            type="text"
+            id="hireName"
+            placeholder="Your name"
+            required
+        >
+
+        <input
+            type="email"
+            id="hireEmail"
+            placeholder="Your email"
+            required
+        >
+
+        <input
+            type="tel"
+            id="hirePhone"
+            placeholder="Phone / WhatsApp number"
+        >
+
+        <select id="hireService" required>
+
+            <option value="">
+                Select a service
+            </option>
+
+            <option value="Web Development">
+                Web Development
+            </option>
+
+            <option value="Graphic Design">
+                Graphic Design
+            </option>
+
+            <option value="Digital Marketing">
+                Digital Marketing
+            </option>
+
+            <option value="AI Tools">
+                AI Tools
+            </option>
+
+        </select>
+
+        <select id="hireBudget">
+
+            <option value="">
+                Select budget
+            </option>
+
+            <option value="KSh 2,500">
+                KSh 2,500
+            </option>
+
+            <option value="KSh 5,000">
+                KSh 5,000
+            </option>
+
+            <option value="KSh 10,000+">
+                KSh 10,000+
+            </option>
+
+            <option value="Custom budget">
+                Custom budget
+            </option>
+
+        </select>
+
+        <textarea
+            id="hireDetails"
+            rows="6"
+            placeholder="Describe your project..."
+            required
+        ></textarea>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            Submit Hire Request
+
+        </button>
+
+        <p id="hireStatus"></p>
+    `;
+
+
+    contactSection
+        .querySelector(".container")
+        .appendChild(form);
+
+
+    form.addEventListener(
+        "submit",
+        submitHireRequest
+    );
+}
+
+
+async function submitHireRequest(event) {
+
+    event.preventDefault();
+
+
+    const status =
+        document.querySelector(
+            "#hireStatus"
+        );
+
+
+    const name =
+        document.querySelector(
+            "#hireName"
+        )?.value.trim();
+
+
+    const email =
+        document.querySelector(
+            "#hireEmail"
+        )?.value.trim();
+
+
+    const phone =
+        document.querySelector(
+            "#hirePhone"
+        )?.value.trim();
+
+
+    const service =
+        document.querySelector(
+            "#hireService"
+        )?.value;
+
+
+    const budget =
+        document.querySelector(
+            "#hireBudget"
+        )?.value;
+
+
+    const projectDetails =
+        document.querySelector(
+            "#hireDetails"
+        )?.value.trim();
+
+
+    if (
+        !name ||
+        !email ||
+        !service ||
+        !projectDetails
+    ) {
+
+        showStatus(
+            status,
+            "Please complete the required fields.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    showStatus(
+        status,
+        "Submitting your hire request..."
     );
 
-const reviewsList =
-    document.getElementById(
-        "reviewsList"
-    );
-
-const reviewStatus =
-    document.getElementById(
-        "reviewStatus"
-    );
-
-
-function getReviews() {
 
     try {
 
-        return JSON.parse(
-            localStorage.getItem(
-                "jayOukoReviews"
+        const { error } =
+            await supabaseClient
+                .from(
+                    "hire_requests"
+                )
+                .insert([
+                    {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        service: service,
+                        budget: budget,
+                        project_details:
+                            projectDetails,
+                        status: "pending"
+                    }
+                ]);
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        showStatus(
+            status,
+            "Hire request submitted successfully. Jay will review it soon."
+        );
+
+
+        document
+            .querySelector(
+                "#hireRequestForm"
             )
-        ) || [];
+            .reset();
+
 
     } catch (error) {
 
-        return [];
+        console.error(
+            "Hire request error:",
+            error
+        );
 
+
+        showStatus(
+            status,
+            "Could not submit the hire request. Please try again.",
+            "error"
+        );
     }
-
 }
 
 
-function saveReviews(reviews) {
+createHireForm();
 
-    localStorage.setItem(
-        "jayOukoReviews",
-        JSON.stringify(reviews)
+
+/* =========================================================
+   REVIEWS → SUPABASE
+========================================================= */
+
+const reviewForm =
+    document.querySelector(
+        "#reviewForm"
     );
 
+const reviewStatus =
+    document.querySelector(
+        "#reviewStatus"
+    );
+
+const reviewsList =
+    document.querySelector(
+        "#reviewsList"
+    );
+
+
+if (reviewForm) {
+
+    reviewForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const name =
+                document.querySelector(
+                    "#reviewName"
+                )?.value.trim();
+
+
+            const rating =
+                Number(
+                    document.querySelector(
+                        "#reviewRating"
+                    )?.value
+                );
+
+
+            const message =
+                document.querySelector(
+                    "#reviewMessage"
+                )?.value.trim();
+
+
+            if (
+                !name ||
+                !rating ||
+                !message
+            ) {
+
+                showStatus(
+                    reviewStatus,
+                    "Please complete all review fields.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                reviewStatus,
+                "Submitting your review..."
+            );
+
+
+            try {
+
+                const { error } =
+                    await supabaseClient
+                        .from(
+                            "reviews"
+                        )
+                        .insert([
+                            {
+                                name: name,
+                                rating: rating,
+                                message: message,
+                                status: "pending"
+                            }
+                        ]);
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                showStatus(
+                    reviewStatus,
+                    "Thank you! Your review has been submitted for approval."
+                );
+
+
+                reviewForm.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Review error:",
+                    error
+                );
+
+
+                showStatus(
+                    reviewStatus,
+                    "Could not submit your review. Please try again.",
+                    "error"
+                );
+            }
+
+        }
+    );
 }
 
 
-function displayReviews() {
+/* =========================================================
+   LOAD APPROVED REVIEWS
+========================================================= */
+
+async function loadApprovedReviews() {
 
     if (!reviewsList) return;
 
-    const reviews =
-        getReviews();
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("reviews")
+                .select(
+                    "name, rating, message, created_at"
+                )
+                .eq(
+                    "status",
+                    "approved"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
 
 
-    if (!reviews.length) {
+        if (error) {
+            throw error;
+        }
 
-        reviewsList.innerHTML =
-            `
-            <div class="empty-reviews">
-                No reviews yet.
-                Be the first to leave one.
-            </div>
+
+        reviewsList.innerHTML = "";
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            reviewsList.innerHTML = `
+                <div class="empty-reviews">
+                    No approved reviews yet.
+                    Be the first to leave one.
+                </div>
             `;
 
-        return;
-
-    }
-
-
-    reviewsList.innerHTML = "";
+            return;
+        }
 
 
-    reviews
-        .slice()
-        .reverse()
-        .forEach(function (review) {
+        data.forEach(review => {
 
-            const item =
+            const card =
                 document.createElement(
                     "article"
                 );
 
-            item.className =
+            card.className =
                 "review-item";
 
 
@@ -856,13 +1337,16 @@ function displayReviews() {
                 );
 
             header.className =
-                "review-header";
+                "review-item-header";
 
 
             const name =
                 document.createElement(
                     "strong"
                 );
+
+            name.className =
+                "review-item-name";
 
             name.textContent =
                 review.name;
@@ -874,7 +1358,7 @@ function displayReviews() {
                 );
 
             stars.className =
-                "review-stars";
+                "review-item-stars";
 
             stars.textContent =
                 "★".repeat(
@@ -896,153 +1380,348 @@ function displayReviews() {
                 review.message;
 
 
-            item.appendChild(header);
+            card.appendChild(header);
 
-            item.appendChild(message);
+            card.appendChild(message);
 
-            reviewsList.appendChild(item);
 
+            reviewsList.appendChild(card);
         });
 
+
+    } catch (error) {
+
+        console.error(
+            "Review loading error:",
+            error
+        );
+
+        reviewsList.innerHTML = `
+            <div class="empty-reviews">
+                Reviews are temporarily unavailable.
+            </div>
+        `;
+    }
 }
 
 
-displayReviews();
+loadApprovedReviews();
 
 
-if (reviewForm) {
+/* =========================================================
+   ONLINE CLASS REGISTRATION
+========================================================= */
 
-    reviewForm.addEventListener(
-        "submit",
-        function (event) {
+function createRegistrationForm() {
 
-            event.preventDefault();
+    const classesSection =
+        document.querySelector(
+            "#classes"
+        );
 
-
-            const name =
-                document.getElementById(
-                    "reviewName"
-                ).value.trim();
-
-            const rating =
-                document.getElementById(
-                    "reviewRating"
-                ).value;
-
-            const message =
-                document.getElementById(
-                    "reviewMessage"
-                ).value.trim();
+    if (!classesSection) return;
 
 
-            if (
-                !name ||
-                !rating ||
-                !message
-            ) {
-
-                reviewStatus.textContent =
-                    "Please complete all fields.";
-
-                return;
-
-            }
+    if (
+        document.querySelector(
+            "#registrationForm"
+        )
+    ) return;
 
 
-            const reviews =
-                getReviews();
+    const timeBox =
+        classesSection.querySelector(
+            ".class-time"
+        );
 
 
-            reviews.push({
-
-                name: name,
-
-                rating: rating,
-
-                message: message,
-
-                date:
-                    new Date()
-                    .toISOString()
-
-            });
+    if (!timeBox) return;
 
 
-            saveReviews(reviews);
-
-            displayReviews();
-
-            reviewForm.reset();
-
-
-            reviewStatus.textContent =
-                "Thank you! Your review has been added.";
+    const form =
+        document.createElement(
+            "form"
+        );
 
 
-            setTimeout(
-                function () {
+    form.id =
+        "registrationForm";
 
-                    reviewStatus.textContent =
-                        "";
+    form.className =
+        "registration-form reveal";
 
-                },
-                4000
-            );
 
-        }
+    form.innerHTML = `
+
+        <h3>Register for Free Classes</h3>
+
+        <p>
+            Register to receive information
+            about the online sessions.
+        </p>
+
+        <input
+            type="text"
+            id="registrationName"
+            placeholder="Your name"
+            required
+        >
+
+        <input
+            type="email"
+            id="registrationEmail"
+            placeholder="Your email"
+            required
+        >
+
+        <input
+            type="tel"
+            id="registrationPhone"
+            placeholder="Phone / WhatsApp number"
+        >
+
+        <select
+            id="registrationProgram"
+            required>
+
+            <option value="">
+                Choose a program
+            </option>
+
+            <option value="Digital Skills">
+                Digital Skills
+            </option>
+
+            <option value="Canva">
+                Canva
+            </option>
+
+            <option value="Twiva & Online Work">
+                Twiva & Online Work
+            </option>
+
+        </select>
+
+        <textarea
+            id="registrationMessage"
+            rows="4"
+            placeholder="Anything you would like to learn?"
+        ></textarea>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            Register Free
+
+        </button>
+
+        <p id="registrationStatus"></p>
+
+    `;
+
+
+    timeBox.insertAdjacentElement(
+        "afterend",
+        form
     );
 
+
+    form.addEventListener(
+        "submit",
+        submitRegistration
+    );
 }
 
 
-/* =========================
+async function submitRegistration(event) {
+
+    event.preventDefault();
+
+
+    const status =
+        document.querySelector(
+            "#registrationStatus"
+        );
+
+
+    const name =
+        document.querySelector(
+            "#registrationName"
+        )?.value.trim();
+
+
+    const email =
+        document.querySelector(
+            "#registrationEmail"
+        )?.value.trim();
+
+
+    const phone =
+        document.querySelector(
+            "#registrationPhone"
+        )?.value.trim();
+
+
+    const program =
+        document.querySelector(
+            "#registrationProgram"
+        )?.value;
+
+
+    const message =
+        document.querySelector(
+            "#registrationMessage"
+        )?.value.trim();
+
+
+    if (
+        !name ||
+        !email ||
+        !program
+    ) {
+
+        showStatus(
+            status,
+            "Please complete the required fields.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    showStatus(
+        status,
+        "Submitting your registration..."
+    );
+
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from(
+                    "registrations"
+                )
+                .insert([
+                    {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        program: program,
+                        message: message,
+                        status: "pending"
+                    }
+                ]);
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        showStatus(
+            status,
+            "Registration received! Jay will review it and contact you."
+        );
+
+
+        document
+            .querySelector(
+                "#registrationForm"
+            )
+            .reset();
+
+
+    } catch (error) {
+
+        console.error(
+            "Registration error:",
+            error
+        );
+
+
+        showStatus(
+            status,
+            "Registration could not be submitted. Please try again.",
+            "error"
+        );
+    }
+}
+
+
+createRegistrationForm();
+
+
+/* =========================================================
    CHATBOT
-========================= */
+========================================================= */
+
+const chatbot =
+    document.querySelector(
+        ".chatbot"
+    );
 
 const chatbotToggle =
-    document.getElementById(
-        "chatbotToggle"
-    );
-
-const chatbotWindow =
-    document.getElementById(
-        "chatbotWindow"
+    document.querySelector(
+        "#chatbotToggle"
     );
 
 const chatbotClose =
-    document.getElementById(
-        "chatbotClose"
+    document.querySelector(
+        "#chatbotClose"
     );
 
 const chatbotForm =
-    document.getElementById(
-        "chatbotForm"
+    document.querySelector(
+        "#chatbotForm"
     );
 
 const chatbotInput =
-    document.getElementById(
-        "chatbotInput"
+    document.querySelector(
+        "#chatbotInput"
     );
 
 const chatbotMessages =
-    document.getElementById(
-        "chatbotMessages"
+    document.querySelector(
+        "#chatbotMessages"
     );
+
+
+function openChatbot() {
+
+    if (!chatbot) return;
+
+    chatbot.classList.add(
+        "open"
+    );
+}
+
+
+function closeChatbot() {
+
+    if (!chatbot) return;
+
+    chatbot.classList.remove(
+        "open"
+    );
+}
 
 
 if (chatbotToggle) {
 
     chatbotToggle.addEventListener(
         "click",
-        function () {
+        event => {
 
-            chatbotWindow.classList.toggle(
+            event.stopPropagation();
+
+            chatbot.classList.toggle(
                 "open"
             );
-
         }
     );
-
 }
 
 
@@ -1050,114 +1729,167 @@ if (chatbotClose) {
 
     chatbotClose.addEventListener(
         "click",
-        function () {
-
-            chatbotWindow.classList.remove(
-                "open"
-            );
-
-        }
+        closeChatbot
     );
-
 }
 
 
-/* =========================
+document.addEventListener(
+    "click",
+    event => {
+
+        if (!chatbot) return;
+
+        if (
+            chatbot.classList.contains(
+                "open"
+            ) &&
+            !chatbot.contains(
+                event.target
+            )
+        ) {
+            closeChatbot();
+        }
+    }
+);
+
+
+/* =========================================================
    CHATBOT ANSWERS
-========================= */
+========================================================= */
 
-function chatbotReply(message) {
+const chatbotReplies = [
 
-    const text =
+    {
+        keywords: [
+            "price",
+            "pricing",
+            "cost",
+            "charge",
+            "how much"
+        ],
+
+        response:
+            "Jay offers different packages starting from KSh 2,500. The final price depends on the project requirements."
+    },
+
+    {
+        keywords: [
+            "website",
+            "web",
+            "site"
+        ],
+
+        response:
+            "Jay can create responsive portfolio, business and landing-page websites."
+    },
+
+    {
+        keywords: [
+            "graphic",
+            "design",
+            "logo"
+        ],
+
+        response:
+            "Graphic design services include social media graphics, promotional designs and digital branding."
+    },
+
+    {
+        keywords: [
+            "marketing",
+            "digital marketing",
+            "social media"
+        ],
+
+        response:
+            "Jay provides digital marketing and social-media support for online promotion."
+    },
+
+    {
+        keywords: [
+            "ai",
+            "artificial intelligence",
+            "automation"
+        ],
+
+        response:
+            "Jay works with AI tools for productivity, content creation, automation and digital workflows."
+    },
+
+    {
+        keywords: [
+            "contact",
+            "email",
+            "hire",
+            "work"
+        ],
+
+        response:
+            "You can contact Jay at emmanuelouko21@gmail.com or submit a contact or hire request on this website."
+    },
+
+    {
+        keywords: [
+            "class",
+            "classes",
+            "course",
+            "training"
+        ],
+
+        response:
+            "Free online classes are available daily at 9:00 PM through TikTok. You can register using the registration form."
+    },
+
+    {
+        keywords: [
+            "whatsapp",
+            "phone"
+        ],
+
+        response:
+            "You can contact Jay through WhatsApp using the floating WhatsApp button on the website."
+    }
+
+];
+
+
+function getChatbotReply(message) {
+
+    const lower =
         message.toLowerCase();
 
 
-    if (
-        text.includes("price") ||
-        text.includes("pricing") ||
-        text.includes("cost")
+    for (
+        const item of chatbotReplies
     ) {
 
-        return "My packages start from KSh 2,500. Check the Pricing section for the available packages, or contact me for a custom quotation.";
+        const matched =
+            item.keywords.some(
+                keyword =>
+                    lower.includes(
+                        keyword
+                    )
+            );
 
+
+        if (matched) {
+            return item.response;
+        }
     }
 
 
-    if (
-        text.includes("website") ||
-        text.includes("web")
-    ) {
-
-        return "I offer responsive websites, portfolio websites, business websites and landing pages.";
-
-    }
-
-
-    if (
-        text.includes("design") ||
-        text.includes("logo") ||
-        text.includes("graphic")
-    ) {
-
-        return "I offer graphic design services including promotional graphics, social media designs and digital branding.";
-
-    }
-
-
-    if (
-        text.includes("marketing") ||
-        text.includes("social media")
-    ) {
-
-        return "I can help with digital marketing, social media content and online promotion.";
-
-    }
-
-
-    if (
-        text.includes("ai") ||
-        text.includes("artificial intelligence")
-    ) {
-
-        return "I work with AI tools for productivity, content creation, automation and digital workflows.";
-
-    }
-
-
-    if (
-        text.includes("hire") ||
-        text.includes("contact") ||
-        text.includes("work")
-    ) {
-
-        return "You can hire Jay through the contact form, email at emmanuelouko21@gmail.com, or WhatsApp.";
-
-    }
-
-
-    if (
-        text.includes("class") ||
-        text.includes("course") ||
-        text.includes("learn")
-    ) {
-
-        return "Free online classes are scheduled daily at 9:00 PM through TikTok. Check the Classes section.";
-
-    }
-
-
-    return "Thanks for your message. You can ask me about services, pricing, websites, design, marketing, AI, classes or how to hire Jay.";
-
+    return (
+        "Thanks for your message. " +
+        "For a specific project or quotation, " +
+        "please use the Hire Me or Contact section."
+    );
 }
 
 
-/* =========================
-   ADD CHAT MESSAGE
-========================= */
-
 function addChatMessage(
     message,
-    type
+    type = "bot"
 ) {
 
     if (!chatbotMessages) return;
@@ -1171,8 +1903,8 @@ function addChatMessage(
 
     wrapper.className =
         type === "user"
-        ? "user-message"
-        : "bot-message";
+            ? "user-message"
+            : "bot-message";
 
 
     if (type === "bot") {
@@ -1189,7 +1921,6 @@ function addChatMessage(
             '<i class="fa-solid fa-robot"></i>';
 
         wrapper.appendChild(icon);
-
     }
 
 
@@ -1214,25 +1945,20 @@ function addChatMessage(
 
     chatbotMessages.scrollTop =
         chatbotMessages.scrollHeight;
-
 }
 
-
-/* =========================
-   CHATBOT FORM
-========================= */
 
 if (chatbotForm) {
 
     chatbotForm.addEventListener(
         "submit",
-        function (event) {
+        event => {
 
             event.preventDefault();
 
 
             const message =
-                chatbotInput.value.trim();
+                chatbotInput?.value.trim();
 
 
             if (!message) return;
@@ -1248,136 +1974,229 @@ if (chatbotForm) {
 
 
             setTimeout(
-                function () {
+                () => {
 
                     addChatMessage(
-                        chatbotReply(message),
+                        getChatbotReply(
+                            message
+                        ),
                         "bot"
                     );
 
                 },
                 400
             );
-
         }
     );
-
 }
 
 
-/* =========================
-   QUICK CHAT BUTTONS
-========================= */
+/* =========================================================
+   CHATBOT QUICK ACTIONS
+========================================================= */
 
-document
-    .querySelectorAll(
-        ".quick-actions button"
-    )
-    .forEach(function (button) {
+document.querySelectorAll(
+    ".quick-actions button, .chatbot-quick-actions button"
+).forEach(button => {
 
-        button.addEventListener(
-            "click",
-            function () {
+    button.addEventListener(
+        "click",
+        () => {
 
-                const question =
-                    button.dataset.question;
-
-
-                addChatMessage(
-                    question,
-                    "user"
-                );
+            const question =
+                button.dataset.question ||
+                button.textContent.trim();
 
 
-                setTimeout(
-                    function () {
-
-                        addChatMessage(
-                            chatbotReply(
-                                question
-                            ),
-                            "bot"
-                        );
-
-                    },
-                    300
-                );
-
-            }
-        );
-
-    });
-
-
-/* =========================
-   CLOSE CHAT WHEN CLICKING
-   OUTSIDE
-========================= */
-
-document.addEventListener(
-    "click",
-    function (event) {
-
-        if (!chatbotWindow) return;
-
-        const chatbot =
-            document.querySelector(
-                ".chatbot"
+            addChatMessage(
+                question,
+                "user"
             );
 
 
-        if (
-            chatbotWindow.classList.contains(
-                "open"
-            ) &&
-            chatbot &&
-            !chatbot.contains(
-                event.target
-            )
-        ) {
+            setTimeout(
+                () => {
 
-            chatbotWindow.classList.remove(
-                "open"
+                    addChatMessage(
+                        getChatbotReply(
+                            question
+                        ),
+                        "bot"
+                    );
+
+                },
+                400
+            );
+        }
+    );
+});
+
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+document.querySelectorAll(
+    'a[href*="wa.me"]'
+).forEach(link => {
+
+    link.addEventListener(
+        "click",
+        () => {
+
+            console.log(
+                "WhatsApp contact opened."
             );
 
         }
+    );
+});
 
-    }
-);
 
-
-/* =========================
+/* =========================================================
    ONLINE STATUS
-========================= */
+========================================================= */
+
+function updateOnlineStatus() {
+
+    const status =
+        document.querySelector(
+            ".status-badge"
+        );
+
+    if (!status) return;
+
+
+    const text =
+        status.querySelector(
+            "span:last-child"
+        );
+
+
+    if (!text) return;
+
+
+    text.textContent =
+        navigator.onLine
+            ? "Available for freelance work"
+            : "Currently offline";
+}
+
 
 window.addEventListener(
     "online",
-    function () {
-
-        console.log(
-            "Internet connection restored."
-        );
-
-    }
+    updateOnlineStatus
 );
 
 window.addEventListener(
     "offline",
-    function () {
-
-        console.log(
-            "Internet connection lost."
-        );
-
-    }
+    updateOnlineStatus
 );
 
+updateOnlineStatus();
 
-/* =========================
-   FINISHED
-========================= */
+
+/* =========================================================
+   IMAGE OPTIMIZATION
+========================================================= */
+
+document.querySelectorAll(
+    "img"
+).forEach(image => {
+
+    if (
+        !image.hasAttribute(
+            "loading"
+        )
+    ) {
+        image.setAttribute(
+            "loading",
+            "lazy"
+        );
+    }
+});
+
+
+/* =========================================================
+   EXTERNAL LINKS SECURITY
+========================================================= */
+
+document.querySelectorAll(
+    'a[target="_blank"]'
+).forEach(link => {
+
+    const existingRel =
+        link.getAttribute(
+            "rel"
+        ) || "";
+
+
+    if (
+        !existingRel.includes(
+            "noopener"
+        )
+    ) {
+
+        link.setAttribute(
+            "rel",
+            `${existingRel} noopener noreferrer`
+                .trim()
+        );
+    }
+});
+
+
+/* =========================================================
+   FOOTER YEAR
+========================================================= */
+
+const year =
+    document.querySelector(
+        "#year"
+    );
+
+if (year) {
+    year.textContent =
+        new Date().getFullYear();
+}
+
+
+/* =========================================================
+   FORM VALIDATION
+========================================================= */
+
+document.querySelectorAll(
+    "form"
+).forEach(form => {
+
+    form.addEventListener(
+        "invalid",
+        () => {
+
+            form.classList.add(
+                "has-error"
+            );
+
+        },
+        true
+    );
+});
+
+
+/* =========================================================
+   CONSOLE MESSAGE
+========================================================= */
 
 console.log(
-    "%cJay Ouko Digital loaded successfully.",
+    "%cJay Ouko Portfolio loaded successfully.",
     "font-size:16px;font-weight:bold;"
 );
+
+console.log(
+    "Supabase connection enabled."
+);
+
+console.log(
+    "Website: Jay Ouko | Freelancing & Digital Services"
+);
+```
