@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-          content="Jay Ouko - Web Developer, Freelancer, Graphic Designer, Digital Marketer and AI Tools Creator.">
+    <meta
+        name="description"
+        content="Jay Ouko - Web Developer, Freelancer, Graphic Designer, Digital Marketer and AI Tools Creator."
+    >
 
     <meta name="author" content="Jay Ouko">
+    <meta name="theme-color" content="#07111f">
 
     <title>Jay Ouko | Digital Freelancer</title>
 
@@ -15,12 +18,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
     <!-- Website CSS -->
     <link rel="stylesheet" href="style.css">
@@ -28,60 +35,70 @@
 
 <body>
 
-<!-- =========================
-     LOADING SCREEN
-========================= -->
-<div class="loader" id="loader" aria-hidden="true">
-    <div class="loader-logo">J</div>
-    <p>Loading Jay Ouko...</p>
-</div>
-
-
-<!-- =========================
+<!-- =====================================================
      HEADER
-========================= -->
+===================================================== -->
 
 <header class="header" id="header">
 
     <nav class="nav container">
 
-        <a href="#home" class="logo">
+        <a href="#home" class="logo" aria-label="Jay Ouko Home">
             JAY<span>OUKO</span>
         </a>
 
         <button
             class="menu-toggle"
             id="menuToggle"
-            aria-label="Open menu"
-            aria-expanded="false">
-
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="navMenu"
+        >
             <i class="fa-solid fa-bars"></i>
-
         </button>
 
         <div class="nav-menu" id="navMenu">
 
-            <a href="#home" class="nav-link active">Home</a>
+            <a href="#home" class="nav-link active">
+                Home
+            </a>
 
-            <a href="#about" class="nav-link">About</a>
+            <a href="#about" class="nav-link">
+                About
+            </a>
 
-            <a href="#services" class="nav-link">Services</a>
+            <a href="#services" class="nav-link">
+                Services
+            </a>
 
-            <a href="#portfolio" class="nav-link">Portfolio</a>
+            <a href="#portfolio" class="nav-link">
+                Portfolio
+            </a>
 
-            <a href="#pricing" class="nav-link">Pricing</a>
+            <a href="#pricing" class="nav-link">
+                Pricing
+            </a>
 
-            <a href="#classes" class="nav-link">Classes</a>
+            <a href="#classes" class="nav-link">
+                Classes
+            </a>
 
-            <a href="#contact" class="nav-link">Contact</a>
+            <a href="#reviews" class="nav-link">
+                Reviews
+            </a>
+
+            <a href="#contact" class="nav-link">
+                Contact
+            </a>
 
             <button
                 class="theme-toggle"
                 id="themeToggle"
-                aria-label="Switch theme">
-
+                type="button"
+                aria-label="Switch theme"
+            >
                 <i class="fa-solid fa-sun"></i>
-
             </button>
 
         </div>
@@ -91,16 +108,19 @@
 </header>
 
 
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
 <main>
 
-
-<!-- =========================
+<!-- =====================================================
      HERO
-========================= -->
+===================================================== -->
 
 <section class="hero section" id="home">
 
-    <div class="hero-grid"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
 
     <div class="container hero-content">
 
@@ -123,9 +143,9 @@
 
             <p class="hero-description">
                 I'm Jay Ouko, a web developer and digital freelancer
-                helping individuals and businesses build their presence
-                online through modern technology and creative digital
-                solutions.
+                helping individuals, creators and businesses build
+                their online presence through modern technology and
+                creative digital solutions.
             </p>
 
             <div class="hero-buttons">
@@ -144,40 +164,40 @@
 
             <div class="social-links">
 
-                <a href="https://www.facebook.com/profile.php?id=61568719246626"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Facebook">
-
+                <a
+                    href="https://www.facebook.com/profile.php?id=61568719246626"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                >
                     <i class="fa-brands fa-facebook-f"></i>
-
                 </a>
 
-                <a href="https://www.instagram.com/emmanueljayouko"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="Instagram">
-
+                <a
+                    href="https://www.instagram.com/emmanueljayouko"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                >
                     <i class="fa-brands fa-instagram"></i>
-
                 </a>
 
-                <a href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="YouTube">
-
+                <a
+                    href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube"
+                >
                     <i class="fa-brands fa-youtube"></i>
-
                 </a>
 
-                <a href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label="TikTok">
-
+                <a
+                    href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="TikTok"
+                >
                     <i class="fa-brands fa-tiktok"></i>
-
                 </a>
 
             </div>
@@ -185,16 +205,16 @@
         </div>
 
 
+        <!-- HERO CODE CARD -->
+
         <div class="hero-card reveal">
 
             <div class="code-window">
 
-                <div class="window-bar">
-
+                <div class="window-bar" aria-hidden="true">
                     <span></span>
                     <span></span>
                     <span></span>
-
                 </div>
 
                 <div class="code-content">
@@ -265,11 +285,11 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      STATS
-========================= -->
+===================================================== -->
 
-<section class="stats">
+<section class="stats" aria-label="Jay Ouko statistics">
 
     <div class="container stats-grid">
 
@@ -298,9 +318,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      ABOUT
-========================= -->
+===================================================== -->
 
 <section class="section" id="about">
 
@@ -308,7 +328,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">ABOUT ME</p>
+            <p class="eyebrow">
+                ABOUT ME
+            </p>
 
             <h2>
                 Turning Ideas Into
@@ -336,11 +358,12 @@
                 <p>
                     Whether you need a personal portfolio, business
                     website, promotional graphics or help establishing
-                    your online presence, I can help turn the idea
+                    your online presence, I can help turn your idea
                     into a practical digital project.
                 </p>
 
                 <a href="#contact" class="btn btn-primary">
+                    <i class="fa-solid fa-handshake"></i>
                     Let's Work Together
                 </a>
 
@@ -350,6 +373,7 @@
             <div class="skills reveal">
 
                 <div class="skill">
+
                     <div>
                         <span>Web Development</span>
                         <span>90%</span>
@@ -358,10 +382,12 @@
                     <div class="skill-bar">
                         <span style="width:90%"></span>
                     </div>
+
                 </div>
 
 
                 <div class="skill">
+
                     <div>
                         <span>Graphic Design</span>
                         <span>85%</span>
@@ -370,10 +396,12 @@
                     <div class="skill-bar">
                         <span style="width:85%"></span>
                     </div>
+
                 </div>
 
 
                 <div class="skill">
+
                     <div>
                         <span>Digital Marketing</span>
                         <span>80%</span>
@@ -382,10 +410,12 @@
                     <div class="skill-bar">
                         <span style="width:80%"></span>
                     </div>
+
                 </div>
 
 
                 <div class="skill">
+
                     <div>
                         <span>AI Tools</span>
                         <span>85%</span>
@@ -394,6 +424,7 @@
                     <div class="skill-bar">
                         <span style="width:85%"></span>
                     </div>
+
                 </div>
 
             </div>
@@ -405,9 +436,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      SERVICES
-========================= -->
+===================================================== -->
 
 <section class="section section-dark" id="services">
 
@@ -415,7 +446,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">WHAT I OFFER</p>
+            <p class="eyebrow">
+                WHAT I OFFER
+            </p>
 
             <h2>
                 Digital Services
@@ -437,14 +470,20 @@
                     <i class="fa-solid fa-code"></i>
                 </div>
 
-                <h3>Web Development</h3>
+                <h3>
+                    Web Development
+                </h3>
 
                 <p>
                     Responsive portfolio, business and landing
                     page websites designed for modern devices.
                 </p>
 
-                <button class="service-hire" data-service="Web Development">
+                <button
+                    class="service-hire"
+                    type="button"
+                    data-service="Web Development"
+                >
                     Hire Me
                 </button>
 
@@ -457,14 +496,20 @@
                     <i class="fa-solid fa-pen-nib"></i>
                 </div>
 
-                <h3>Graphic Design</h3>
+                <h3>
+                    Graphic Design
+                </h3>
 
                 <p>
                     Posters, social media graphics, promotional
                     materials and digital branding.
                 </p>
 
-                <button class="service-hire" data-service="Graphic Design">
+                <button
+                    class="service-hire"
+                    type="button"
+                    data-service="Graphic Design"
+                >
                     Hire Me
                 </button>
 
@@ -477,14 +522,20 @@
                     <i class="fa-solid fa-bullhorn"></i>
                 </div>
 
-                <h3>Digital Marketing</h3>
+                <h3>
+                    Digital Marketing
+                </h3>
 
                 <p>
                     Digital promotion, social media support and
                     online marketing strategies.
                 </p>
 
-                <button class="service-hire" data-service="Digital Marketing">
+                <button
+                    class="service-hire"
+                    type="button"
+                    data-service="Digital Marketing"
+                >
                     Hire Me
                 </button>
 
@@ -497,14 +548,20 @@
                     <i class="fa-solid fa-robot"></i>
                 </div>
 
-                <h3>AI Tools</h3>
+                <h3>
+                    AI Tools
+                </h3>
 
                 <p>
                     Practical AI tools and workflows for content,
                     productivity and digital work.
                 </p>
 
-                <button class="service-hire" data-service="AI Tools">
+                <button
+                    class="service-hire"
+                    type="button"
+                    data-service="AI Tools"
+                >
                     Hire Me
                 </button>
 
@@ -517,9 +574,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      PORTFOLIO
-========================= -->
+===================================================== -->
 
 <section class="section" id="portfolio">
 
@@ -527,7 +584,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">MY WORK</p>
+            <p class="eyebrow">
+                MY WORK
+            </p>
 
             <h2>
                 Selected Projects
@@ -550,9 +609,13 @@
 
                 <div class="portfolio-info">
 
-                    <span>WEB DEVELOPMENT</span>
+                    <span>
+                        WEB DEVELOPMENT
+                    </span>
 
-                    <h3>Business Website</h3>
+                    <h3>
+                        Business Website
+                    </h3>
 
                     <p>
                         Modern responsive website concept
@@ -567,14 +630,20 @@
             <article class="portfolio-card reveal">
 
                 <div class="portfolio-preview design-preview">
-                    <span>DESIGN</span>
+                    <span>
+                        DESIGN
+                    </span>
                 </div>
 
                 <div class="portfolio-info">
 
-                    <span>GRAPHIC DESIGN</span>
+                    <span>
+                        GRAPHIC DESIGN
+                    </span>
 
-                    <h3>Social Media Campaign</h3>
+                    <h3>
+                        Social Media Campaign
+                    </h3>
 
                     <p>
                         Promotional visual design concept
@@ -589,14 +658,20 @@
             <article class="portfolio-card reveal">
 
                 <div class="portfolio-preview marketing-preview">
-                    <span>GROW</span>
+                    <span>
+                        GROW
+                    </span>
                 </div>
 
                 <div class="portfolio-info">
 
-                    <span>DIGITAL MARKETING</span>
+                    <span>
+                        DIGITAL MARKETING
+                    </span>
 
-                    <h3>Online Brand Strategy</h3>
+                    <h3>
+                        Online Brand Strategy
+                    </h3>
 
                     <p>
                         Digital presence and content strategy
@@ -614,9 +689,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      PRICING
-========================= -->
+===================================================== -->
 
 <section class="section section-dark" id="pricing">
 
@@ -624,7 +699,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">SERVICES & PRICING</p>
+            <p class="eyebrow">
+                SERVICES & PRICING
+            </p>
 
             <h2>
                 Choose Your Package
@@ -641,13 +718,17 @@
         <div class="pricing-grid">
 
 
+            <!-- BASIC -->
+
             <article class="pricing-card reveal">
 
                 <span class="pricing-label">
                     STARTER
                 </span>
 
-                <h3>Basic</h3>
+                <h3>
+                    Basic
+                </h3>
 
                 <div class="price">
                     KSh 2,500
@@ -666,14 +747,16 @@
 
                 <button
                     class="btn btn-outline hire-package"
-                    data-package="Basic">
-
+                    type="button"
+                    data-package="Basic"
+                >
                     Get Started
-
                 </button>
 
             </article>
 
+
+            <!-- STANDARD -->
 
             <article class="pricing-card featured reveal">
 
@@ -685,7 +768,9 @@
                     PROFESSIONAL
                 </span>
 
-                <h3>Standard</h3>
+                <h3>
+                    Standard
+                </h3>
 
                 <div class="price">
                     KSh 5,000
@@ -705,14 +790,16 @@
 
                 <button
                     class="btn btn-primary hire-package"
-                    data-package="Standard">
-
+                    type="button"
+                    data-package="Standard"
+                >
                     Choose Standard
-
                 </button>
 
             </article>
 
+
+            <!-- PREMIUM -->
 
             <article class="pricing-card reveal">
 
@@ -720,7 +807,9 @@
                     BUSINESS
                 </span>
 
-                <h3>Premium</h3>
+                <h3>
+                    Premium
+                </h3>
 
                 <div class="price">
                     KSh 10,000+
@@ -740,10 +829,10 @@
 
                 <button
                     class="btn btn-outline hire-package"
-                    data-package="Premium">
-
+                    type="button"
+                    data-package="Premium"
+                >
                     Discuss Project
-
                 </button>
 
             </article>
@@ -756,12 +845,16 @@
             <i class="fa-solid fa-mobile-screen-button"></i>
 
             <div>
-                <strong>M-Pesa / Payment</strong>
+
+                <strong>
+                    M-Pesa / Payment
+                </strong>
 
                 <p>
                     Contact me before making payment so we can
                     confirm the project, price and payment details.
                 </p>
+
             </div>
 
         </div>
@@ -771,9 +864,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      ONLINE CLASSES
-========================= -->
+===================================================== -->
 
 <section class="section" id="classes">
 
@@ -781,7 +874,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">LEARN WITH ME</p>
+            <p class="eyebrow">
+                LEARN WITH ME
+            </p>
 
             <h2>
                 Free Online Classes
@@ -797,11 +892,14 @@
 
         <div class="classes-grid">
 
+
             <article class="class-card reveal">
 
                 <i class="fa-solid fa-laptop-code"></i>
 
-                <h3>Digital Skills</h3>
+                <h3>
+                    Digital Skills
+                </h3>
 
                 <p>
                     Learn practical digital skills for school,
@@ -815,7 +913,9 @@
 
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
 
-                <h3>Canva</h3>
+                <h3>
+                    Canva
+                </h3>
 
                 <p>
                     Learn how to create professional digital
@@ -829,7 +929,9 @@
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                <h3>Twiva & Online Work</h3>
+                <h3>
+                    Twiva & Online Work
+                </h3>
 
                 <p>
                     Explore digital creator programs and
@@ -847,7 +949,9 @@
 
             <div>
 
-                <strong>Daily at 9:00 PM</strong>
+                <strong>
+                    Daily at 9:00 PM
+                </strong>
 
                 <p>
                     Free sessions through TikTok.
@@ -859,10 +963,9 @@
                 href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn btn-primary">
-
+                class="btn btn-primary"
+            >
                 Join TikTok
-
             </a>
 
         </div>
@@ -872,9 +975,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      HIRE ME
-========================= -->
+===================================================== -->
 
 <section class="hire-section" id="hire">
 
@@ -900,6 +1003,7 @@
             </div>
 
             <a href="#contact" class="btn btn-primary">
+                <i class="fa-solid fa-briefcase"></i>
                 Start a Project
             </a>
 
@@ -910,9 +1014,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      REVIEWS
-========================= -->
+===================================================== -->
 
 <section class="section section-dark" id="reviews">
 
@@ -920,7 +1024,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">CLIENT FEEDBACK</p>
+            <p class="eyebrow">
+                CLIENT FEEDBACK
+            </p>
 
             <h2>
                 Reviews
@@ -936,7 +1042,12 @@
         <div class="reviews-layout">
 
 
-            <form id="reviewForm" class="review-form reveal">
+            <!-- REVIEW FORM -->
+
+            <form
+                id="reviewForm"
+                class="review-form reveal"
+            >
 
                 <h3>
                     Leave a Review
@@ -945,11 +1056,17 @@
                 <input
                     type="text"
                     id="reviewName"
+                    name="reviewName"
                     placeholder="Your name"
+                    autocomplete="name"
                     required
                 >
 
-                <select id="reviewRating" required>
+                <select
+                    id="reviewRating"
+                    name="reviewRating"
+                    required
+                >
 
                     <option value="">
                         Select rating
@@ -979,26 +1096,31 @@
 
                 <textarea
                     id="reviewMessage"
+                    name="reviewMessage"
                     rows="5"
                     placeholder="Write your review..."
-                    required></textarea>
+                    required
+                ></textarea>
 
                 <button
                     type="submit"
-                    class="btn btn-primary">
-
+                    class="btn btn-primary"
+                >
+                    <i class="fa-solid fa-star"></i>
                     Submit Review
-
                 </button>
 
-                <p id="reviewStatus"></p>
+                <p id="reviewStatus" aria-live="polite"></p>
 
             </form>
 
 
+            <!-- APPROVED REVIEWS -->
+
             <div
                 class="reviews-list"
-                id="reviewsList">
+                id="reviewsList"
+            >
 
                 <div class="empty-reviews">
                     No reviews yet. Be the first to leave one.
@@ -1013,9 +1135,9 @@
 </section>
 
 
-<!-- =========================
+<!-- =====================================================
      CONTACT
-========================= -->
+===================================================== -->
 
 <section class="section" id="contact">
 
@@ -1023,7 +1145,9 @@
 
         <div class="section-heading reveal">
 
-            <p class="eyebrow">CONTACT</p>
+            <p class="eyebrow">
+                CONTACT
+            </p>
 
             <h2>
                 Let's Talk About Your Project
@@ -1039,18 +1163,25 @@
         <div class="contact-grid">
 
 
+            <!-- CONTACT INFORMATION -->
+
             <div class="contact-info reveal">
+
 
                 <div class="contact-item">
 
                     <i class="fa-solid fa-envelope"></i>
 
                     <div>
-                        <span>Email</span>
+
+                        <span>
+                            Email
+                        </span>
 
                         <a href="mailto:emmanuelouko21@gmail.com">
                             emmanuelouko21@gmail.com
                         </a>
+
                     </div>
 
                 </div>
@@ -1061,11 +1192,15 @@
                     <i class="fa-solid fa-phone"></i>
 
                     <div>
-                        <span>Phone / M-Pesa</span>
+
+                        <span>
+                            Phone / M-Pesa
+                        </span>
 
                         <a href="tel:0142617814">
                             0142617814
                         </a>
+
                     </div>
 
                 </div>
@@ -1076,16 +1211,19 @@
                     <i class="fa-brands fa-whatsapp"></i>
 
                     <div>
-                        <span>WhatsApp</span>
+
+                        <span>
+                            WhatsApp
+                        </span>
 
                         <a
                             href="https://wa.me/254142617814"
                             target="_blank"
-                            rel="noopener noreferrer">
-
+                            rel="noopener noreferrer"
+                        >
                             Chat on WhatsApp
-
                         </a>
+
                     </div>
 
                 </div>
@@ -1096,37 +1234,37 @@
                     <a
                         href="https://www.facebook.com/profile.php?id=61568719246626"
                         target="_blank"
-                        rel="noopener noreferrer">
-
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                    >
                         <i class="fa-brands fa-facebook-f"></i>
-
                     </a>
 
                     <a
                         href="https://www.instagram.com/emmanueljayouko"
                         target="_blank"
-                        rel="noopener noreferrer">
-
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                    >
                         <i class="fa-brands fa-instagram"></i>
-
                     </a>
 
                     <a
                         href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
                         target="_blank"
-                        rel="noopener noreferrer">
-
+                        rel="noopener noreferrer"
+                        aria-label="YouTube"
+                    >
                         <i class="fa-brands fa-youtube"></i>
-
                     </a>
 
                     <a
                         href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
                         target="_blank"
-                        rel="noopener noreferrer">
-
+                        rel="noopener noreferrer"
+                        aria-label="TikTok"
+                    >
                         <i class="fa-brands fa-tiktok"></i>
-
                     </a>
 
                 </div>
@@ -1134,25 +1272,35 @@
             </div>
 
 
+            <!-- CONTACT FORM -->
+
             <form
                 class="contact-form reveal"
-                id="contactForm">
+                id="contactForm"
+            >
 
                 <input
                     type="text"
                     id="contactName"
+                    name="contactName"
                     placeholder="Your name"
+                    autocomplete="name"
                     required
                 >
 
                 <input
                     type="email"
                     id="contactEmail"
+                    name="contactEmail"
                     placeholder="Your email"
+                    autocomplete="email"
                     required
                 >
 
-                <select id="contactService">
+                <select
+                    id="contactService"
+                    name="contactService"
+                >
 
                     <option value="General enquiry">
                         Select a service
@@ -1178,20 +1326,24 @@
 
                 <textarea
                     id="contactMessage"
+                    name="contactMessage"
                     rows="7"
                     placeholder="Tell me about your project..."
-                    required></textarea>
+                    required
+                ></textarea>
 
                 <button
                     type="submit"
-                    class="btn btn-primary">
-
+                    class="btn btn-primary"
+                >
                     <i class="fa-solid fa-paper-plane"></i>
                     Send Message
-
                 </button>
 
-                <p id="contactStatus"></p>
+                <p
+                    id="contactStatus"
+                    aria-live="polite"
+                ></p>
 
             </form>
 
@@ -1204,9 +1356,9 @@
 </main>
 
 
-<!-- =========================
+<!-- =====================================================
      FOOTER
-========================= -->
+===================================================== -->
 
 <footer>
 
@@ -1214,7 +1366,11 @@
 
         <div>
 
-            <a href="#home" class="logo">
+            <a
+                href="#home"
+                class="logo"
+                aria-label="Jay Ouko Home"
+            >
                 JAY<span>OUKO</span>
             </a>
 
@@ -1225,7 +1381,8 @@
         </div>
 
         <p>
-            © <span id="year"></span> Jay Ouko.
+            © <span id="year"></span>
+            Jay Ouko.
             All rights reserved.
         </p>
 
@@ -1234,47 +1391,51 @@
 </footer>
 
 
-<!-- =========================
-     WHATSAPP
-========================= -->
+<!-- =====================================================
+     FLOATING WHATSAPP
+===================================================== -->
 
 <a
     class="floating-whatsapp"
     href="https://wa.me/254142617814"
     target="_blank"
     rel="noopener noreferrer"
-    aria-label="Chat on WhatsApp">
-
+    aria-label="Chat with Jay Ouko on WhatsApp"
+>
     <i class="fa-brands fa-whatsapp"></i>
-
 </a>
 
 
-<!-- =========================
+<!-- =====================================================
      CHATBOT
-========================= -->
+===================================================== -->
 
 <div class="chatbot">
 
     <button
         class="chatbot-toggle"
         id="chatbotToggle"
-        aria-label="Open chatbot">
-
+        type="button"
+        aria-label="Open chatbot"
+        aria-expanded="false"
+    >
         <i class="fa-solid fa-robot"></i>
-
     </button>
 
 
     <div
         class="chatbot-window"
-        id="chatbotWindow">
+        id="chatbotWindow"
+        aria-hidden="true"
+    >
 
         <div class="chatbot-header">
 
             <div>
 
-                <strong>Jay AI Assistant</strong>
+                <strong>
+                    Jay AI Assistant
+                </strong>
 
                 <small>
                     Online
@@ -1282,7 +1443,11 @@
 
             </div>
 
-            <button id="chatbotClose">
+            <button
+                id="chatbotClose"
+                type="button"
+                aria-label="Close chatbot"
+            >
                 ×
             </button>
 
@@ -1291,7 +1456,8 @@
 
         <div
             class="chatbot-messages"
-            id="chatbotMessages">
+            id="chatbotMessages"
+        >
 
             <div class="bot-message">
 
@@ -1312,15 +1478,24 @@
 
         <div class="quick-actions">
 
-            <button data-question="What services do you offer?">
+            <button
+                type="button"
+                data-question="What services do you offer?"
+            >
                 Services
             </button>
 
-            <button data-question="What are your prices?">
+            <button
+                type="button"
+                data-question="What are your prices?"
+            >
                 Pricing
             </button>
 
-            <button data-question="How can I hire you?">
+            <button
+                type="button"
+                data-question="How can I hire you?"
+            >
                 Hire
             </button>
 
@@ -1329,19 +1504,22 @@
 
         <form
             class="chatbot-form"
-            id="chatbotForm">
+            id="chatbotForm"
+        >
 
             <input
                 type="text"
                 id="chatbotInput"
                 placeholder="Type a message..."
                 autocomplete="off"
-                required>
+                required
+            >
 
-            <button type="submit">
-
+            <button
+                type="submit"
+                aria-label="Send chatbot message"
+            >
                 <i class="fa-solid fa-paper-plane"></i>
-
             </button>
 
         </form>
@@ -1351,24 +1529,33 @@
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
      BACK TO TOP
-========================= -->
+===================================================== -->
 
 <button
     class="back-to-top"
     id="backToTop"
-    aria-label="Back to top">
-
+    type="button"
+    aria-label="Back to top"
+>
     <i class="fa-solid fa-arrow-up"></i>
-
 </button>
 
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
 
-<!-- WEBSITE JAVASCRIPT -->
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
+
+<!-- =====================================================
+     WEBSITE JAVASCRIPT
+===================================================== -->
+
 <script src="app.js"></script>
 
 </body>
