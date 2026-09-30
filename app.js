@@ -1,23 +1,71 @@
-```javascript
 "use strict";
 
 /* =========================================================
    JAY OUKO WEBSITE
-   Supabase-connected frontend
 ========================================================= */
+
+/* =========================================================
+   REMOVE LOADING SCREEN SAFELY
+========================================================= */
+
+window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+
+    if (loader) {
+        loader.classList.add("hidden");
+
+        setTimeout(() => {
+            loader.style.opacity = "0";
+            loader.style.pointerEvents = "none";
+            loader.style.display = "none";
+        }, 500);
+    }
+});
+
 
 /* =========================================================
    SUPABASE CONFIGURATION
 ========================================================= */
 
-const SUPABASE_URL = "https://slusgnhkjcnuitqcmwag.supabase.co";
+const SUPABASE_URL =
+    "https://slusgnhkjcnuitqcmwag.supabase.co";
+
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+let supabaseClient = null;
+
+if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+) {
+
+    try {
+
+        supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_PUBLISHABLE_KEY
+            );
+
+        console.log(
+            "Supabase initialized successfully."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Supabase initialization error:",
+            error
+        );
+    }
+
+} else {
+
+    console.error(
+        "Supabase library was not loaded."
+    );
+}
 
 
 /* =========================================================
@@ -31,22 +79,18 @@ const navMenu = document.querySelector("#navMenu");
 const themeToggle = document.querySelector("#themeToggle");
 const backToTop = document.querySelector("#backToTop");
 
-
 /* =========================================================
-   LOADING SCREEN
+   BASIC ELEMENTS
 ========================================================= */
 
-window.addEventListener("load", () => {
-    const loader = document.querySelector("#loader");
+const body = document.body;
+const header = document.querySelector(".header");
+const menuToggle = document.querySelector("#menuToggle");
+const navMenu = document.querySelector("#navMenu");
+const themeToggle = document.querySelector("#themeToggle");
+const backToTop = document.querySelector("#backToTop");
 
-    if (loader) {
-        setTimeout(() => {
-            loader.classList.add("hidden");
-            loader.style.opacity = "0";
-            loader.style.pointerEvents = "none";
-        }, 600);
-    }
-});
+
 
 
 /* =========================================================
