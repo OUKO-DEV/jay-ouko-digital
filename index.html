@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
@@ -10,430 +9,1366 @@
 
     <meta name="author" content="Jay Ouko">
 
-    <title>Jay Ouko | Digital Services & Freelancing</title>
+    <title>Jay Ouko | Digital Freelancer</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Website CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- ==============================
-         HEADER
-    =============================== -->
-    <header>
+<!-- =========================
+     LOADING SCREEN
+========================= -->
 
-        <nav>
-
-    <div class="logo">
-        <a href="#home">JAY OUKO</a>
-    </div>
-
-    <button
-        class="menu-toggle"
-        id="menuToggle"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-    >
-        ☰
-    </button>
-
-    <div class="navigation" id="navigation">
-
-        <a href="#home">Home</a>
-
-        <a href="#about">About</a>
-
-        <a href="#services">Services</a>
-
-        <a href="#portfolio">Portfolio</a>
-
-        <a href="#contact">Contact</a>
-
-    </div>
-
-</nav>
-
-    </header>
+<div class="loader" id="loader">
+    <div class="loader-logo">J</div>
+    <p>Loading Jay Ouko...</p>
+</div>
 
 
-    <!-- ==============================
-         HOME
-    =============================== -->
-    <main>
+<!-- =========================
+     HEADER
+========================= -->
 
-        <section id="home">
+<header class="header" id="header">
 
-            <div>
+    <nav class="nav container">
 
-                <p>
-                    Welcome to my digital workspace
-                </p>
+        <a href="#home" class="logo">
+            JAY<span>OUKO</span>
+        </a>
 
-                <h1>
-                    Hi, I'm <span>Jay Ouko</span>
-                </h1>
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Open menu"
+            aria-expanded="false">
 
-                <h2>
-                    Web Developer & Digital Freelancer
-                </h2>
+            <i class="fa-solid fa-bars"></i>
 
-                <p>
-                    I create modern websites, digital designs,
-                    online solutions and creative digital experiences
-                    for individuals, businesses and organizations.
-                </p>
+        </button>
 
-                <div>
+        <div class="nav-menu" id="navMenu">
 
-                    <a href="#services">
-                        Explore My Services
-                    </a>
+            <a href="#home" class="nav-link active">Home</a>
 
-                    <a href="#contact">
-                        Hire Me
-                    </a>
+            <a href="#about" class="nav-link">About</a>
 
-                </div>
+            <a href="#services" class="nav-link">Services</a>
 
+            <a href="#portfolio" class="nav-link">Portfolio</a>
+
+            <a href="#pricing" class="nav-link">Pricing</a>
+
+            <a href="#classes" class="nav-link">Classes</a>
+
+            <a href="#contact" class="nav-link">Contact</a>
+
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Switch theme">
+
+                <i class="fa-solid fa-sun"></i>
+
+            </button>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero section" id="home">
+
+    <div class="hero-grid"></div>
+
+    <div class="container hero-content">
+
+        <div class="hero-text reveal">
+
+            <div class="availability">
+                <span class="status-dot"></span>
+                Available for freelance work
             </div>
 
-        </section>
-
-
-        <!-- ==============================
-             ABOUT
-        =============================== -->
-        <section id="about">
-
-            <div>
-
-                <p>ABOUT ME</p>
-
-                <h2>
-                    Building Digital Solutions With Creativity
-                </h2>
-
-                <p>
-                    My name is Jay Ouko. I am a digital freelancer
-                    interested in web development, graphic design,
-                    digital marketing, AI tools and online business.
-                </p>
-
-                <p>
-                    My goal is to help individuals and businesses
-                    establish a strong and professional presence online.
-                </p>
-
-                <div>
-
-                    <div>
-                        <strong>Web Development</strong>
-                        <p>Responsive and modern websites.</p>
-                    </div>
-
-                    <div>
-                        <strong>Graphic Design</strong>
-                        <p>Creative digital designs and branding.</p>
-                    </div>
-
-                    <div>
-                        <strong>Digital Marketing</strong>
-                        <p>Online promotion and social media solutions.</p>
-                    </div>
-
-                    <div>
-                        <strong>AI Tools</strong>
-                        <p>Modern AI-powered digital workflows.</p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==============================
-             SERVICES
-        =============================== -->
-        <section id="services">
-
-            <div>
-
-                <p>WHAT I DO</p>
-
-                <h2>
-                    My Services
-                </h2>
-
-                <p>
-                    Professional digital services designed to help
-                    you build, promote and grow online.
-                </p>
-
-
-                <div>
-
-                    <article>
-
-                        <h3>
-                            Web Development
-                        </h3>
-
-                        <p>
-                            Professional responsive websites for
-                            personal brands, businesses and projects.
-                        </p>
-
-                        <a href="#contact">
-                            Hire Me
-                        </a>
-
-                    </article>
-
-
-                    <article>
-
-                        <h3>
-                            Graphic Design
-                        </h3>
-
-                        <p>
-                            Social media graphics, posters,
-                            promotional materials and branding.
-                        </p>
-
-                        <a href="#contact">
-                            Hire Me
-                        </a>
-
-                    </article>
-
-
-                    <article>
-
-                        <h3>
-                            Digital Marketing
-                        </h3>
-
-                        <p>
-                            Digital promotion, social media content
-                            and online marketing support.
-                        </p>
-
-                        <a href="#contact">
-                            Hire Me
-                        </a>
-
-                    </article>
-
-
-                    <article>
-
-                        <h3>
-                            AI Solutions
-                        </h3>
-
-                        <p>
-                            Practical AI tools and workflows designed
-                            to improve productivity and digital work.
-                        </p>
-
-                        <a href="#contact">
-                            Hire Me
-                        </a>
-
-                    </article>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==============================
-             PORTFOLIO
-        =============================== -->
-        <section id="portfolio">
-
-            <div>
-
-                <p>MY WORK</p>
-
-                <h2>
-                    Portfolio
-                </h2>
-
-                <p>
-                    A selection of digital projects and creative work.
-                </p>
-
-
-                <div>
-
-                    <article>
-
-                        <h3>
-                            Business Website
-                        </h3>
-
-                        <p>
-                            Responsive website concept for a modern business.
-                        </p>
-
-                    </article>
-
-
-                    <article>
-
-                        <h3>
-                            Personal Portfolio
-                        </h3>
-
-                        <p>
-                            Professional portfolio website concept.
-                        </p>
-
-                    </article>
-
-
-                    <article>
-
-                        <h3>
-                            Social Media Design
-                        </h3>
-
-                        <p>
-                            Digital promotional content for online platforms.
-                        </p>
-
-                    </article>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==============================
-             CONTACT
-        =============================== -->
-        <section id="contact">
-
-            <div>
-
-                <p>LET'S WORK TOGETHER</p>
-
-                <h2>
+            <p class="eyebrow">
+                WELCOME TO MY DIGITAL SPACE
+            </p>
+
+            <h1>
+                I Build
+                <span>Digital Experiences</span>
+                That Matter.
+            </h1>
+
+            <p class="hero-description">
+                I'm Jay Ouko, a web developer and digital freelancer
+                helping individuals and businesses build their presence
+                online through modern technology and creative digital
+                solutions.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#contact" class="btn btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i>
                     Hire Me
-                </h2>
+                </a>
 
-                <p>
-                    Have a project, business idea or digital task?
-                    Send me a message and let's discuss it.
-                </p>
+                <a href="#portfolio" class="btn btn-outline">
+                    <i class="fa-solid fa-briefcase"></i>
+                    View Portfolio
+                </a>
+
+            </div>
+
+            <div class="social-links">
+
+                <a href="https://www.facebook.com/profile.php?id=61568719246626"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Facebook">
+
+                    <i class="fa-brands fa-facebook-f"></i>
+
+                </a>
+
+                <a href="https://www.instagram.com/emmanueljayouko"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+
+                    <i class="fa-brands fa-instagram"></i>
+
+                </a>
+
+                <a href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="YouTube">
+
+                    <i class="fa-brands fa-youtube"></i>
+
+                </a>
+
+                <a href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="TikTok">
+
+                    <i class="fa-brands fa-tiktok"></i>
+
+                </a>
+
+            </div>
+
+        </div>
 
 
-                <div>
+        <div class="hero-card reveal">
+
+            <div class="code-window">
+
+                <div class="window-bar">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+                <div class="code-content">
 
                     <p>
-                        <strong>Email:</strong>
-                        emmanuelouko21@gmail.com
+                        <span class="code-purple">const</span>
+                        developer =
                     </p>
 
-                    <p>
-                        <strong>Phone / M-Pesa:</strong>
-                        0142617814
+                    <p class="indent">
+                        {
+                    </p>
+
+                    <p class="indent">
+                        name:
+                        <span class="code-green">
+                            "Jay Ouko"
+                        </span>,
+                    </p>
+
+                    <p class="indent">
+                        role:
+                        <span class="code-green">
+                            "Digital Freelancer"
+                        </span>,
+                    </p>
+
+                    <p class="indent">
+                        skills: [
+                    </p>
+
+                    <p class="double-indent">
+                        "Web Development",
+                    </p>
+
+                    <p class="double-indent">
+                        "Graphic Design",
+                    </p>
+
+                    <p class="double-indent">
+                        "Digital Marketing",
+                    </p>
+
+                    <p class="double-indent">
+                        "AI Tools"
+                    </p>
+
+                    <p class="indent">
+                        ]
+                    </p>
+
+                    <p class="indent">
+                        };
+                    </p>
+
+                    <p class="code-cursor">
+                        _
                     </p>
 
                 </div>
 
+            </div>
 
-                <form>
+        </div>
 
-                    <div>
+    </div>
 
-                        <label for="name">
-                            Your Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Enter your name"
-                            required
-                        >
-
-                    </div>
+</section>
 
 
-                    <div>
+<!-- =========================
+     STATS
+========================= -->
 
-                        <label for="email">
-                            Email Address
-                        </label>
+<section class="stats">
 
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            required
-                        >
+    <div class="container stats-grid">
 
-                    </div>
+        <div class="stat">
+            <strong data-count="10">0</strong>
+            <span>Digital Skills</span>
+        </div>
 
+        <div class="stat">
+            <strong data-count="20">0</strong>
+            <span>Project Ideas</span>
+        </div>
 
-                    <div>
+        <div class="stat">
+            <strong data-count="100">0</strong>
+            <span>% Commitment</span>
+        </div>
 
-                        <label for="message">
-                            Project Details
-                        </label>
+        <div class="stat">
+            <strong>24/7</strong>
+            <span>Online Presence</span>
+        </div>
 
-                        <textarea
-                            id="message"
-                            name="message"
-                            rows="6"
-                            placeholder="Tell me about your project..."
-                            required
-                        ></textarea>
+    </div>
 
-                    </div>
+</section>
 
 
-                    <button type="submit">
-                        Send Project Request
-                    </button>
+<!-- =========================
+     ABOUT
+========================= -->
 
-                </form>
+<section class="section" id="about">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">ABOUT ME</p>
+
+            <h2>
+                Turning Ideas Into
+                <span>Digital Solutions.</span>
+            </h2>
+
+            <p>
+                I am passionate about technology, creativity and
+                online business. My goal is to create useful digital
+                experiences that solve real problems.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-text reveal">
+
+                <p>
+                    I work across web development, graphic design,
+                    digital marketing and AI-powered workflows.
+                </p>
+
+                <p>
+                    Whether you need a personal portfolio, business
+                    website, promotional graphics or help establishing
+                    your online presence, I can help turn the idea
+                    into a practical digital project.
+                </p>
+
+                <a href="#contact" class="btn btn-primary">
+                    Let's Work Together
+                </a>
 
             </div>
 
-        </section>
 
-    </main>
+            <div class="skills reveal">
+
+                <div class="skill">
+                    <div>
+                        <span>Web Development</span>
+                        <span>90%</span>
+                    </div>
+
+                    <div class="skill-bar">
+                        <span style="width:90%"></span>
+                    </div>
+                </div>
 
 
-    <!-- ==============================
-         FOOTER
-    =============================== -->
-    <footer>
+                <div class="skill">
+                    <div>
+                        <span>Graphic Design</span>
+                        <span>85%</span>
+                    </div>
+
+                    <div class="skill-bar">
+                        <span style="width:85%"></span>
+                    </div>
+                </div>
+
+
+                <div class="skill">
+                    <div>
+                        <span>Digital Marketing</span>
+                        <span>80%</span>
+                    </div>
+
+                    <div class="skill-bar">
+                        <span style="width:80%"></span>
+                    </div>
+                </div>
+
+
+                <div class="skill">
+                    <div>
+                        <span>AI Tools</span>
+                        <span>85%</span>
+                    </div>
+
+                    <div class="skill-bar">
+                        <span style="width:85%"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SERVICES
+========================= -->
+
+<section class="section section-dark" id="services">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">WHAT I OFFER</p>
+
+            <h2>
+                Digital Services
+            </h2>
+
+            <p>
+                Practical digital services for individuals,
+                creators and businesses.
+            </p>
+
+        </div>
+
+
+        <div class="services-grid">
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+
+                <h3>Web Development</h3>
+
+                <p>
+                    Responsive portfolio, business and landing
+                    page websites designed for modern devices.
+                </p>
+
+                <button class="service-hire" data-service="Web Development">
+                    Hire Me
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+
+                <h3>Graphic Design</h3>
+
+                <p>
+                    Posters, social media graphics, promotional
+                    materials and digital branding.
+                </p>
+
+                <button class="service-hire" data-service="Graphic Design">
+                    Hire Me
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+
+                <h3>Digital Marketing</h3>
+
+                <p>
+                    Digital promotion, social media support and
+                    online marketing strategies.
+                </p>
+
+                <button class="service-hire" data-service="Digital Marketing">
+                    Hire Me
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+
+                <h3>AI Tools</h3>
+
+                <p>
+                    Practical AI tools and workflows for content,
+                    productivity and digital work.
+                </p>
+
+                <button class="service-hire" data-service="AI Tools">
+                    Hire Me
+                </button>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PORTFOLIO
+========================= -->
+
+<section class="section" id="portfolio">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">MY WORK</p>
+
+            <h2>
+                Selected Projects
+            </h2>
+
+            <p>
+                Examples of the type of digital work I can create.
+            </p>
+
+        </div>
+
+
+        <div class="portfolio-grid">
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-preview web-preview">
+                    <span>&lt;/&gt;</span>
+                </div>
+
+                <div class="portfolio-info">
+
+                    <span>WEB DEVELOPMENT</span>
+
+                    <h3>Business Website</h3>
+
+                    <p>
+                        Modern responsive website concept
+                        for a growing business.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-preview design-preview">
+                    <span>DESIGN</span>
+                </div>
+
+                <div class="portfolio-info">
+
+                    <span>GRAPHIC DESIGN</span>
+
+                    <h3>Social Media Campaign</h3>
+
+                    <p>
+                        Promotional visual design concept
+                        for social platforms.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-preview marketing-preview">
+                    <span>GROW</span>
+                </div>
+
+                <div class="portfolio-info">
+
+                    <span>DIGITAL MARKETING</span>
+
+                    <h3>Online Brand Strategy</h3>
+
+                    <p>
+                        Digital presence and content strategy
+                        concept.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PRICING
+========================= -->
+
+<section class="section section-dark" id="pricing">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">SERVICES & PRICING</p>
+
+            <h2>
+                Choose Your Package
+            </h2>
+
+            <p>
+                Starting packages can be customized according
+                to your project requirements.
+            </p>
+
+        </div>
+
+
+        <div class="pricing-grid">
+
+
+            <article class="pricing-card reveal">
+
+                <span class="pricing-label">
+                    STARTER
+                </span>
+
+                <h3>Basic</h3>
+
+                <div class="price">
+                    KSh 2,500
+                </div>
+
+                <p>
+                    For simple digital projects.
+                </p>
+
+                <ul>
+                    <li>Basic website/design</li>
+                    <li>Responsive layout</li>
+                    <li>Basic customization</li>
+                    <li>Email support</li>
+                </ul>
+
+                <button
+                    class="btn btn-outline hire-package"
+                    data-package="Basic">
+
+                    Get Started
+
+                </button>
+
+            </article>
+
+
+            <article class="pricing-card featured reveal">
+
+                <div class="popular">
+                    POPULAR
+                </div>
+
+                <span class="pricing-label">
+                    PROFESSIONAL
+                </span>
+
+                <h3>Standard</h3>
+
+                <div class="price">
+                    KSh 5,000
+                </div>
+
+                <p>
+                    For professional online projects.
+                </p>
+
+                <ul>
+                    <li>Professional website</li>
+                    <li>Responsive design</li>
+                    <li>Interactive features</li>
+                    <li>Basic SEO setup</li>
+                    <li>Support</li>
+                </ul>
+
+                <button
+                    class="btn btn-primary hire-package"
+                    data-package="Standard">
+
+                    Choose Standard
+
+                </button>
+
+            </article>
+
+
+            <article class="pricing-card reveal">
+
+                <span class="pricing-label">
+                    BUSINESS
+                </span>
+
+                <h3>Premium</h3>
+
+                <div class="price">
+                    KSh 10,000+
+                </div>
+
+                <p>
+                    For larger or customized projects.
+                </p>
+
+                <ul>
+                    <li>Advanced website</li>
+                    <li>Custom features</li>
+                    <li>Advanced design</li>
+                    <li>Optimization</li>
+                    <li>Priority support</li>
+                </ul>
+
+                <button
+                    class="btn btn-outline hire-package"
+                    data-package="Premium">
+
+                    Discuss Project
+
+                </button>
+
+            </article>
+
+        </div>
+
+
+        <div class="payment-note reveal">
+
+            <i class="fa-solid fa-mobile-screen-button"></i>
+
+            <div>
+                <strong>M-Pesa / Payment</strong>
+
+                <p>
+                    Contact me before making payment so we can
+                    confirm the project, price and payment details.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ONLINE CLASSES
+========================= -->
+
+<section class="section" id="classes">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">LEARN WITH ME</p>
+
+            <h2>
+                Free Online Classes
+            </h2>
+
+            <p>
+                Join daily online learning sessions covering
+                digital skills and online opportunities.
+            </p>
+
+        </div>
+
+
+        <div class="classes-grid">
+
+            <article class="class-card reveal">
+
+                <i class="fa-solid fa-laptop-code"></i>
+
+                <h3>Digital Skills</h3>
+
+                <p>
+                    Learn practical digital skills for school,
+                    work and online opportunities.
+                </p>
+
+            </article>
+
+
+            <article class="class-card reveal">
+
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                <h3>Canva</h3>
+
+                <p>
+                    Learn how to create professional digital
+                    graphics and social media designs.
+                </p>
+
+            </article>
+
+
+            <article class="class-card reveal">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <h3>Twiva & Online Work</h3>
+
+                <p>
+                    Explore digital creator programs and
+                    online work opportunities.
+                </p>
+
+            </article>
+
+        </div>
+
+
+        <div class="class-time reveal">
+
+            <i class="fa-regular fa-clock"></i>
+
+            <div>
+
+                <strong>Daily at 9:00 PM</strong>
+
+                <p>
+                    Free sessions through TikTok.
+                </p>
+
+            </div>
+
+            <a
+                href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-primary">
+
+                Join TikTok
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HIRE ME
+========================= -->
+
+<section class="hire-section" id="hire">
+
+    <div class="container">
+
+        <div class="hire-box reveal">
+
+            <div>
+
+                <p class="eyebrow">
+                    HAVE A PROJECT?
+                </p>
+
+                <h2>
+                    Let's Build Something Great.
+                </h2>
+
+                <p>
+                    Tell me what you need and I'll get back to you
+                    to discuss your project.
+                </p>
+
+            </div>
+
+            <a href="#contact" class="btn btn-primary">
+                Start a Project
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     REVIEWS
+========================= -->
+
+<section class="section section-dark" id="reviews">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">CLIENT FEEDBACK</p>
+
+            <h2>
+                Reviews
+            </h2>
+
+            <p>
+                Share your experience or leave feedback.
+            </p>
+
+        </div>
+
+
+        <div class="reviews-layout">
+
+
+            <form id="reviewForm" class="review-form reveal">
+
+                <h3>
+                    Leave a Review
+                </h3>
+
+                <input
+                    type="text"
+                    id="reviewName"
+                    placeholder="Your name"
+                    required
+                >
+
+                <select id="reviewRating" required>
+
+                    <option value="">
+                        Select rating
+                    </option>
+
+                    <option value="5">
+                        ★★★★★ - Excellent
+                    </option>
+
+                    <option value="4">
+                        ★★★★ - Very Good
+                    </option>
+
+                    <option value="3">
+                        ★★★ - Good
+                    </option>
+
+                    <option value="2">
+                        ★★ - Fair
+                    </option>
+
+                    <option value="1">
+                        ★ - Needs Improvement
+                    </option>
+
+                </select>
+
+                <textarea
+                    id="reviewMessage"
+                    rows="5"
+                    placeholder="Write your review..."
+                    required></textarea>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Submit Review
+
+                </button>
+
+                <p id="reviewStatus"></p>
+
+            </form>
+
+
+            <div
+                class="reviews-list"
+                id="reviewsList">
+
+                <div class="empty-reviews">
+                    No reviews yet. Be the first to leave one.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================= -->
+
+<section class="section" id="contact">
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <p class="eyebrow">CONTACT</p>
+
+            <h2>
+                Let's Talk About Your Project
+            </h2>
+
+            <p>
+                Send a message or contact me directly.
+            </p>
+
+        </div>
+
+
+        <div class="contact-grid">
+
+
+            <div class="contact-info reveal">
+
+                <div class="contact-item">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    <div>
+                        <span>Email</span>
+
+                        <a href="mailto:emmanuelouko21@gmail.com">
+                            emmanuelouko21@gmail.com
+                        </a>
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    <div>
+                        <span>Phone / M-Pesa</span>
+
+                        <a href="tel:0142617814">
+                            0142617814
+                        </a>
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <i class="fa-brands fa-whatsapp"></i>
+
+                    <div>
+                        <span>WhatsApp</span>
+
+                        <a
+                            href="https://wa.me/254142617814"
+                            target="_blank"
+                            rel="noopener noreferrer">
+
+                            Chat on WhatsApp
+
+                        </a>
+                    </div>
+
+                </div>
+
+
+                <div class="contact-socials">
+
+                    <a
+                        href="https://www.facebook.com/profile.php?id=61568719246626"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        <i class="fa-brands fa-facebook-f"></i>
+
+                    </a>
+
+                    <a
+                        href="https://www.instagram.com/emmanueljayouko"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        <i class="fa-brands fa-instagram"></i>
+
+                    </a>
+
+                    <a
+                        href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        <i class="fa-brands fa-youtube"></i>
+
+                    </a>
+
+                    <a
+                        href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        <i class="fa-brands fa-tiktok"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <form
+                class="contact-form reveal"
+                id="contactForm">
+
+                <input
+                    type="text"
+                    id="contactName"
+                    placeholder="Your name"
+                    required
+                >
+
+                <input
+                    type="email"
+                    id="contactEmail"
+                    placeholder="Your email"
+                    required
+                >
+
+                <select id="contactService">
+
+                    <option value="General enquiry">
+                        Select a service
+                    </option>
+
+                    <option value="Web Development">
+                        Web Development
+                    </option>
+
+                    <option value="Graphic Design">
+                        Graphic Design
+                    </option>
+
+                    <option value="Digital Marketing">
+                        Digital Marketing
+                    </option>
+
+                    <option value="AI Tools">
+                        AI Tools
+                    </option>
+
+                </select>
+
+                <textarea
+                    id="contactMessage"
+                    rows="7"
+                    placeholder="Tell me about your project..."
+                    required></textarea>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Send Message
+
+                </button>
+
+                <p id="contactStatus"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <div class="container footer-content">
+
+        <div>
+
+            <a href="#home" class="logo">
+                JAY<span>OUKO</span>
+            </a>
+
+            <p>
+                Freelancing • Web Development • Digital Services
+            </p>
+
+        </div>
 
         <p>
-            © <span id="year">2026</span> Jay Ouko.
+            © <span id="year"></span> Jay Ouko.
             All rights reserved.
         </p>
 
-        <p>
-            Freelancing • Web Development • Digital Services
-        </p>
+    </div>
 
-    </footer>
+</footer>
+
+
+<!-- =========================
+     WHATSAPP
+========================= -->
+
+<a
+    class="floating-whatsapp"
+    href="https://wa.me/254142617814"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp">
+
+    <i class="fa-brands fa-whatsapp"></i>
+
+</a>
+
+
+<!-- =========================
+     CHATBOT
+========================= -->
+
+<div class="chatbot">
+
+    <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Open chatbot">
+
+        <i class="fa-solid fa-robot"></i>
+
+    </button>
+
+
+    <div
+        class="chatbot-window"
+        id="chatbotWindow">
+
+        <div class="chatbot-header">
+
+            <div>
+
+                <strong>Jay AI Assistant</strong>
+
+                <small>
+                    Online
+                </small>
+
+            </div>
+
+            <button id="chatbotClose">
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="chatbot-messages"
+            id="chatbotMessages">
+
+            <div class="bot-message">
+
+                <div class="message-icon">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+
+                <p>
+                    Hi! I'm Jay's website assistant.
+                    Ask me about services, pricing,
+                    websites or how to contact Jay.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+            <button data-question="What services do you offer?">
+                Services
+            </button>
+
+            <button data-question="What are your prices?">
+                Pricing
+            </button>
+
+            <button data-question="How can I hire you?">
+                Hire
+            </button>
+
+        </div>
+
+
+        <form
+            class="chatbot-form"
+            id="chatbotForm">
+
+            <input
+                type="text"
+                id="chatbotInput"
+                placeholder="Type a message..."
+                autocomplete="off"
+                required>
+
+            <button type="submit">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     BACK TO TOP
+========================= -->
+
+<button
+    class="back-to-top"
+    id="backToTop"
+    aria-label="Back to top">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+
+<!-- JAVASCRIPT -->
 
 <script src="app.js"></script>
 
 </body>
 </html>
-
