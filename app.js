@@ -271,3 +271,60 @@ cards.forEach(function (card) {
 console.log(
     "Jay Ouko Digital website loaded successfully."
 );
+/* =========================
+   8. MOBILE MENU
+========================= */
+
+const menuToggle =
+    document.getElementById("menuToggle");
+
+const navigation =
+    document.getElementById("navigation");
+
+
+if (menuToggle && navigation) {
+
+    menuToggle.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                navigation.classList.toggle("open");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+            menuToggle.textContent =
+                isOpen ? "✕" : "☰";
+
+        }
+    );
+
+
+    const mobileLinks =
+        navigation.querySelectorAll("a");
+
+
+    mobileLinks.forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                navigation.classList.remove("open");
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                menuToggle.textContent = "☰";
+
+            }
+        );
+
+    });
+
+}
