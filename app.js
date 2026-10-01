@@ -33,39 +33,42 @@
   /* ============================================================
      SUPABASE CONFIGURATION
      ============================================================ */
+let supabaseClient = null;
 
-  const SUPABASE_URL =
-    "https://slusgnhkjcnuitqcmwag.supabase.co";
+function initializeSupabase() {
+  try {
+    if (
+      window.supabase &&
+      typeof window.supabase.createClient === "function"
+    ) {
+      const SUPABASE_URL =
+        "https://slusgnhkjcnuitqcmwag.supabase.co";
 
-  const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
+      const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
-  let supabaseClient = null;
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
 
-  function initializeSupabase() {
-    try {
-      if (
-        window.supabase &&
-        typeof window.supabase.createClient === "function"
-      ) {
-        supabaseClient = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_PUBLISHABLE_KEY
-        );
-
-        console.log("Supabase connected.");
-      } else {
-        console.warn(
-          "Supabase library was not loaded. The website will still work, but database forms will be unavailable."
-        );
-      }
-    } catch (error) {
-      console.error("Supabase initialization error:", error);
-      supabaseClient = null;
+      console.log("Supabase connected successfully.");
+    } else {
+      console.warn(
+        "Supabase library was not loaded."
+      );
     }
-  }
+  } catch (error) {
+    console.error(
+      "Supabase initialization error:",
+      error
+    );
 
-  initializeSupabase();
+    supabaseClient = null;
+  }
+}
+
+initializeSupabase();
 
   /* ============================================================
      HELPER FUNCTIONS
