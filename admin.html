@@ -2,558 +2,1689 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jay Ouko | Admin Dashboard</title>
-
-    <meta name="description"
-          content="Jay Ouko website administration dashboard">
-
-    <style>
-        :root {
-            --bg: #07111f;
-            --card: #0d1b2e;
-            --card2: #10243b;
-            --text: #f5f7fb;
-            --muted: #9fb0c5;
-            --border: rgba(255,255,255,.10);
-            --primary: #38bdf8;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow: 0 20px 50px rgba(0,0,0,.25);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        button,
-        input,
-        textarea,
-        select {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* LOGIN */
-
-        .login-screen {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 20px;
-            background:
-                radial-gradient(circle at top left, rgba(56,189,248,.15), transparent 35%),
-                radial-gradient(circle at bottom right, rgba(99,102,241,.15), transparent 35%),
-                var(--bg);
-        }
-
-        .login-card {
-            width: min(430px, 100%);
-            background: rgba(13,27,46,.95);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: var(--shadow);
-        }
-
-        .brand {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .brand-logo {
-            width: 68px;
-            height: 68px;
-            margin: 0 auto 15px;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, #38bdf8, #6366f1);
-            color: white;
-            font-size: 30px;
-            font-weight: 900;
-        }
-
-        .brand h1 {
-            font-size: 25px;
-            margin-bottom: 7px;
-        }
-
-        .brand p {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .field {
-            margin-bottom: 17px;
-        }
-
-        .field label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .field input,
-        .field select,
-        .field textarea {
-            width: 100%;
-            padding: 13px 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: #091727;
-            color: var(--text);
-            outline: none;
-        }
-
-        .field textarea {
-            min-height: 90px;
-            resize: vertical;
-        }
-
-        .field input:focus,
-        .field select:focus,
-        .field textarea:focus {
-            border-color: var(--primary);
-        }
-
-        .btn {
-            border: 0;
-            border-radius: 11px;
-            padding: 11px 15px;
-            font-weight: 800;
-            transition: .2s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #00111b;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: #03130a;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: #1a1000;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #20344d;
-            color: white;
-        }
-
-        .full {
-            width: 100%;
-        }
-
-        .message {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.error {
-            background: rgba(239,68,68,.12);
-            color: #fca5a5;
-        }
-
-        .message.success {
-            background: rgba(34,197,94,.12);
-            color: #86efac;
-        }
-
-        /* DASHBOARD */
-
-        .dashboard {
-            min-height: 100vh;
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(7,17,31,.94);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 22px;
-        }
-
-        .topbar-inner {
-            max-width: 1500px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        .topbar-title h1 {
-            font-size: 21px;
-        }
-
-        .topbar-title p {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 4px;
-        }
-
-        .topbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .live-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 8px 11px;
-            border-radius: 999px;
-            background: rgba(34,197,94,.10);
-            color: #86efac;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 12px var(--success);
-        }
-
-        .dashboard-content {
-            max-width: 1500px;
-            margin: auto;
-            padding: 25px 22px 60px;
-        }
-
-        /* STATS */
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-card span {
-            display: block;
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .stat-card strong {
-            font-size: 30px;
-        }
-
-        /* SECTIONS */
-
-        .section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            margin-bottom: 22px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .section-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-header h2 {
-            font-size: 18px;
-        }
-
-        .section-header span {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 850px;
-        }
-
-        th,
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            text-align: left;
-            vertical-align: top;
-            font-size: 13px;
-        }
-
-        th {
-            color: var(--muted);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        td {
-            color: #e6edf7;
-        }
-
-        tr:last-child td {
-            border-bottom: 0;
-        }
-
-        .empty {
-            text-align: center;
-            color: var(--muted);
-            padding: 28px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .status.pending,
-        .status.unread {
-            background: rgba(245,158,11,.12);
-            color: #fbbf24;
-        }
-
-        .status.approved,
-        .status.completed {
-            background: rgba(34,197,94,.12);
-            color: #86efac;
-        }
-
-        .status.rejected {
-            background: rgba(239,68,68,.12);
-            color: #fca5a5;
-        }
-
-        .status.contacted {
-            background: rgba(56,189,248,.12);
-            color: #7dd3fc;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .actions .btn {
-            padding: 7px 9px;
-            font-size: 11px;
-        }
-
-        .notification {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            width: min(380px, calc(100% - 40px));
-            padding: 16px;
-            border-radius: 15px;
-            background: #10243b;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            z-index: 100;
-            transform: translateY(150%);
-            opacity: 0;
-            transition: .3s ease;
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .notification strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .notification p {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        @media (max-width: 1100px) {
-            .stats {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 700px) {
-            .topbar-inner {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .topbar-actions {
-                width: 100%;
-            }
-
-            .topbar-actions .btn,
-            .live-status {
-                flex: 1;
-                text-align: center;
-                justify-content: center;
-            }
-
-            .dashboard-content {
-                padding: 18px 12px 40px;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stat-card strong {
-                font-size: 24px;
-            }
-
-            .section-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .login-card {
-                padding: 24px 18px;
-            }
-        }
-
-        @media (max-width: 420px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Jay Ouko — Freelance Web Developer, Graphic Designer, Digital Marketer and AI Tools Specialist."
+    >
+
+    <meta
+        name="keywords"
+        content="Jay Ouko, freelancer Kenya, web developer Kenya, graphic designer, digital marketing, AI tools, online jobs"
+    >
+
+    <meta name="author" content="Jay Ouko">
+
+    <meta
+        name="theme-color"
+        content="#07111f"
+    >
+
+    <title>Jay Ouko | Freelance Digital Services</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
 <!-- =====================================================
-     LOGIN
+     HEADER
 ===================================================== -->
 
-<div id="loginScreen" class="login-screen">
+<header class="site-header" id="siteHeader">
 
-    <div class="login-card">
+    <div class="container nav-container">
 
-        <div class="brand">
-            <div class="brand-logo">J</div>
+        <a href="#home" class="logo">
+            <span class="logo-mark">J</span>
+            <span class="logo-text">
+                Jay<span>Ouko</span>
+            </span>
+        </a>
 
-            <h1>Jay Ouko Admin</h1>
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-            <p>
-                Secure website administration dashboard
+        <nav class="main-nav" id="navMenu">
+
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#portfolio" class="nav-link">Portfolio</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
+            <a href="#classes" class="nav-link">Classes</a>
+            <a href="#reviews" class="nav-link">Reviews</a>
+            <a href="#contact" class="nav-link">Contact</a>
+
+            <a href="#hire" class="nav-cta">
+                Hire Me
+            </a>
+
+        </nav>
+
+        <button
+            class="theme-toggle"
+            id="themeToggle"
+            type="button"
+            aria-label="Toggle dark and light theme"
+        >
+            <span id="themeIcon">☀️</span>
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<main>
+
+<section
+    class="hero section"
+    id="home"
+>
+
+    <div class="container hero-grid">
+
+        <div class="hero-content reveal">
+
+            <span class="eyebrow">
+                FREELANCER • DIGITAL CREATOR • DEVELOPER
+            </span>
+
+            <h1>
+                Building Digital
+                <span>Solutions That Work.</span>
+            </h1>
+
+            <p class="hero-text">
+                I'm Jay Ouko, a freelance digital professional helping
+                individuals, businesses and creators build their online
+                presence through websites, graphic design, digital
+                marketing and modern AI-powered tools.
             </p>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#hire"
+                    class="btn btn-primary"
+                >
+                    Hire Me
+                </a>
+
+                <a
+                    href="#portfolio"
+                    class="btn btn-secondary"
+                >
+                    View My Work
+                </a>
+
+            </div>
+
+            <div class="hero-socials">
+
+                <a
+                    href="https://www.facebook.com/profile.php?id=61568719246626"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                >
+                    Facebook
+                </a>
+
+                <a
+                    href="https://www.instagram.com/emmanueljayouko?stkn=MTBwdnhmOXdlb2I4ag=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                >
+                    Instagram
+                </a>
+
+                <a
+                    href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube"
+                >
+                    YouTube
+                </a>
+
+                <a
+                    href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="TikTok"
+                >
+                    TikTok
+                </a>
+
+            </div>
+
         </div>
 
-        <form id="loginForm">
 
-            <div class="field">
-                <label for="loginEmail">
-                    Email
-                </label>
+        <div class="hero-visual reveal">
 
-                <input
-                    type="email"
-                    id="loginEmail"
-                    placeholder="Enter admin email"
-                    autocomplete="email"
-                    required
-                >
+            <div class="hero-card">
+
+                <div class="hero-card-top">
+                    <span class="status-dot"></span>
+                    Available for projects
+                </div>
+
+                <div class="hero-avatar">
+                    JO
+                </div>
+
+                <h2>Jay Ouko</h2>
+
+                <p>
+                    Freelance Digital Specialist
+                </p>
+
+                <div class="hero-skills">
+
+                    <span>Web Development</span>
+                    <span>Graphic Design</span>
+                    <span>Digital Marketing</span>
+                    <span>AI Tools</span>
+
+                </div>
+
             </div>
 
-            <div class="field">
-                <label for="loginPassword">
-                    Password
-                </label>
+        </div>
 
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Enter password"
-                    autocomplete="current-password"
-                    required
-                >
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<section
+    class="section"
+    id="about"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                ABOUT ME
+            </span>
+
+            <h2>
+                Digital skills with a
+                <span>practical approach.</span>
+            </h2>
+
+            <p>
+                I focus on creating useful, modern and accessible
+                digital solutions for people and businesses.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-card reveal">
+
+                <div class="card-icon">
+                    💻
+                </div>
+
+                <h3>
+                    Web Development
+                </h3>
+
+                <p>
+                    Responsive websites designed to work across
+                    phones, tablets and computers.
+                </p>
+
             </div>
 
-            <button
-                type="submit"
-                class="btn btn-primary full"
-                id="loginButton"
+
+            <div class="about-card reveal">
+
+                <div class="card-icon">
+                    🎨
+                </div>
+
+                <h3>
+                    Creative Design
+                </h3>
+
+                <p>
+                    Clean graphics, social media designs,
+                    branding materials and digital content.
+                </p>
+
+            </div>
+
+
+            <div class="about-card reveal">
+
+                <div class="card-icon">
+                    📈
+                </div>
+
+                <h3>
+                    Digital Marketing
+                </h3>
+
+                <p>
+                    Digital strategies designed to help brands
+                    improve their online visibility.
+                </p>
+
+            </div>
+
+
+            <div class="about-card reveal">
+
+                <div class="card-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    AI Tools
+                </h3>
+
+                <p>
+                    Practical use of modern AI tools to improve
+                    productivity and digital workflows.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SERVICES
+===================================================== -->
+
+<section
+    class="section section-alt"
+    id="services"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                SERVICES
+            </span>
+
+            <h2>
+                What I can
+                <span>help you with.</span>
+            </h2>
+
+        </div>
+
+
+        <div class="services-grid">
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    💻
+                </div>
+
+                <h3>
+                    Web Development
+                </h3>
+
+                <p>
+                    Modern responsive websites for businesses,
+                    personal brands, portfolios and projects.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn btn-small service-hire"
+                    data-service="Web Development"
+                >
+                    Request Service
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    🎨
+                </div>
+
+                <h3>
+                    Graphic Design
+                </h3>
+
+                <p>
+                    Posters, social media graphics, business
+                    materials, branding and promotional designs.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn btn-small service-hire"
+                    data-service="Graphic Design"
+                >
+                    Request Service
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    📱
+                </div>
+
+                <h3>
+                    Digital Marketing
+                </h3>
+
+                <p>
+                    Social media content, digital campaigns and
+                    online visibility strategies.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn btn-small service-hire"
+                    data-service="Digital Marketing"
+                >
+                    Request Service
+                </button>
+
+            </article>
+
+
+            <article class="service-card reveal">
+
+                <div class="service-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    AI Tools
+                </h3>
+
+                <p>
+                    AI-assisted workflows, content creation,
+                    productivity and digital automation ideas.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn btn-small service-hire"
+                    data-service="AI Tools"
+                >
+                    Request Service
+                </button>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PORTFOLIO
+===================================================== -->
+
+<section
+    class="section"
+    id="portfolio"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                PORTFOLIO
+            </span>
+
+            <h2>
+                Selected
+                <span>digital work.</span>
+            </h2>
+
+            <p>
+                A selection of the types of digital projects I work on.
+            </p>
+
+        </div>
+
+
+        <div class="portfolio-grid">
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-icon">
+                    🌐
+                </div>
+
+                <div class="portfolio-content">
+
+                    <span class="portfolio-category">
+                        WEB DEVELOPMENT
+                    </span>
+
+                    <h3>
+                        Business Website
+                    </h3>
+
+                    <p>
+                        Responsive business website with modern
+                        navigation and contact functionality.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-icon">
+                    🎨
+                </div>
+
+                <div class="portfolio-content">
+
+                    <span class="portfolio-category">
+                        GRAPHIC DESIGN
+                    </span>
+
+                    <h3>
+                        Social Media Graphics
+                    </h3>
+
+                    <p>
+                        Digital graphics created for online brands
+                        and social media campaigns.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-icon">
+                    📊
+                </div>
+
+                <div class="portfolio-content">
+
+                    <span class="portfolio-category">
+                        DIGITAL MARKETING
+                    </span>
+
+                    <h3>
+                        Social Media Campaign
+                    </h3>
+
+                    <p>
+                        Content and promotional concepts designed
+                        to improve digital visibility.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="portfolio-card reveal">
+
+                <div class="portfolio-icon">
+                    🤖
+                </div>
+
+                <div class="portfolio-content">
+
+                    <span class="portfolio-category">
+                        AI
+                    </span>
+
+                    <h3>
+                        AI Productivity Workflow
+                    </h3>
+
+                    <p>
+                        Practical AI tools and workflows for faster
+                        digital content production.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PRICING
+===================================================== -->
+
+<section
+    class="section section-alt"
+    id="pricing"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                PRICING
+            </span>
+
+            <h2>
+                Flexible
+                <span>service packages.</span>
+            </h2>
+
+            <p>
+                Final pricing can be adjusted according to the
+                requirements and size of your project.
+            </p>
+
+        </div>
+
+
+        <div class="pricing-grid">
+
+            <article class="pricing-card reveal">
+
+                <span class="pricing-label">
+                    STARTER
+                </span>
+
+                <h3>
+                    Basic
+                </h3>
+
+                <div class="price">
+                    KSh 1,500+
+                </div>
+
+                <ul>
+                    <li>Simple digital task</li>
+                    <li>Basic graphic design</li>
+                    <li>Small website updates</li>
+                    <li>Basic consultation</li>
+                </ul>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary hire-package"
+                    data-package="Basic Package"
+                >
+                    Choose Package
+                </button>
+
+            </article>
+
+
+            <article class="pricing-card featured reveal">
+
+                <span class="pricing-label">
+                    POPULAR
+                </span>
+
+                <h3>
+                    Professional
+                </h3>
+
+                <div class="price">
+                    KSh 5,000+
+                </div>
+
+                <ul>
+                    <li>Professional website</li>
+                    <li>Responsive design</li>
+                    <li>Basic SEO setup</li>
+                    <li>Digital consultation</li>
+                </ul>
+
+                <button
+                    type="button"
+                    class="btn btn-primary hire-package"
+                    data-package="Professional Package"
+                >
+                    Choose Package
+                </button>
+
+            </article>
+
+
+            <article class="pricing-card reveal">
+
+                <span class="pricing-label">
+                    ADVANCED
+                </span>
+
+                <h3>
+                    Premium
+                </h3>
+
+                <div class="price">
+                    KSh 10,000+
+                </div>
+
+                <ul>
+                    <li>Advanced website</li>
+                    <li>Custom functionality</li>
+                    <li>Digital strategy</li>
+                    <li>Ongoing support</li>
+                </ul>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary hire-package"
+                    data-package="Premium Package"
+                >
+                    Choose Package
+                </button>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     HIRE ME
+===================================================== -->
+
+<section
+    class="section"
+    id="hire"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                WORK WITH ME
+            </span>
+
+            <h2>
+                Tell me about your
+                <span>project.</span>
+            </h2>
+
+            <p>
+                Submit your project details and I will review your request.
+            </p>
+
+        </div>
+
+
+        <div class="form-container reveal">
+
+            <form
+                id="hireForm"
+                class="main-form"
             >
-                Login to Dashboard
-            </button>
 
-        </form>
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="hireName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="hireName"
+                            name="name"
+                            placeholder="Your name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="hireEmail">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="hireEmail"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="hirePhone">
+                            Phone / WhatsApp
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="hirePhone"
+                            name="phone"
+                            placeholder="Your phone number"
+                            autocomplete="tel"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="hireService">
+                            Service
+                        </label>
+
+                        <select
+                            id="hireService"
+                            name="service"
+                            required
+                        >
+
+                            <option value="">
+                                Select a service
+                            </option>
+
+                            <option value="Web Development">
+                                Web Development
+                            </option>
+
+                            <option value="Graphic Design">
+                                Graphic Design
+                            </option>
+
+                            <option value="Digital Marketing">
+                                Digital Marketing
+                            </option>
+
+                            <option value="AI Tools">
+                                AI Tools
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="hireBudget">
+                        Estimated Budget
+                    </label>
+
+                    <select
+                        id="hireBudget"
+                        name="budget"
+                    >
+
+                        <option value="">
+                            Select budget
+                        </option>
+
+                        <option value="Below KSh 2,000">
+                            Below KSh 2,000
+                        </option>
+
+                        <option value="KSh 2,000 - 5,000">
+                            KSh 2,000 - 5,000
+                        </option>
+
+                        <option value="KSh 5,000 - 10,000">
+                            KSh 5,000 - 10,000
+                        </option>
+
+                        <option value="KSh 10,000 - 20,000">
+                            KSh 10,000 - 20,000
+                        </option>
+
+                        <option value="Above KSh 20,000">
+                            Above KSh 20,000
+                        </option>
+
+                        <option value="Not sure yet">
+                            Not sure yet
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="hireDetails">
+                        Project Details
+                    </label>
+
+                    <textarea
+                        id="hireDetails"
+                        name="project_details"
+                        rows="7"
+                        placeholder="Tell me what you need, your goals, deadline and any important details..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-submit"
+                >
+                    Submit Project Request
+                </button>
+
+
+                <div
+                    id="hireStatus"
+                    class="form-status"
+                    aria-live="polite"
+                ></div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FREE CLASSES
+===================================================== -->
+
+<section
+    class="section section-alt"
+    id="classes"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                FREE ONLINE CLASSES
+            </span>
+
+            <h2>
+                Learn digital skills
+                <span>for free.</span>
+            </h2>
+
+            <p>
+                Free online classes are scheduled daily at
+                <strong>9:00 PM</strong>.
+            </p>
+
+        </div>
+
+
+        <div class="classes-grid">
+
+            <article class="class-card reveal">
+
+                <div class="class-icon">
+                    🎨
+                </div>
+
+                <h3>
+                    Canva
+                </h3>
+
+                <p>
+                    Learn practical Canva skills for graphics,
+                    social media content and digital branding.
+                </p>
+
+            </article>
+
+
+            <article class="class-card reveal">
+
+                <div class="class-icon">
+                    📱
+                </div>
+
+                <h3>
+                    Twiva
+                </h3>
+
+                <p>
+                    Learn about digital creator opportunities,
+                    online promotion and social media work.
+                </p>
+
+            </article>
+
+
+            <article class="class-card reveal">
+
+                <div class="class-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    AI Tools
+                </h3>
+
+                <p>
+                    Explore practical AI tools for learning,
+                    content creation and productivity.
+                </p>
+
+            </article>
+
+        </div>
+
+
+        <div class="classes-cta reveal">
+
+            <p>
+                <strong>Every day at 9:00 PM</strong>
+                • Free to attend
+            </p>
+
+            <a
+                href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-primary"
+            >
+                Join on TikTok
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     REVIEWS
+===================================================== -->
+
+<section
+    class="section"
+    id="reviews"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                CLIENT REVIEWS
+            </span>
+
+            <h2>
+                What people
+                <span>say.</span>
+            </h2>
+
+        </div>
+
 
         <div
-            id="loginMessage"
-            class="message"
-        ></div>
+            id="reviewsList"
+            class="reviews-grid"
+        >
+
+            <div class="review-loading">
+                Loading reviews...
+            </div>
+
+        </div>
+
+
+        <div class="review-form-container reveal">
+
+            <h3>
+                Leave a Review
+            </h3>
+
+            <p>
+                Have you worked with me? Share your experience.
+            </p>
+
+
+            <form
+                id="reviewForm"
+                class="main-form"
+            >
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="reviewName">
+                            Your Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="reviewName"
+                            name="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="reviewRating">
+                            Rating
+                        </label>
+
+                        <select
+                            id="reviewRating"
+                            name="rating"
+                            required
+                        >
+
+                            <option value="">
+                                Choose rating
+                            </option>
+
+                            <option value="5">
+                                ⭐⭐⭐⭐⭐
+                            </option>
+
+                            <option value="4">
+                                ⭐⭐⭐⭐
+                            </option>
+
+                            <option value="3">
+                                ⭐⭐⭐
+                            </option>
+
+                            <option value="2">
+                                ⭐⭐
+                            </option>
+
+                            <option value="1">
+                                ⭐
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="reviewMessage">
+                        Your Review
+                    </label>
+
+                    <textarea
+                        id="reviewMessage"
+                        name="message"
+                        rows="5"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Submit Review
+                </button>
+
+
+                <div
+                    id="reviewStatus"
+                    class="form-status"
+                    aria-live="polite"
+                ></div>
+
+            </form>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="refreshReviews"
+            class="btn btn-secondary refresh-reviews"
+        >
+            Refresh Reviews
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT
+===================================================== -->
+
+<section
+    class="section section-alt"
+    id="contact"
+>
+
+    <div class="container">
+
+        <div class="section-heading reveal">
+
+            <span class="eyebrow">
+                CONTACT
+            </span>
+
+            <h2>
+                Let's
+                <span>connect.</span>
+            </h2>
+
+            <p>
+                Have a question or project idea? Send a message.
+            </p>
+
+        </div>
+
+
+        <div class="contact-grid">
+
+
+            <div class="contact-info reveal">
+
+                <div class="contact-item">
+
+                    <span class="contact-icon">
+                        📧
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Email
+                        </h3>
+
+                        <a
+                            href="mailto:emmanuelouko21@gmail.com"
+                        >
+                            emmanuelouko21@gmail.com
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <span class="contact-icon">
+                        📱
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Phone / M-Pesa
+                        </h3>
+
+                        <a href="tel:0142617814">
+                            0142617814
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <span class="contact-icon">
+                        💬
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            WhatsApp
+                        </h3>
+
+                        <a
+                            href="https://wa.me/254142617814"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Chat on WhatsApp
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <span class="contact-icon">
+                        🎵
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            TikTok
+                        </h3>
+
+                        <a
+                            href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Follow on TikTok
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-container reveal">
+
+                <form
+                    id="contactForm"
+                    class="main-form"
+                >
+
+                    <div class="form-group">
+
+                        <label for="contactName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="contactName"
+                            name="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contactEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="contactEmail"
+                            name="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contactService">
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="contactService"
+                            name="subject"
+                            placeholder="What would you like to discuss?"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contactMessage">
+                            Message
+                        </label>
+
+                        <textarea
+                            id="contactMessage"
+                            name="message"
+                            rows="6"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Send Message
+                    </button>
+
+
+                    <div
+                        id="contactStatus"
+                        class="form-status"
+                        aria-live="polite"
+                    ></div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="container footer-grid">
+
+        <div>
+
+            <a
+                href="#home"
+                class="logo"
+            >
+                <span class="logo-mark">J</span>
+                <span class="logo-text">
+                    Jay<span>Ouko</span>
+                </span>
+            </a>
+
+            <p>
+                Freelance digital services for individuals,
+                creators and businesses.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#hire">Hire Me</a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Social
+            </h3>
+
+            <a
+                href="https://www.facebook.com/profile.php?id=61568719246626"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Facebook
+            </a>
+
+            <a
+                href="https://www.instagram.com/emmanueljayouko?stkn=MTBwdnhmOXdlb2I4ag=="
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Instagram
+            </a>
+
+            <a
+                href="https://www.youtube.com/@OukoEmmanuel-o2f1x"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                YouTube
+            </a>
+
+            <a
+                href="https://vm.tiktok.com/ZS9AnHTYsYp1q-UHld8/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                TikTok
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <div class="container">
+
+            <p>
+                © <span id="footerYear"></span>
+                Jay Ouko. All rights reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     FLOATING CONTACT BUTTONS
+===================================================== -->
+
+<div class="floating-actions">
+
+    <a
+        href="https://wa.me/254142617814"
+        class="floating-btn whatsapp-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        title="WhatsApp"
+    >
+        💬
+    </a>
+
+
+    <a
+        href="tel:0142617814"
+        class="floating-btn call-btn"
+        aria-label="Call Jay Ouko"
+        title="Call"
+    >
+        📞
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     BACK TO TOP
+===================================================== -->
+
+<button
+    id="backToTop"
+    class="back-to-top"
+    type="button"
+    aria-label="Back to top"
+>
+    ↑
+</button>
+
+
+<!-- =====================================================
+     CHATBOT
+===================================================== -->
+
+<button
+    id="chatbotToggle"
+    class="chatbot-toggle"
+    type="button"
+    aria-label="Open chat assistant"
+>
+    🤖
+</button>
+
+
+<div
+    id="chatbot"
+    class="chatbot"
+    aria-hidden="true"
+>
+
+    <div class="chatbot-header">
+
+        <div>
+            <strong>
+                Jay Ouko Assistant
+            </strong>
+
+            <small>
+                Online
+            </small>
+        </div>
+
+        <button
+            id="chatbotClose"
+            type="button"
+            aria-label="Close chatbot"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div
+        id="chatMessages"
+        class="chat-messages"
+    >
+
+        <div class="bot-message">
+            Hi! 👋 I'm Jay Ouko's website assistant.
+            Ask me about services, pricing, classes or hiring.
+        </div>
+
+    </div>
+
+
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Type your question..."
+            autocomplete="off"
+        >
+
+        <button
+            type="button"
+            id="chatSend"
+        >
+            Send
+        </button>
 
     </div>
 
@@ -561,1518 +1692,32 @@
 
 
 <!-- =====================================================
-     DASHBOARD
+     SUPABASE
 ===================================================== -->
-
-<div id="dashboard" class="dashboard hidden">
-
-    <header class="topbar">
-
-        <div class="topbar-inner">
-
-            <div class="topbar-title">
-
-                <h1>Jay Ouko Dashboard</h1>
-
-                <p>
-                    Manage website requests, registrations,
-                    reviews and messages.
-                </p>
-
-            </div>
-
-            <div class="topbar-actions">
-
-                <div
-                    class="live-status"
-                    id="realtimeStatus"
-                >
-                    <span class="live-dot"></span>
-                    LIVE
-                </div>
-
-                <button
-                    class="btn btn-secondary"
-                    id="refreshButton"
-                >
-                    Refresh
-                </button>
-
-                <button
-                    class="btn btn-danger"
-                    id="logoutButton"
-                >
-                    Logout
-                </button>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <main class="dashboard-content">
-
-        <!-- STATS -->
-
-        <section class="stats">
-
-            <div class="stat-card">
-                <span>Hire Requests</span>
-                <strong id="hireCount">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Registrations</span>
-                <strong id="registrationCount">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Reviews</span>
-                <strong id="reviewCount">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Messages</span>
-                <strong id="messageCount">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Payments</span>
-                <strong id="paymentCount">0</strong>
-            </div>
-
-        </section>
-
-
-        <!-- HIRE REQUESTS -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>💼 Hire Requests</h2>
-                    <span>Client project requests</span>
-                </div>
-
-                <span id="hireUpdated">
-                    Live
-                </span>
-
-            </div>
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Service</th>
-                            <th>Budget</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="hireTable">
-                        <tr>
-                            <td colspan="8" class="empty">
-                                Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- REGISTRATIONS -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>🎓 Class Registrations</h2>
-                    <span>Online class registrations</span>
-                </div>
-
-                <span>
-                    Live
-                </span>
-
-            </div>
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Program</th>
-                            <th>Message</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="registrationTable">
-                        <tr>
-                            <td colspan="8" class="empty">
-                                Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- REVIEWS -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>⭐ Reviews</h2>
-                    <span>Customer reviews awaiting approval</span>
-                </div>
-
-                <span>
-                    Live
-                </span>
-
-            </div>
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Rating</th>
-                            <th>Review</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="reviewTable">
-                        <tr>
-                            <td colspan="6" class="empty">
-                                Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- CONTACT MESSAGES -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>📨 Contact Messages</h2>
-                    <span>Messages sent through the website</span>
-                </div>
-
-                <span>
-                    Live
-                </span>
-
-            </div>
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Subject</th>
-                            <th>Message</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="messageTable">
-                        <tr>
-                            <td colspan="7" class="empty">
-                                Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- PAYMENTS -->
-
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>💰 Payment Requests</h2>
-                    <span>Payment information submitted by clients</span>
-                </div>
-
-                <span>
-                    Live
-                </span>
-
-            </div>
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Service</th>
-                            <th>Amount</th>
-                            <th>Method</th>
-                            <th>Reference</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="paymentTable">
-                        <tr>
-                            <td colspan="10" class="empty">
-                                Loading...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </main>
-
-</div>
-
-
-<!-- NOTIFICATION -->
-
-<div
-    id="notification"
-    class="notification"
->
-    <strong id="notificationTitle">
-        New activity
-    </strong>
-
-    <p id="notificationText">
-        Something changed on your website.
-    </p>
-</div>
-
-
-<!-- SUPABASE -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
 
-/* =========================================================
-   SUPABASE CONFIGURATION
-========================================================= */
-
-const SUPABASE_URL =
-    "https://slusgnhkjcnuitqcmwag.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
-
-
-/* =========================================================
-   DOM HELPERS
-========================================================= */
-
-const $ = (selector) =>
-    document.querySelector(selector);
-
-const $$ = (selector) =>
-    document.querySelectorAll(selector);
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const loginScreen =
-    $("#loginScreen");
-
-const dashboard =
-    $("#dashboard");
-
-const loginForm =
-    $("#loginForm");
-
-const loginMessage =
-    $("#loginMessage");
-
-const loginButton =
-    $("#loginButton");
-
-const logoutButton =
-    $("#logoutButton");
-
-const refreshButton =
-    $("#refreshButton");
-
-const realtimeStatus =
-    $("#realtimeStatus");
-
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
-let notificationTimer = null;
-
-function showNotification(title, message) {
-
-    const box =
-        $("#notification");
-
-    $("#notificationTitle").textContent =
-        title;
-
-    $("#notificationText").textContent =
-        message;
-
-    box.classList.add("show");
-
-    clearTimeout(notificationTimer);
-
-    notificationTimer =
-        setTimeout(() => {
-            box.classList.remove("show");
-        }, 5000);
-}
-
-
-/* =========================================================
-   LOGIN MESSAGE
-========================================================= */
-
-function showLoginMessage(message, type = "error") {
-
-    loginMessage.textContent =
-        message;
-
-    loginMessage.className =
-        `message show ${type}`;
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value) {
-
-    if (value === null ||
-        value === undefined) {
-
-        return "";
-    }
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-/* =========================================================
-   FORMAT DATE
-========================================================= */
-
-function formatDate(value) {
-
-    if (!value) {
-        return "-";
-    }
-
-    return new Date(value)
-        .toLocaleString("en-KE", {
-            dateStyle: "medium",
-            timeStyle: "short"
-        });
-}
-
-
-/* =========================================================
-   STATUS BADGE
-========================================================= */
-
-function statusBadge(status) {
-
-    const safe =
-        status || "pending";
-
-    return `
-        <span class="status ${escapeHtml(safe)}">
-            ${escapeHtml(safe)}
-        </span>
-    `;
-}
-
-
-/* =========================================================
-   ADMIN CHECK
-========================================================= */
-
-async function checkAdmin(userId) {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("admin_profiles")
-        .select("user_id, display_name, role")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-    if (error) {
-
-        console.error(
-            "Admin check error:",
-            error
-        );
-
-        return false;
-    }
-
-    return Boolean(
-        data &&
-        data.role === "admin"
-    );
-}
-
-
-/* =========================================================
-   SHOW DASHBOARD
-========================================================= */
-
-async function showDashboard() {
-
-    loginScreen.classList.add("hidden");
-
-    dashboard.classList.remove("hidden");
-
-    await loadAllData();
-
-    setupRealtime();
-
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-loginForm.addEventListener(
-    "submit",
-    async (event) => {
-
-        event.preventDefault();
-
-        const email =
-            $("#loginEmail").value.trim();
-
-        const password =
-            $("#loginPassword").value;
-
-        loginButton.disabled = true;
-
-        loginButton.textContent =
-            "Signing in...";
-
-        loginMessage.className =
-            "message";
-
-        try {
-
-            const {
-                data,
-                error
-            } = await supabaseClient.auth
-                .signInWithPassword({
-                    email,
-                    password
-                });
-
-            if (error) {
-                throw error;
-            }
-
-            const user =
-                data.user;
-
-            if (!user) {
-                throw new Error(
-                    "Login succeeded but no user was returned."
-                );
-            }
-
-            const isAdmin =
-                await checkAdmin(user.id);
-
-            if (!isAdmin) {
-
-                await supabaseClient.auth.signOut();
-
-                throw new Error(
-                    "This account is not authorized as an administrator."
-                );
-            }
-
-            await showDashboard();
-
-        } catch (error) {
-
-            console.error(error);
-
-            showLoginMessage(
-                error.message ||
-                "Login failed."
-            );
-
-        } finally {
-
-            loginButton.disabled = false;
-
-            loginButton.textContent =
-                "Login to Dashboard";
-        }
-
-    }
-);
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-logoutButton.addEventListener(
-    "click",
-    async () => {
-
-        await supabaseClient.auth.signOut();
-
-        window.location.reload();
-
-    }
-);
-
-
-/* =========================================================
-   LOAD ALL DATA
-========================================================= */
-
-async function loadAllData() {
-
-    await Promise.all([
-        loadHireRequests(),
-        loadRegistrations(),
-        loadReviews(),
-        loadMessages(),
-        loadPayments()
-    ]);
-
-}
-
-
-/* =========================================================
-   HIRE REQUESTS
-========================================================= */
-
-async function loadHireRequests() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("hire_requests")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(
-            "Hire requests:",
-            error
-        );
-
-        return;
-    }
-
-    $("#hireCount").textContent =
-        data.length;
-
-    const table =
-        $("#hireTable");
-
-    if (!data.length) {
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty">
-                    No hire requests yet.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    table.innerHTML =
-        data.map(row => `
-
-            <tr>
-
-                <td>
-                    ${escapeHtml(row.name)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.email)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.phone)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.service)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.budget)}
-                </td>
-
-                <td>
-                    ${statusBadge(row.status)}
-                </td>
-
-                <td>
-                    ${formatDate(row.created_at)}
-                </td>
-
-                <td>
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-success"
-                            onclick="updateStatus('hire_requests','${row.id}','approved')"
-                        >
-                            Approve
-                        </button>
-
-                        <button
-                            class="btn btn-warning"
-                            onclick="updateStatus('hire_requests','${row.id}','contacted')"
-                        >
-                            Contacted
-                        </button>
-
-                        <button
-                            class="btn btn-danger"
-                            onclick="updateStatus('hire_requests','${row.id}','rejected')"
-                        >
-                            Reject
-                        </button>
-
-                    </div>
-                </td>
-
-            </tr>
-
-        `).join("");
-}
-
-
-/* =========================================================
-   REGISTRATIONS
-========================================================= */
-
-async function loadRegistrations() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("registrations")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(
-            "Registrations:",
-            error
-        );
-
-        return;
-    }
-
-    $("#registrationCount").textContent =
-        data.length;
-
-    const table =
-        $("#registrationTable");
-
-    if (!data.length) {
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty">
-                    No registrations yet.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    table.innerHTML =
-        data.map(row => `
-
-            <tr>
-
-                <td>
-                    ${escapeHtml(row.name)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.email)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.phone)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.program)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.message)}
-                </td>
-
-                <td>
-                    ${statusBadge(row.status)}
-                </td>
-
-                <td>
-                    ${formatDate(row.created_at)}
-                </td>
-
-                <td>
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-success"
-                            onclick="updateStatus('registrations','${row.id}','approved')"
-                        >
-                            Approve
-                        </button>
-
-                        <button
-                            class="btn btn-warning"
-                            onclick="updateStatus('registrations','${row.id}','contacted')"
-                        >
-                            Contacted
-                        </button>
-
-                        <button
-                            class="btn btn-danger"
-                            onclick="updateStatus('registrations','${row.id}','rejected')"
-                        >
-                            Reject
-                        </button>
-
-                    </div>
-                </td>
-
-            </tr>
-
-        `).join("");
-}
-
-
-/* =========================================================
-   REVIEWS
-========================================================= */
-
-async function loadReviews() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("reviews")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(
-            "Reviews:",
-            error
-        );
-
-        return;
-    }
-
-    $("#reviewCount").textContent =
-        data.length;
-
-    const table =
-        $("#reviewTable");
-
-    if (!data.length) {
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty">
-                    No reviews yet.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    table.innerHTML =
-        data.map(row => `
-
-            <tr>
-
-                <td>
-                    ${escapeHtml(row.name)}
-                </td>
-
-                <td>
-                    ${"★".repeat(
-                        Math.max(
-                            0,
-                            Math.min(
-                                5,
-                                Number(row.rating) || 0
-                            )
-                        )
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.message)}
-                </td>
-
-                <td>
-                    ${statusBadge(row.status)}
-                </td>
-
-                <td>
-                    ${formatDate(row.created_at)}
-                </td>
-
-                <td>
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-success"
-                            onclick="updateStatus('reviews','${row.id}','approved')"
-                        >
-                            Approve
-                        </button>
-
-                        <button
-                            class="btn btn-danger"
-                            onclick="updateStatus('reviews','${row.id}','rejected')"
-                        >
-                            Reject
-                        </button>
-
-                    </div>
-                </td>
-
-            </tr>
-
-        `).join("");
-}
-
-
-/* =========================================================
-   CONTACT MESSAGES
-========================================================= */
-
-async function loadMessages() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("contact_messages")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(
-            "Messages:",
-            error
-        );
-
-        return;
-    }
-
-    $("#messageCount").textContent =
-        data.length;
-
-    const table =
-        $("#messageTable");
-
-    if (!data.length) {
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="7" class="empty">
-                    No messages yet.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    table.innerHTML =
-        data.map(row => `
-
-            <tr>
-
-                <td>
-                    ${escapeHtml(row.name)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.email)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.subject)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.message)}
-                </td>
-
-                <td>
-                    ${statusBadge(row.status)}
-                </td>
-
-                <td>
-                    ${formatDate(row.created_at)}
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn btn-success"
-                        onclick="updateStatus('contact_messages','${row.id}','read')"
-                    >
-                        Mark Read
-                    </button>
-
-                </td>
-
-            </tr>
-
-        `).join("");
-}
-
-
-/* =========================================================
-   PAYMENTS
-========================================================= */
-
-async function loadPayments() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("payment_requests")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
-    if (error) {
-
-        console.error(
-            "Payments:",
-            error
-        );
-
-        return;
-    }
-
-    $("#paymentCount").textContent =
-        data.length;
-
-    const table =
-        $("#paymentTable");
-
-    if (!data.length) {
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="10" class="empty">
-                    No payment requests yet.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    table.innerHTML =
-        data.map(row => `
-
-            <tr>
-
-                <td>
-                    ${escapeHtml(row.name)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.email)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.phone)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.service)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.amount)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.payment_method)}
-                </td>
-
-                <td>
-                    ${escapeHtml(row.transaction_reference)}
-                </td>
-
-                <td>
-                    ${statusBadge(row.status)}
-                </td>
-
-                <td>
-                    ${formatDate(row.created_at)}
-                </td>
-
-                <td>
-
-                    <div class="actions">
-
-                        <button
-                            class="btn btn-success"
-                            onclick="updateStatus('payment_requests','${row.id}','approved')"
-                        >
-                            Approve
-                        </button>
-
-                        <button
-                            class="btn btn-warning"
-                            onclick="updateStatus('payment_requests','${row.id}','completed')"
-                        >
-                            Complete
-                        </button>
-
-                        <button
-                            class="btn btn-danger"
-                            onclick="updateStatus('payment_requests','${row.id}','rejected')"
-                        >
-                            Reject
-                        </button>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
-        `).join("");
-}
-
-
-/* =========================================================
-   UPDATE STATUS
-========================================================= */
-
-async function updateStatus(
-    table,
-    id,
-    status
-) {
-
-    const {
-        error
-    } = await supabaseClient
-        .from(table)
-        .update({
-            status,
-            updated_at:
-                new Date().toISOString()
-        })
-        .eq("id", id);
-
-    if (error) {
-
-        console.error(error);
-
-        showNotification(
-            "Update failed",
-            error.message
-        );
-
-        return;
-    }
-
-    showNotification(
-        "Updated",
-        `Status changed to ${status}.`
-    );
-
-    await loadAllData();
-}
-
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-let realtimeChannel = null;
-
-function setupRealtime() {
-
-    if (realtimeChannel) {
-
-        supabaseClient
-            .removeChannel(
-                realtimeChannel
-            );
-    }
-
-    realtimeChannel =
-        supabaseClient
-            .channel("jay-ouko-admin-live")
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "hire_requests"
-                },
-                handleRealtimeChange
-            )
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "registrations"
-                },
-                handleRealtimeChange
-            )
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "reviews"
-                },
-                handleRealtimeChange
-            )
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "contact_messages"
-                },
-                handleRealtimeChange
-            )
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "payment_requests"
-                },
-                handleRealtimeChange
-            )
-
-            .subscribe((status) => {
-
-                console.log(
-                    "Realtime status:",
-                    status
-                );
-
-                if (status === "SUBSCRIBED") {
-
-                    realtimeStatus.innerHTML = `
-                        <span class="live-dot"></span>
-                        LIVE
-                    `;
-
-                    showNotification(
-                        "Realtime connected",
-                        "Your admin dashboard is now receiving live updates."
-                    );
-
-                } else {
-
-                    realtimeStatus.innerHTML = `
-                        <span class="live-dot"></span>
-                        CONNECTING...
-                    `;
-                }
-
-            });
-}
-
-
-/* =========================================================
-   REALTIME CHANGE HANDLER
-========================================================= */
-
-async function handleRealtimeChange(payload) {
-
-    console.log(
-        "Realtime change:",
-        payload
-    );
-
-    const table =
-        payload.table;
-
-    let title =
-        "Website updated";
-
-    let message =
-        "A new database change was detected.";
-
-    if (payload.eventType === "INSERT") {
-
-        title =
-            "🔔 New submission";
-
-        message =
-            `New information was added to ${table.replaceAll("_", " ")}.`;
-    }
-
-    if (payload.eventType === "UPDATE") {
-
-        title =
-            "🔄 Record updated";
-
-        message =
-            `A record in ${table.replaceAll("_", " ")} was updated.`;
-    }
-
-    if (payload.eventType === "DELETE") {
-
-        title =
-            "🗑️ Record deleted";
-
-        message =
-            `A record was deleted from ${table.replaceAll("_", " ")}.`;
-    }
-
-    showNotification(
-        title,
-        message
-    );
-
-    await loadAllData();
-}
-
-
-/* =========================================================
-   MANUAL REFRESH
-========================================================= */
-
-refreshButton.addEventListener(
-    "click",
-    async () => {
-
-        refreshButton.disabled = true;
-
-        refreshButton.textContent =
-            "Refreshing...";
-
-        await loadAllData();
-
-        refreshButton.disabled = false;
-
-        refreshButton.textContent =
-            "Refresh";
-
-        showNotification(
-            "Dashboard refreshed",
-            "All website data has been updated."
-        );
-    }
-);
-
-
-/* =========================================================
-   CHECK EXISTING SESSION
-========================================================= */
-
-async function checkExistingSession() {
-
-    const {
-        data
-    } = await supabaseClient.auth
-        .getSession();
-
-    const session =
-        data.session;
-
-    if (!session) {
-        return;
-    }
-
-    const isAdmin =
-        await checkAdmin(
-            session.user.id
-        );
-
-    if (!isAdmin) {
-
-        await supabaseClient.auth.signOut();
-
-        return;
-    }
-
-    await showDashboard();
-}
-
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-supabaseClient.auth
-    .onAuthStateChange(
-        async (event, session) => {
-
-            console.log(
-                "Auth event:",
-                event
-            );
-
-            if (
-                event === "SIGNED_OUT"
-            ) {
-
-                loginScreen
-                    .classList
-                    .remove("hidden");
-
-                dashboard
-                    .classList
-                    .add("hidden");
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   START
-========================================================= */
-
-checkExistingSession();
+    /*
+     * Supabase configuration.
+     *
+     * This is the PUBLIC/PUBLISHABLE browser key.
+     * Never put a Supabase service_role/secret key here.
+     */
+
+    window.JAY_SUPABASE_URL =
+        "https://slusgnhkjcnuitqcmwag.supabase.co";
+
+    window.JAY_SUPABASE_KEY =
+        "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
 </script>
+
+
+<!-- MAIN JAVASCRIPT -->
+
+<script src="app.js"></script>
 
 </body>
 </html>
