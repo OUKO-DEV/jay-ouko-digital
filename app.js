@@ -1,1358 +1,1669 @@
 (() => {
-  "use strict";
+    "use strict";
 
-  /*
-   * ============================================================
-   * JAY OUKO DIGITAL STUDIO
-   * app.js
-   * ============================================================
-   *
-   * Features:
-   * - Supabase connection
-   * - Dark/light mode
-   * - Mobile navigation
-   * - Scroll effects
-   * - Active navigation
-   * - Animations
-   * - Hire requests
-   * - Contact messages
-   * - Class registrations
-   * - Reviews
-   * - Payment requests
-   * - Built-in chatbot
-   * - WhatsApp / contact helpers
-   *
-   * IMPORTANT:
-   * This frontend uses the Supabase publishable key.
-   * Never put a Supabase service-role/secret key here.
-   * ============================================================
-   */
+    /*
+    ============================================================
+    JAY OUKO WEBSITE JAVASCRIPT
+    ============================================================
+    */
 
-  document.documentElement.classList.add("js-ready");
 
-  /* ============================================================
-     SUPABASE CONFIGURATION
-     ============================================================ */
-let supabaseClient = null;
+    /* ========================================================
+       BASIC HELPERS
+    ======================================================== */
 
-function initializeSupabase() {
-  try {
-    if (
-      window.supabase &&
-      typeof window.supabase.createClient === "function"
-    ) {
-      const SUPABASE_URL =
-        "https://slusgnhkjcnuitqcmwag.supabase.co";
+    const $ = (selector) => {
+        return document.querySelector(selector);
+    };
 
-      const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
-      supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
-
-      console.log("Supabase connected successfully.");
-    } else {
-      console.warn(
-        "Supabase library was not loaded."
-      );
-    }
-  } catch (error) {
-    console.error(
-      "Supabase initialization error:",
-      error
-    );
-
-    supabaseClient = null;
-  }
-}
-
-initializeSupabase();
-
-  /* ============================================================
-     HELPER FUNCTIONS
-     ============================================================ */
-
-  const $ = (selector, parent = document) =>
-    parent.querySelector(selector);
-
-  const $$ = (selector, parent = document) =>
-    [...parent.querySelectorAll(selector)];
-
-  function setStatus(element, message, type = "") {
-    if (!element) return;
-
-    element.textContent = message;
-
-    element.className = "form-status";
-
-    if (type) {
-      element.classList.add(type);
-    }
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (character) => {
-      const entities = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      };
-
-      return entities[character];
-    });
-  }
-
-  async function insertRow(table, data) {
-    if (!supabaseClient) {
-      throw new Error(
-        "Database connection unavailable."
-      );
-    }
-
-    const { error } = await supabaseClient
-      .from(table)
-      .insert(data);
-
-    if (error) {
-      throw error;
-    }
-
-    return true;
-  }
-
-  function closeMobileMenu() {
-    const navMenu = $("#navMenu");
-    const menuToggle = $("#menuToggle");
-
-    if (!navMenu) return;
-
-    navMenu.classList.remove("open");
-
-    if (menuToggle) {
-      menuToggle.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
-  }
-
-  /* ============================================================
-     MOBILE MENU
-     ============================================================ */
-
-  const menuToggle = $("#menuToggle");
-  const navMenu = $("#navMenu");
-
-  menuToggle?.addEventListener("click", () => {
-    if (!navMenu) return;
-
-    const isOpen =
-      navMenu.classList.toggle("open");
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      String(isOpen)
-    );
-  });
-
-  $$(".nav-link").forEach((link) => {
-    link.addEventListener(
-      "click",
-      closeMobileMenu
-    );
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!navMenu) return;
-
-    if (!navMenu.classList.contains("open")) {
-      return;
-    }
-
-    if (
-      !navMenu.contains(event.target) &&
-      !menuToggle?.contains(event.target)
-    ) {
-      closeMobileMenu();
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMobileMenu();
-
-      const chatbotWindow =
-        $("#chatbotWindow");
-
-      if (chatbotWindow) {
-        chatbotWindow.hidden = true;
-      }
-    }
-  });
-
-  /* ============================================================
-     DARK / LIGHT MODE
-     ============================================================ */
-
-  const themeToggle = $("#themeToggle");
-  const themeIcon = $("#themeIcon");
-
-  function applyTheme(theme) {
-    const isDark = theme === "dark";
-
-    document.body.classList.toggle(
-      "dark",
-      isDark
-    );
-
-    if (themeIcon) {
-      themeIcon.textContent =
-        isDark ? "☀" : "☾";
-    }
-
-    if (themeToggle) {
-      themeToggle.setAttribute(
-        "aria-label",
-        isDark
-          ? "Switch to light mode"
-          : "Switch to dark mode"
-      );
-    }
-  }
-
-  let savedTheme = "dark";
-
-  try {
-    savedTheme =
-      localStorage.getItem("jay-theme") ||
-      "dark";
-  } catch (error) {
-    console.warn(
-      "Local storage is unavailable."
-    );
-  }
-
-  applyTheme(savedTheme);
-
-  themeToggle?.addEventListener(
-    "click",
-    () => {
-      const nextTheme =
-        document.body.classList.contains("dark")
-          ? "light"
-          : "dark";
-
-      applyTheme(nextTheme);
-
-      try {
-        localStorage.setItem(
-          "jay-theme",
-          nextTheme
+    const $$ = (selector) => {
+        return Array.from(
+            document.querySelectorAll(selector)
         );
-      } catch (error) {
-        console.warn(
-          "Could not save theme preference."
-        );
-      }
-    }
-  );
+    };
 
-  /* ============================================================
-     HEADER SCROLL EFFECT
-     ============================================================ */
 
-  const siteHeader = $("#siteHeader");
-  const backToTop = $("#backToTop");
+    const escapeHtml = (value) => {
 
-  function handleScroll() {
-    if (siteHeader) {
-      siteHeader.classList.toggle(
-        "scrolled",
-        window.scrollY > 20
-      );
-    }
+        if (value === null || value === undefined) {
+            return "";
+        }
 
-    if (backToTop) {
-      backToTop.classList.toggle(
-        "visible",
-        window.scrollY > 500
-      );
-    }
-  }
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
 
-  window.addEventListener(
-    "scroll",
-    handleScroll,
-    { passive: true }
-  );
 
-  handleScroll();
+    const setStatus = (
+        element,
+        message,
+        type = "info"
+    ) => {
 
-  /* ============================================================
-     BACK TO TOP
-     ============================================================ */
+        if (!element) {
+            return;
+        }
 
-  backToTop?.addEventListener(
-    "click",
-    () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-  );
+        element.textContent = message;
 
-  /* ============================================================
-     ACTIVE NAVIGATION
-     ============================================================ */
+        element.className =
+            `form-status ${type}`;
 
-  const pageSections =
-    $$("main section[id]");
+    };
 
-  const navigationLinks =
-    $$(".nav-link");
 
-  if ("IntersectionObserver" in window) {
-    const sectionObserver =
-      new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) {
-              return;
-            }
+    /* ========================================================
+       SUPABASE
+    ======================================================== */
 
-            navigationLinks.forEach(
-              (link) => {
-                const target =
-                  link.getAttribute("href");
+    let supabaseClient = null;
 
-                link.classList.toggle(
-                  "active",
-                  target ===
-                    `#${entry.target.id}`
+
+    function initializeSupabase() {
+
+        try {
+
+            const url =
+                window.JAY_SUPABASE_URL;
+
+            const key =
+                window.JAY_SUPABASE_KEY;
+
+
+            if (
+                !url ||
+                !key
+            ) {
+
+                console.warn(
+                    "Supabase configuration is missing."
                 );
-              }
-            );
-          });
-        },
-        {
-          rootMargin:
-            "-35% 0px -55% 0px",
-          threshold: 0
-        }
-      );
 
-    pageSections.forEach(
-      (section) =>
-        sectionObserver.observe(section)
-    );
-  }
+                return;
 
-  /* ============================================================
-     REVEAL ANIMATIONS
-     ============================================================ */
-
-  if ("IntersectionObserver" in window) {
-    const revealObserver =
-      new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) {
-              return;
             }
 
-            entry.target.classList.add(
-              "revealed"
+
+            if (
+                !window.supabase ||
+                typeof window.supabase.createClient !==
+                "function"
+            ) {
+
+                console.error(
+                    "Supabase library was not loaded."
+                );
+
+                return;
+
+            }
+
+
+            supabaseClient =
+                window.supabase.createClient(
+                    url,
+                    key
+                );
+
+
+            console.log(
+                "Supabase connected successfully."
             );
 
-            revealObserver.unobserve(
-              entry.target
-            );
-          });
-        },
-        {
-          threshold: 0.08
-        }
-      );
-
-    $$(".reveal").forEach((element) => {
-      revealObserver.observe(element);
-    });
-  } else {
-    $$(".reveal").forEach((element) => {
-      element.classList.add("revealed");
-    });
-  }
-
-  /* ============================================================
-     FOOTER YEAR
-     ============================================================ */
-
-  const footerYear = $("#footerYear");
-
-  if (footerYear) {
-    footerYear.textContent =
-      new Date().getFullYear();
-  }
-
-  /* ============================================================
-     SERVICE BUTTONS
-     ============================================================ */
-
-  $$(".service-hire").forEach((button) => {
-    button.addEventListener("click", () => {
-      const service =
-        button.dataset.service || "";
-
-      const serviceSelect =
-        $("#hireService");
-
-      if (serviceSelect) {
-        serviceSelect.value = service;
-      }
-
-      document
-        .querySelector("#hire")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      setTimeout(() => {
-        $("#hireName")?.focus();
-      }, 500);
-    });
-  });
-
-  /* ============================================================
-     PRICING BUTTONS
-     ============================================================ */
-
-  $$(".hire-package").forEach((button) => {
-    button.addEventListener("click", () => {
-      const packageName =
-        button.dataset.package || "";
-
-      const serviceSelect =
-        $("#hireService");
-
-      if (serviceSelect) {
-        serviceSelect.value =
-          "Web Development";
-      }
-
-      const details =
-        $("#hireDetails");
-
-      if (details && !details.value) {
-        details.value =
-          `I am interested in the ${packageName}. Please send me the next steps and confirm the final project scope and price.`;
-      }
-
-      document
-        .querySelector("#hire")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-    });
-  });
-
-  /* ============================================================
-     FREE CLASS REGISTRATION
-     ============================================================ */
-
-  const registerClassButton =
-    $("#registerClassBtn");
-
-  const registrationWrap =
-    $("#registrationWrap");
-
-  registerClassButton?.addEventListener(
-    "click",
-    () => {
-      if (!registrationWrap) {
-        return;
-      }
-
-      registrationWrap.hidden = false;
-
-      registrationWrap.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-
-      setTimeout(() => {
-        $("#registrationName")?.focus();
-      }, 500);
-    }
-  );
-
-  /* ============================================================
-     HIRE ME FORM
-     ============================================================ */
-
-  const hireForm = $("#hireForm");
-
-  hireForm?.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
-
-      const status =
-        $("#hireStatus");
-
-      const submitButton =
-        hireForm.querySelector(
-          "button[type='submit']"
-        );
-
-      setStatus(
-        status,
-        "Sending project request..."
-      );
-
-      const payload = {
-        name:
-          $("#hireName")?.value.trim(),
-
-        email:
-          $("#hireEmail")?.value.trim(),
-
-        phone:
-          $("#hirePhone")?.value.trim() ||
-          null,
-
-        service:
-          $("#hireService")?.value,
-
-        budget:
-          $("#hireBudget")?.value ||
-          null,
-
-        project_details:
-          $("#hireDetails")?.value.trim(),
-
-        status: "pending"
-      };
-
-      if (
-        !payload.name ||
-        !payload.email ||
-        !payload.service ||
-        !payload.project_details
-      ) {
-        setStatus(
-          status,
-          "Please complete all required fields.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      try {
-        await insertRow(
-          "hire_requests",
-          payload
-        );
-
-        hireForm.reset();
-
-        setStatus(
-          status,
-          "Your project request has been received. I will review it and contact you.",
-          "success"
-        );
-      } catch (error) {
-        console.error(
-          "Hire request error:",
-          error
-        );
-
-        setStatus(
-          status,
-          "The request could not be saved. Please contact me through WhatsApp or email.",
-          "error"
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
-      }
-    }
-  );
-
-  /* ============================================================
-     CONTACT FORM
-     ============================================================ */
-
-  const contactForm =
-    $("#contactForm");
-
-  contactForm?.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
-
-      const status =
-        $("#contactStatus");
-
-      const submitButton =
-        contactForm.querySelector(
-          "button[type='submit']"
-        );
-
-      setStatus(
-        status,
-        "Sending message..."
-      );
-
-      const payload = {
-        name:
-          $("#contactName")?.value.trim(),
-
-        email:
-          $("#contactEmail")?.value.trim(),
-
-        subject:
-          $("#contactService")?.value ||
-          "General enquiry",
-
-        message:
-          $("#contactMessage")?.value.trim(),
-
-        status: "unread"
-      };
-
-      if (
-        !payload.name ||
-        !payload.email ||
-        !payload.message
-      ) {
-        setStatus(
-          status,
-          "Please complete your name, email and message.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      try {
-        await insertRow(
-          "contact_messages",
-          payload
-        );
-
-        contactForm.reset();
-
-        setStatus(
-          status,
-          "Message sent successfully. Thank you.",
-          "success"
-        );
-      } catch (error) {
-        console.error(
-          "Contact form error:",
-          error
-        );
-
-        setStatus(
-          status,
-          "The message could not be saved. Please contact me through WhatsApp or email.",
-          "error"
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
-      }
-    }
-  );
-
-  /* ============================================================
-     CLASS REGISTRATION FORM
-     ============================================================ */
-
-  const registrationForm =
-    $("#registrationForm");
-
-  registrationForm?.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
-
-      const status =
-        $("#registrationStatus");
-
-      const submitButton =
-        registrationForm.querySelector(
-          "button[type='submit']"
-        );
-
-      setStatus(
-        status,
-        "Submitting registration..."
-      );
-
-      const payload = {
-        name:
-          $("#registrationName")
-            ?.value.trim(),
-
-        email:
-          $("#registrationEmail")
-            ?.value.trim(),
-
-        phone:
-          $("#registrationPhone")
-            ?.value.trim() ||
-          null,
-
-        program:
-          $("#registrationProgram")
-            ?.value,
-
-        message:
-          $("#registrationMessage")
-            ?.value.trim() ||
-          null,
-
-        status: "pending"
-      };
-
-      if (
-        !payload.name ||
-        !payload.email ||
-        !payload.program
-      ) {
-        setStatus(
-          status,
-          "Please complete the required fields.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      try {
-        await insertRow(
-          "registrations",
-          payload
-        );
-
-        registrationForm.reset();
-
-        setStatus(
-          status,
-          "Registration received. You will be contacted after review.",
-          "success"
-        );
-      } catch (error) {
-        console.error(
-          "Registration error:",
-          error
-        );
-
-        setStatus(
-          status,
-          "Registration could not be saved. Please contact me through WhatsApp or email.",
-          "error"
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
-      }
-    }
-  );
-
-  /* ============================================================
-     REVIEWS
-     ============================================================ */
-
-  async function loadApprovedReviews() {
-    const reviewsList =
-      $("#reviewsList");
-
-    if (!reviewsList) {
-      return;
-    }
-
-    if (!supabaseClient) {
-      reviewsList.innerHTML = `
-        <div class="review-empty">
-          Reviews are temporarily unavailable.
-          Please check again later.
-        </div>
-      `;
-
-      return;
-    }
-
-    try {
-      const {
-        data,
-        error
-      } = await supabaseClient
-        .from("reviews")
-        .select(
-          "name,rating,message,created_at"
-        )
-        .eq(
-          "status",
-          "approved"
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
-        .limit(12);
-
-      if (error) {
-        throw error;
-      }
-
-      if (
-        !data ||
-        data.length === 0
-      ) {
-        reviewsList.innerHTML = `
-          <div class="review-empty">
-            No approved reviews yet.
-            Be the first to leave feedback.
-          </div>
-        `;
-
-        return;
-      }
-
-      reviewsList.innerHTML =
-        data
-          .map((review) => {
-            const rating = Math.max(
-              1,
-              Math.min(
-                5,
-                Number(review.rating) || 5
-              )
+        } catch (error) {
+
+            console.error(
+                "Supabase initialization failed:",
+                error
             );
 
-            const stars =
-              "★".repeat(rating) +
-              "☆".repeat(5 - rating);
+            supabaseClient = null;
 
-            const name =
-              escapeHtml(
-                review.name ||
-                  "Client"
-              );
-
-            const message =
-              escapeHtml(
-                review.message || ""
-              );
-
-            return `
-              <article class="review-card">
-
-                <div
-                  class="review-stars"
-                  aria-label="${rating} out of 5 stars"
-                >
-                  ${stars}
-                </div>
-
-                <p>
-                  ${message}
-                </p>
-
-                <small>
-                  — ${name}
-                </small>
-
-              </article>
-            `;
-          })
-          .join("");
-
-    } catch (error) {
-      console.error(
-        "Review loading error:",
-        error
-      );
-
-      reviewsList.innerHTML = `
-        <div class="review-empty">
-          Reviews could not be loaded right now.
-        </div>
-      `;
-    }
-  }
-
-  const reviewForm =
-    $("#reviewForm");
-
-  reviewForm?.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
-
-      const status =
-        $("#reviewStatus");
-
-      const submitButton =
-        reviewForm.querySelector(
-          "button[type='submit']"
-        );
-
-      setStatus(
-        status,
-        "Submitting review..."
-      );
-
-      const payload = {
-        name:
-          $("#reviewName")
-            ?.value.trim(),
-
-        rating:
-          Number(
-            $("#reviewRating")
-              ?.value
-          ),
-
-        message:
-          $("#reviewMessage")
-            ?.value.trim(),
-
-        status: "pending"
-      };
-
-      if (
-        !payload.name ||
-        !payload.rating ||
-        !payload.message
-      ) {
-        setStatus(
-          status,
-          "Please provide your name, rating and review.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      try {
-        await insertRow(
-          "reviews",
-          payload
-        );
-
-        reviewForm.reset();
-
-        setStatus(
-          status,
-          "Thank you. Your review has been submitted for approval.",
-          "success"
-        );
-      } catch (error) {
-        console.error(
-          "Review submission error:",
-          error
-        );
-
-        setStatus(
-          status,
-          "The review could not be submitted. Please try again later.",
-          "error"
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
         }
-      }
+
     }
-  );
 
-  /* ============================================================
-     PAYMENT FORM
-     ============================================================ */
 
-  const paymentForm =
-    $("#paymentForm");
+    initializeSupabase();
 
-  paymentForm?.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
 
-      const status =
-        $("#paymentStatus");
+    /* ========================================================
+       SUPABASE INSERT HELPER
+    ======================================================== */
 
-      const submitButton =
-        paymentForm.querySelector(
-          "button[type='submit']"
-        );
+    async function insertRow(
+        table,
+        payload
+    ) {
 
-      setStatus(
-        status,
-        "Submitting payment details..."
-      );
+        if (!supabaseClient) {
 
-      const amountValue =
-        $("#paymentAmount")
-          ?.value;
+            throw new Error(
+                "Supabase is not connected."
+            );
 
-      const payload = {
-        name:
-          $("#paymentName")
-            ?.value.trim(),
-
-        email:
-          $("#paymentEmail")
-            ?.value.trim() ||
-          null,
-
-        phone:
-          $("#paymentPhone")
-            ?.value.trim() ||
-          null,
-
-        service:
-          $("#paymentService")
-            ?.value,
-
-        amount:
-          amountValue
-            ? Number(amountValue)
-            : null,
-
-        payment_method:
-          "M-Pesa",
-
-        transaction_reference:
-          $("#paymentReference")
-            ?.value.trim() ||
-          null,
-
-        status: "pending"
-      };
-
-      if (
-        !payload.name ||
-        !payload.service
-      ) {
-        setStatus(
-          status,
-          "Please enter your name and service.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      try {
-        await insertRow(
-          "payment_requests",
-          payload
-        );
-
-        paymentForm.reset();
-
-        setStatus(
-          status,
-          "Payment details received for manual confirmation.",
-          "success"
-        );
-      } catch (error) {
-        console.error(
-          "Payment form error:",
-          error
-        );
-
-        setStatus(
-          status,
-          "Payment details could not be saved. Please contact me directly.",
-          "error"
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
         }
-      }
-    }
-  );
 
-  /* ============================================================
-     CHATBOT
-     ============================================================ */
 
-  const chatbotToggle =
-    $("#chatbotToggle");
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from(table)
+            .insert(payload)
+            .select();
 
-  const chatbotWindow =
-    $("#chatbotWindow");
 
-  const chatbotClose =
-    $("#chatbotClose");
+        if (error) {
 
-  const chatbotMessages =
-    $("#chatbotMessages");
+            console.error(
+                `Supabase ${table} error:`,
+                error
+            );
 
-  const chatbotForm =
-    $("#chatbotForm");
+            throw error;
 
-  const chatbotInput =
-    $("#chatbotInput");
+        }
 
-  function addChatMessage(
-    message,
-    fromUser = false
-  ) {
-    if (!chatbotMessages) {
-      return;
+
+        return data;
+
     }
 
-    const bubble =
-      document.createElement(
-        "div"
-      );
 
-    bubble.className =
-      fromUser
-        ? "user-msg"
-        : "bot-msg";
+    /* ========================================================
+       MOBILE MENU
+    ======================================================== */
 
-    bubble.textContent =
-      message;
+    const menuToggle =
+        $("#menuToggle");
 
-    chatbotMessages.appendChild(
-      bubble
-    );
+    const navMenu =
+        $("#navMenu");
 
-    chatbotMessages.scrollTop =
-      chatbotMessages.scrollHeight;
-  }
 
-  function getAssistantReply(
-    input
-  ) {
-    const question =
-      input.toLowerCase();
+    function closeMobileMenu() {
 
-    if (
-      question.includes("price") ||
-      question.includes("cost") ||
-      question.includes("budget")
-    ) {
-      return "Our starting packages are Basic from KSh 1,500+, Professional from KSh 5,000+, while larger Business projects are quoted after discussing the scope.";
+        if (!navMenu) {
+            return;
+        }
+
+        navMenu.classList.remove(
+            "open"
+        );
+
+        menuToggle?.classList.remove(
+            "active"
+        );
+
+        menuToggle?.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
     }
 
-    if (
-      question.includes("service") ||
-      question.includes("website") ||
-      question.includes("design") ||
-      question.includes("marketing") ||
-      question.includes("ai")
-    ) {
-      return "Jay Ouko offers Web Development, Graphic Design, Digital Marketing and practical AI Tools support.";
-    }
 
-    if (
-      question.includes("class") ||
-      question.includes("learn") ||
-      question.includes("canva")
-    ) {
-      return "Free online classes run daily at 9:00 PM. Topics include Canva, AI Tools, Digital Work and Online Jobs.";
-    }
-
-    if (
-      question.includes("contact") ||
-      question.includes("whatsapp") ||
-      question.includes("phone")
-    ) {
-      return "You can contact Jay Ouko through WhatsApp on 0142617814 or email emmanuelouko21@gmail.com.";
-    }
-
-    if (
-      question.includes("hire") ||
-      question.includes("project")
-    ) {
-      return "Use the Hire Me section to describe your project. Your request will be submitted for review.";
-    }
-
-    return "I can help with services, pricing, classes, hiring and contact information. Try asking: What services do you offer?";
-  }
-
-  chatbotToggle?.addEventListener(
-    "click",
-    () => {
-      if (!chatbotWindow) {
-        return;
-      }
-
-      chatbotWindow.hidden =
-        !chatbotWindow.hidden;
-
-      if (
-        !chatbotWindow.hidden
-      ) {
-        setTimeout(() => {
-          chatbotInput?.focus();
-        }, 50);
-      }
-    }
-  );
-
-  chatbotClose?.addEventListener(
-    "click",
-    () => {
-      if (chatbotWindow) {
-        chatbotWindow.hidden =
-          true;
-      }
-    }
-  );
-
-  $$(".quick-actions button")
-    .forEach((button) => {
-      button.addEventListener(
+    menuToggle?.addEventListener(
         "click",
         () => {
-          const question =
-            button.dataset.chat ||
-            button.textContent;
 
-          addChatMessage(
-            button.textContent,
-            true
-          );
+            if (!navMenu) {
+                return;
+            }
 
-          setTimeout(() => {
-            addChatMessage(
-              getAssistantReply(
-                question
-              )
+
+            const isOpen =
+                navMenu.classList.toggle(
+                    "open"
+                );
+
+
+            menuToggle.classList.toggle(
+                "active",
+                isOpen
             );
-          }, 250);
+
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+
         }
-      );
-    });
+    );
 
-  chatbotForm?.addEventListener(
-    "submit",
-    (event) => {
-      event.preventDefault();
 
-      const message =
-        chatbotInput?.value.trim();
+    $$(".nav-link").forEach(
+        (link) => {
 
-      if (!message) {
-        return;
-      }
+            link.addEventListener(
+                "click",
+                closeMobileMenu
+            );
 
-      addChatMessage(
-        message,
-        true
-      );
+        }
+    );
 
-      chatbotInput.value = "";
 
-      setTimeout(() => {
-        addChatMessage(
-          getAssistantReply(
-            message
-          )
-        );
-      }, 250);
+    $(".nav-cta")?.addEventListener(
+        "click",
+        closeMobileMenu
+    );
+
+
+    /* ========================================================
+       THEME TOGGLE
+    ======================================================== */
+
+    const themeToggle =
+        $("#themeToggle");
+
+    const themeIcon =
+        $("#themeIcon");
+
+
+    function applyTheme(theme) {
+
+        if (theme === "light") {
+
+            document.documentElement
+                .classList.add("light-theme");
+
+            if (themeIcon) {
+                themeIcon.textContent = "🌙";
+            }
+
+        } else {
+
+            document.documentElement
+                .classList.remove("light-theme");
+
+            if (themeIcon) {
+                themeIcon.textContent = "☀️";
+            }
+
+        }
+
     }
-  );
 
-  /* ============================================================
-     EXTERNAL LINKS
-     ============================================================ */
 
-  $$(
-    'a[target="_blank"]'
-  ).forEach((link) => {
-    const rel = new Set(
-      (
-        link.getAttribute("rel") ||
-        ""
-      )
-        .split(/\s+/)
-        .filter(Boolean)
-    );
-
-    rel.add("noopener");
-    rel.add("noreferrer");
-
-    link.setAttribute(
-      "rel",
-      [...rel].join(" ")
-    );
-  });
-
-  /* ============================================================
-     FORM VALIDATION VISUAL FEEDBACK
-     ============================================================ */
-
-  document.addEventListener(
-    "invalid",
-    (event) => {
-      event.target.classList.add(
-        "invalid"
-      );
-
-      setTimeout(() => {
-        event.target.classList.remove(
-          "invalid"
+    const savedTheme =
+        localStorage.getItem(
+            "jay-theme"
         );
-      }, 1000);
-    },
-    true
-  );
 
-  /* ============================================================
-     LOAD APPROVED REVIEWS
-     ============================================================ */
 
-  loadApprovedReviews();
+    applyTheme(
+        savedTheme || "dark"
+    );
 
-  /* ============================================================
-     FINAL CONFIRMATION
-     ============================================================ */
 
-  console.log(
-    "Jay Ouko Digital Studio loaded successfully."
-  );
+    themeToggle?.addEventListener(
+        "click",
+        () => {
+
+            const isLight =
+                document.documentElement
+                    .classList.contains(
+                        "light-theme"
+                    );
+
+
+            const nextTheme =
+                isLight
+                    ? "dark"
+                    : "light";
+
+
+            applyTheme(nextTheme);
+
+
+            localStorage.setItem(
+                "jay-theme",
+                nextTheme
+            );
+
+        }
+    );
+
+
+    /* ========================================================
+       HEADER SCROLL EFFECT
+    ======================================================== */
+
+    const header =
+        $("#siteHeader");
+
+
+    function updateHeader() {
+
+        if (!header) {
+            return;
+        }
+
+
+        if (window.scrollY > 30) {
+
+            header.classList.add(
+                "scrolled"
+            );
+
+        } else {
+
+            header.classList.remove(
+                "scrolled"
+            );
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateHeader,
+        {
+            passive: true
+        }
+    );
+
+
+    updateHeader();
+
+
+    /* ========================================================
+       ACTIVE NAVIGATION
+    ======================================================== */
+
+    const sections =
+        $$("main section[id]");
+
+    const navLinks =
+        $$(".nav-link");
+
+
+    if (
+        "IntersectionObserver"
+        in window
+    ) {
+
+        const navObserver =
+            new IntersectionObserver(
+                (entries) => {
+
+                    entries.forEach(
+                        (entry) => {
+
+                            if (
+                                !entry.isIntersecting
+                            ) {
+                                return;
+                            }
+
+
+                            const id =
+                                entry.target.id;
+
+
+                            navLinks.forEach(
+                                (link) => {
+
+                                    const active =
+                                        link.getAttribute(
+                                            "href"
+                                        ) ===
+                                        `#${id}`;
+
+
+                                    link.classList.toggle(
+                                        "active",
+                                        active
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+                },
+                {
+                    rootMargin:
+                        "-35% 0px -55% 0px"
+                }
+            );
+
+
+        sections.forEach(
+            (section) => {
+
+                navObserver.observe(
+                    section
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ========================================================
+       REVEAL ANIMATIONS
+    ======================================================== */
+
+    const revealElements =
+        $$(".reveal");
+
+
+    if (
+        "IntersectionObserver"
+        in window
+    ) {
+
+        const revealObserver =
+            new IntersectionObserver(
+                (entries) => {
+
+                    entries.forEach(
+                        (entry) => {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                entry.target
+                                    .classList
+                                    .add(
+                                        "visible"
+                                    );
+
+
+                                revealObserver
+                                    .unobserve(
+                                        entry.target
+                                    );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.08
+                }
+            );
+
+
+        revealElements.forEach(
+            (element) => {
+
+                revealObserver.observe(
+                    element
+                );
+
+            }
+        );
+
+    } else {
+
+        revealElements.forEach(
+            (element) => {
+
+                element.classList.add(
+                    "visible"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ========================================================
+       FOOTER YEAR
+    ======================================================== */
+
+    const footerYear =
+        $("#footerYear");
+
+
+    if (footerYear) {
+
+        footerYear.textContent =
+            new Date().getFullYear();
+
+    }
+
+
+    /* ========================================================
+       SERVICE HIRE BUTTONS
+    ======================================================== */
+
+    $$(".service-hire").forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const service =
+                        button.dataset.service ||
+                        "";
+
+
+                    const serviceSelect =
+                        $("#hireService");
+
+
+                    if (serviceSelect) {
+
+                        serviceSelect.value =
+                            service;
+
+                    }
+
+
+                    $("#hire")?.scrollIntoView(
+                        {
+                            behavior: "smooth"
+                        }
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            $("#hireName")?.focus();
+
+                        },
+                        500
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* ========================================================
+       PRICING PACKAGE BUTTONS
+    ======================================================== */
+
+    $$(".hire-package").forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const packageName =
+                        button.dataset.package ||
+                        "";
+
+
+                    const details =
+                        $("#hireDetails");
+
+
+                    if (details) {
+
+                        details.value =
+                            `I am interested in the ${packageName}. Please provide more information about what is included and the final price.`;
+
+                    }
+
+
+                    $("#hire")?.scrollIntoView(
+                        {
+                            behavior: "smooth"
+                        }
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            $("#hireName")?.focus();
+
+                        },
+                        500
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* ========================================================
+       HIRE FORM
+    ======================================================== */
+
+    const hireForm =
+        $("#hireForm");
+
+
+    hireForm?.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const status =
+                $("#hireStatus");
+
+
+            const submitButton =
+                hireForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            const name =
+                $("#hireName")
+                    ?.value
+                    .trim();
+
+
+            const email =
+                $("#hireEmail")
+                    ?.value
+                    .trim();
+
+
+            const phone =
+                $("#hirePhone")
+                    ?.value
+                    .trim();
+
+
+            const service =
+                $("#hireService")
+                    ?.value;
+
+
+            const budget =
+                $("#hireBudget")
+                    ?.value;
+
+
+            const projectDetails =
+                $("#hireDetails")
+                    ?.value
+                    .trim();
+
+
+            if (
+                !name ||
+                !email ||
+                !service ||
+                !projectDetails
+            ) {
+
+                setStatus(
+                    status,
+                    "Please complete all required fields.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                submitButton
+            ) {
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Submitting...";
+
+            }
+
+
+            setStatus(
+                status,
+                "Sending your project request...",
+                "loading"
+            );
+
+
+            try {
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * hire_requests currently has:
+                 *
+                 * id
+                 * name
+                 * email
+                 * phone
+                 * service
+                 * budget
+                 * project_details
+                 *
+                 * There is NO status column.
+                 */
+
+                const payload = {
+
+                    name: name,
+
+                    email: email,
+
+                    phone:
+                        phone || null,
+
+                    service: service,
+
+                    budget:
+                        budget || null,
+
+                    project_details:
+                        projectDetails
+
+                };
+
+
+                await insertRow(
+                    "hire_requests",
+                    payload
+                );
+
+
+                setStatus(
+                    status,
+                    "Your project request has been submitted successfully. Thank you!",
+                    "success"
+                );
+
+
+                hireForm.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                setStatus(
+                    status,
+                    "We could not submit your request. Please try again or contact me directly on WhatsApp.",
+                    "error"
+                );
+
+            } finally {
+
+                if (
+                    submitButton
+                ) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Submit Project Request";
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* ========================================================
+       CONTACT FORM
+    ======================================================== */
+
+    const contactForm =
+        $("#contactForm");
+
+
+    contactForm?.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const status =
+                $("#contactStatus");
+
+
+            const submitButton =
+                contactForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            const name =
+                $("#contactName")
+                    ?.value
+                    .trim();
+
+
+            const email =
+                $("#contactEmail")
+                    ?.value
+                    .trim();
+
+
+            const subject =
+                $("#contactService")
+                    ?.value
+                    .trim();
+
+
+            const message =
+                $("#contactMessage")
+                    ?.value
+                    .trim();
+
+
+            if (
+                !name ||
+                !email ||
+                !subject ||
+                !message
+            ) {
+
+                setStatus(
+                    status,
+                    "Please complete all fields.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                submitButton
+            ) {
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Sending...";
+
+            }
+
+
+            try {
+
+                await insertRow(
+                    "contact_messages",
+                    {
+                        name,
+                        email,
+                        subject,
+                        message
+                    }
+                );
+
+
+                setStatus(
+                    status,
+                    "Your message has been sent successfully.",
+                    "success"
+                );
+
+
+                contactForm.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Contact form error:",
+                    error
+                );
+
+
+                setStatus(
+                    status,
+                    "Unable to send your message right now. Please contact me directly.",
+                    "error"
+                );
+
+            } finally {
+
+                if (
+                    submitButton
+                ) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Send Message";
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* ========================================================
+       REVIEW SUBMISSION
+    ======================================================== */
+
+    const reviewForm =
+        $("#reviewForm");
+
+
+    reviewForm?.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const status =
+                $("#reviewStatus");
+
+
+            const submitButton =
+                reviewForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            const name =
+                $("#reviewName")
+                    ?.value
+                    .trim();
+
+
+            const rating =
+                $("#reviewRating")
+                    ?.value;
+
+
+            const message =
+                $("#reviewMessage")
+                    ?.value
+                    .trim();
+
+
+            if (
+                !name ||
+                !rating ||
+                !message
+            ) {
+
+                setStatus(
+                    status,
+                    "Please complete all review fields.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                submitButton
+            ) {
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Submitting...";
+
+            }
+
+
+            try {
+
+                await insertRow(
+                    "reviews",
+                    {
+                        name,
+                        rating:
+                            Number(rating),
+                        message,
+                        status: "pending"
+                    }
+                );
+
+
+                setStatus(
+                    status,
+                    "Thank you! Your review has been submitted for approval.",
+                    "success"
+                );
+
+
+                reviewForm.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Review submission error:",
+                    error
+                );
+
+
+                setStatus(
+                    status,
+                    "We could not submit the review. Please try again.",
+                    "error"
+                );
+
+            } finally {
+
+                if (
+                    submitButton
+                ) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Submit Review";
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* ========================================================
+       LOAD APPROVED REVIEWS
+    ======================================================== */
+
+    async function loadApprovedReviews() {
+
+        const reviewsList =
+            $("#reviewsList");
+
+
+        if (!reviewsList) {
+            return;
+        }
+
+
+        if (!supabaseClient) {
+
+            reviewsList.innerHTML = `
+                <div class="review-loading">
+                    Reviews are currently unavailable.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("reviews")
+                .select(
+                    "id, name, rating, message"
+                )
+                .eq(
+                    "status",
+                    "approved"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (
+                !data ||
+                data.length === 0
+            ) {
+
+                reviewsList.innerHTML = `
+                    <div class="review-empty">
+                        <p>No approved reviews yet.</p>
+                        <p>Be the first person to leave a review.</p>
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            reviewsList.innerHTML =
+                data
+                    .map(
+                        (review) => {
+
+                            const rating =
+                                Math.min(
+                                    5,
+                                    Math.max(
+                                        1,
+                                        Number(
+                                            review.rating
+                                        ) || 5
+                                    )
+                                );
+
+
+                            const stars =
+                                "⭐".repeat(
+                                    rating
+                                );
+
+
+                            return `
+                                <article class="review-card">
+
+                                    <div class="review-stars">
+                                        ${stars}
+                                    </div>
+
+                                    <p class="review-message">
+                                        "${escapeHtml(
+                                            review.message
+                                        )}"
+                                    </p>
+
+                                    <h3>
+                                        ${escapeHtml(
+                                            review.name
+                                        )}
+                                    </h3>
+
+                                </article>
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+
+        } catch (error) {
+
+            console.error(
+                "Could not load reviews:",
+                error
+            );
+
+
+            reviewsList.innerHTML = `
+                <div class="review-empty">
+                    <p>
+                        Reviews could not be loaded right now.
+                    </p>
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    $("#refreshReviews")
+        ?.addEventListener(
+            "click",
+            loadApprovedReviews
+        );
+
+
+    /* ========================================================
+       BACK TO TOP
+    ======================================================== */
+
+    const backToTop =
+        $("#backToTop");
+
+
+    function updateBackToTop() {
+
+        if (!backToTop) {
+            return;
+        }
+
+
+        if (
+            window.scrollY > 500
+        ) {
+
+            backToTop.classList.add(
+                "visible"
+            );
+
+        } else {
+
+            backToTop.classList.remove(
+                "visible"
+            );
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateBackToTop,
+        {
+            passive: true
+        }
+    );
+
+
+    updateBackToTop();
+
+
+    backToTop?.addEventListener(
+        "click",
+        () => {
+
+            window.scrollTo(
+                {
+                    top: 0,
+                    behavior: "smooth"
+                }
+            );
+
+        }
+    );
+
+
+    /* ========================================================
+       CHATBOT
+    ======================================================== */
+
+    const chatbot =
+        $("#chatbot");
+
+    const chatbotToggle =
+        $("#chatbotToggle");
+
+    const chatbotClose =
+        $("#chatbotClose");
+
+    const chatInput =
+        $("#chatInput");
+
+    const chatSend =
+        $("#chatSend");
+
+    const chatMessages =
+        $("#chatMessages");
+
+
+    function openChatbot() {
+
+        if (!chatbot) {
+            return;
+        }
+
+
+        chatbot.classList.add(
+            "open"
+        );
+
+
+        chatbot.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        setTimeout(
+            () => {
+
+                chatInput?.focus();
+
+            },
+            100
+        );
+
+    }
+
+
+    function closeChatbot() {
+
+        if (!chatbot) {
+            return;
+        }
+
+
+        chatbot.classList.remove(
+            "open"
+        );
+
+
+        chatbot.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+
+    chatbotToggle?.addEventListener(
+        "click",
+        openChatbot
+    );
+
+
+    chatbotClose?.addEventListener(
+        "click",
+        closeChatbot
+    );
+
+
+    function addChatMessage(
+        text,
+        sender = "bot"
+    ) {
+
+        if (!chatMessages) {
+            return;
+        }
+
+
+        const message =
+            document.createElement(
+                "div"
+            );
+
+
+        message.className =
+            sender === "user"
+                ? "user-message"
+                : "bot-message";
+
+
+        message.textContent =
+            text;
+
+
+        chatMessages.appendChild(
+            message
+        );
+
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
+
+    }
+
+
+    function getBotReply(
+        message
+    ) {
+
+        const text =
+            message
+                .toLowerCase()
+                .trim();
+
+
+        if (
+            text.includes("price") ||
+            text.includes("pricing") ||
+            text.includes("cost") ||
+            text.includes("how much")
+        ) {
+
+            return (
+                "My services have flexible pricing. Basic work starts from around KSh 1,500+, professional projects from around KSh 5,000+, and advanced projects from around KSh 10,000+. Submit a project request for an exact quote."
+            );
+
+        }
+
+
+        if (
+            text.includes("website") ||
+            text.includes("web development")
+        ) {
+
+            return (
+                "I provide responsive website development for personal brands, businesses, portfolios and online projects."
+            );
+
+        }
+
+
+        if (
+            text.includes("design") ||
+            text.includes("graphic")
+        ) {
+
+            return (
+                "I provide graphic design services including social media graphics, promotional materials and digital branding."
+            );
+
+        }
+
+
+        if (
+            text.includes("marketing")
+        ) {
+
+            return (
+                "I provide digital marketing and social media support focused on improving online visibility."
+            );
+
+        }
+
+
+        if (
+            text.includes("ai") ||
+            text.includes("artificial intelligence")
+        ) {
+
+            return (
+                "I work with practical AI tools for content creation, productivity and digital workflows."
+            );
+
+        }
+
+
+        if (
+            text.includes("class") ||
+            text.includes("learn") ||
+            text.includes("course")
+        ) {
+
+            return (
+                "Free online classes are scheduled daily at 9:00 PM. Canva, Twiva and AI-related digital skills are among the topics."
+            );
+
+        }
+
+
+        if (
+            text.includes("contact") ||
+            text.includes("email")
+        ) {
+
+            return (
+                "You can contact Jay Ouko at emmanuelouko21@gmail.com or use the contact form on this website."
+            );
+
+        }
+
+
+        if (
+            text.includes("whatsapp") ||
+            text.includes("phone")
+        ) {
+
+            return (
+                "You can reach Jay Ouko through WhatsApp using the floating WhatsApp button or the contact section."
+            );
+
+        }
+
+
+        if (
+            text.includes("hire") ||
+            text.includes("project")
+        ) {
+
+            return (
+                "To hire me, go to the Hire Me section, complete the project form and submit your request."
+            );
+
+        }
+
+
+        return (
+            "I can help you with information about services, pricing, web development, graphic design, digital marketing, AI tools, free classes, hiring or contact details."
+        );
+
+    }
+
+
+    function sendChatMessage() {
+
+        if (!chatInput) {
+            return;
+        }
+
+
+        const message =
+            chatInput.value.trim();
+
+
+        if (!message) {
+            return;
+        }
+
+
+        addChatMessage(
+            message,
+            "user"
+        );
+
+
+        chatInput.value =
+            "";
+
+
+        setTimeout(
+            () => {
+
+                const reply =
+                    getBotReply(
+                        message
+                    );
+
+
+                addChatMessage(
+                    reply,
+                    "bot"
+                );
+
+            },
+            350
+        );
+
+    }
+
+
+    chatSend?.addEventListener(
+        "click",
+        sendChatMessage
+    );
+
+
+    chatInput?.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                sendChatMessage();
+
+            }
+
+        }
+    );
+
+
+    /* ========================================================
+       EXTERNAL LINK SAFETY
+    ======================================================== */
+
+    $$(
+        'a[target="_blank"]'
+    ).forEach(
+        (link) => {
+
+            link.setAttribute(
+                "rel",
+                "noopener noreferrer"
+            );
+
+        }
+    );
+
+
+    /* ========================================================
+       INITIAL DATA
+    ======================================================== */
+
+    loadApprovedReviews();
+
+
+    /* ========================================================
+       PAGE READY
+    ======================================================== */
+
+    document.documentElement
+        .classList
+        .add(
+            "js-ready"
+        );
+
+
+    console.log(
+        "Jay Ouko website initialized successfully."
+    );
 
 })();
