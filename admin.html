@@ -1,1800 +1,2078 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <meta name="theme-color" content="#07111f">
-
-  <title>Jay Ouko | Admin Dashboard</title>
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #07111f;
-      --panel: #0d1b2d;
-      --panel-2: #12243a;
-      --border: rgba(255,255,255,0.09);
-      --text: #f5f7fb;
-      --muted: #9aa9bd;
-      --primary: #00d4ff;
-      --secondary: #7c3aed;
-      --success: #22c55e;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --shadow: 0 20px 50px rgba(0,0,0,0.35);
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(0,212,255,.12), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(124,58,237,.12), transparent 30%),
-        var(--bg);
-      color: var(--text);
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* =========================
-       LOGIN
-    ========================= */
-
-    .login-screen {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
-
-    .login-card {
-      width: min(440px, 100%);
-      padding: 35px;
-      background: rgba(13,27,45,.92);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .brand-icon {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 15px;
-      display: grid;
-      place-items: center;
-      border-radius: 20px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      font-size: 28px;
-      font-weight: 900;
-      color: white;
-    }
-
-    .brand h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .brand p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .field {
-      margin-bottom: 18px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 8px;
-      color: #dbe7f5;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .field input {
-      width: 100%;
-      padding: 14px 15px;
-      color: white;
-      background: #081523;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-    }
-
-    .field input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0,212,255,.1);
-    }
-
-    .login-button {
-      width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .login-button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .login-message {
-      min-height: 22px;
-      margin-top: 15px;
-      text-align: center;
-      color: #ff8e8e;
-      font-size: 14px;
-    }
-
-    /* =========================
-       DASHBOARD
-    ========================= */
-
-    .dashboard {
-      min-height: 100vh;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      min-height: 72px;
-      padding: 0 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      background: rgba(7,17,31,.9);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(18px);
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .mini-logo {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      font-weight: 900;
-    }
-
-    .topbar-title strong {
-      display: block;
-    }
-
-    .topbar-title span {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .logout-button {
-      border: 1px solid var(--border);
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: #101f32;
-      color: white;
-      font-weight: 700;
-    }
-
-    .logout-button:hover {
-      border-color: var(--danger);
-      color: #ff9c9c;
-    }
-
-    .dashboard-content {
-      width: min(1400px, 100%);
-      margin: auto;
-      padding: 35px 25px 60px;
-    }
-
-    .welcome {
-      margin-bottom: 30px;
-    }
-
-    .welcome h1 {
-      font-size: clamp(28px, 4vw, 42px);
-      margin-bottom: 8px;
-    }
-
-    .welcome p {
-      color: var(--muted);
-    }
-
-    /* =========================
-       STATS
-    ========================= */
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .stat-card {
-      padding: 20px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-card span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .stat-card strong {
-      display: block;
-      margin-top: 10px;
-      font-size: 30px;
-    }
-
-    /* =========================
-       PANELS
-    ========================= */
-
-    .panel {
-      margin-bottom: 25px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .panel-header {
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .panel-header h2 {
-      font-size: 20px;
-    }
-
-    .refresh-button {
-      padding: 9px 13px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      color: white;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 750px;
-    }
-
-    th,
-    td {
-      padding: 15px 18px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    th {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    td {
-      font-size: 14px;
-    }
-
-    .empty {
-      padding: 30px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    /* =========================
-       STATUS
-    ========================= */
-
-    .status {
-      display: inline-block;
-      padding: 6px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .status.pending {
-      background: rgba(245,158,11,.12);
-      color: #fbbf24;
-    }
-
-    .status.approved,
-    .status.confirmed,
-    .status.completed,
-    .status.read {
-      background: rgba(34,197,94,.12);
-      color: #4ade80;
-    }
-
-    .status.rejected {
-      background: rgba(239,68,68,.12);
-      color: #f87171;
-    }
-
-    .status.unread {
-      background: rgba(0,212,255,.12);
-      color: #22d3ee;
-    }
-
-    /* =========================
-       ACTIONS
-    ========================= */
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-
-    .action-button {
-      border: 0;
-      border-radius: 8px;
-      padding: 7px 10px;
-      color: white;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .approve {
-      background: #15803d;
-    }
-
-    .reject {
-      background: #b91c1c;
-    }
-
-    .complete {
-      background: #0369a1;
-    }
-
-    /* =========================
-       SECURITY MESSAGE
-    ========================= */
-
-    .security-note {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid rgba(34,197,94,.2);
-      background: rgba(34,197,94,.05);
-      color: #a7f3d0;
-      font-size: 13px;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 1100px) {
-      .stats {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
-      .topbar {
-        padding: 0 15px;
-      }
-
-      .topbar-title span {
-        display: none;
-      }
-
-      .dashboard-content {
-        padding: 25px 15px 50px;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .stat-card strong {
-        font-size: 24px;
-      }
-
-      .login-card {
-        padding: 25px;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .welcome h1 {
-        font-size: 28px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Jay Ouko | Admin Dashboard</title>
+
+    <meta name="description"
+          content="Jay Ouko website administration dashboard">
+
+    <style>
+        :root {
+            --bg: #07111f;
+            --card: #0d1b2e;
+            --card2: #10243b;
+            --text: #f5f7fb;
+            --muted: #9fb0c5;
+            --border: rgba(255,255,255,.10);
+            --primary: #38bdf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 20px 50px rgba(0,0,0,.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* LOGIN */
+
+        .login-screen {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background:
+                radial-gradient(circle at top left, rgba(56,189,248,.15), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(99,102,241,.15), transparent 35%),
+                var(--bg);
+        }
+
+        .login-card {
+            width: min(430px, 100%);
+            background: rgba(13,27,46,.95);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-logo {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 15px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            color: white;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .brand h1 {
+            font-size: 25px;
+            margin-bottom: 7px;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .field {
+            margin-bottom: 17px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #091727;
+            color: var(--text);
+            outline: none;
+        }
+
+        .field textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 11px;
+            padding: 11px 15px;
+            font-weight: 800;
+            transition: .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #00111b;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #03130a;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #1a1000;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #20344d;
+            color: white;
+        }
+
+        .full {
+            width: 100%;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(239,68,68,.12);
+            color: #fca5a5;
+        }
+
+        .message.success {
+            background: rgba(34,197,94,.12);
+            color: #86efac;
+        }
+
+        /* DASHBOARD */
+
+        .dashboard {
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(7,17,31,.94);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 22px;
+        }
+
+        .topbar-inner {
+            max-width: 1500px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .topbar-title h1 {
+            font-size: 21px;
+        }
+
+        .topbar-title p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .live-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: rgba(34,197,94,.10);
+            color: #86efac;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 12px var(--success);
+        }
+
+        .dashboard-content {
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px 22px 60px;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card strong {
+            font-size: 30px;
+        }
+
+        /* SECTIONS */
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 22px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+        }
+
+        .section-header span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+            font-size: 13px;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        td {
+            color: #e6edf7;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 28px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status.pending,
+        .status.unread {
+            background: rgba(245,158,11,.12);
+            color: #fbbf24;
+        }
+
+        .status.approved,
+        .status.completed {
+            background: rgba(34,197,94,.12);
+            color: #86efac;
+        }
+
+        .status.rejected {
+            background: rgba(239,68,68,.12);
+            color: #fca5a5;
+        }
+
+        .status.contacted {
+            background: rgba(56,189,248,.12);
+            color: #7dd3fc;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .actions .btn {
+            padding: 7px 9px;
+            font-size: 11px;
+        }
+
+        .notification {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: min(380px, calc(100% - 40px));
+            padding: 16px;
+            border-radius: 15px;
+            background: #10243b;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transform: translateY(150%);
+            opacity: 0;
+            transition: .3s ease;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .notification p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .topbar-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar-actions {
+                width: 100%;
+            }
+
+            .topbar-actions .btn,
+            .live-status {
+                flex: 1;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .dashboard-content {
+                padding: 18px 12px 40px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-card strong {
+                font-size: 24px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .login-card {
+                padding: 24px 18px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-  <!-- =========================
-       LOGIN SCREEN
-  ========================== -->
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-  <section class="login-screen" id="loginScreen">
+<div id="loginScreen" class="login-screen">
 
     <div class="login-card">
 
-      <div class="brand">
-        <div class="brand-icon">JO</div>
+        <div class="brand">
+            <div class="brand-logo">J</div>
 
-        <h1>Jay Ouko Admin</h1>
+            <h1>Jay Ouko Admin</h1>
 
-        <p>
-          Secure administration dashboard
-        </p>
-      </div>
-
-      <form id="loginForm">
-
-        <div class="field">
-          <label for="email">
-            Admin Email
-          </label>
-
-          <input
-            type="email"
-            id="email"
-            value="emmanuelouko21@gmail.com"
-            required
-          >
+            <p>
+                Secure website administration dashboard
+            </p>
         </div>
 
-        <div class="field">
-          <label for="password">
-            Password
-          </label>
+        <form id="loginForm">
 
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your admin password"
-            required
-          >
-        </div>
+            <div class="field">
+                <label for="loginEmail">
+                    Email
+                </label>
 
-        <button
-          type="submit"
-          class="login-button"
-          id="loginButton"
-        >
-          Sign In
-        </button>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Enter admin email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="loginPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary full"
+                id="loginButton"
+            >
+                Login to Dashboard
+            </button>
+
+        </form>
 
         <div
-          class="login-message"
-          id="loginMessage"
+            id="loginMessage"
+            class="message"
         ></div>
-
-      </form>
 
     </div>
 
-  </section>
+</div>
 
 
-  <!-- =========================
-       DASHBOARD
-  ========================== -->
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 
-  <main
-    class="dashboard hidden"
-    id="dashboard"
-  >
+<div id="dashboard" class="dashboard hidden">
 
     <header class="topbar">
 
-      <div class="topbar-left">
+        <div class="topbar-inner">
 
-        <div class="mini-logo">
-          JO
+            <div class="topbar-title">
+
+                <h1>Jay Ouko Dashboard</h1>
+
+                <p>
+                    Manage website requests, registrations,
+                    reviews and messages.
+                </p>
+
+            </div>
+
+            <div class="topbar-actions">
+
+                <div
+                    class="live-status"
+                    id="realtimeStatus"
+                >
+                    <span class="live-dot"></span>
+                    LIVE
+                </div>
+
+                <button
+                    class="btn btn-secondary"
+                    id="refreshButton"
+                >
+                    Refresh
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    id="logoutButton"
+                >
+                    Logout
+                </button>
+
+            </div>
+
         </div>
-
-        <div class="topbar-title">
-
-          <strong>
-            Jay Ouko Admin
-          </strong>
-
-          <span>
-            Website Management System
-          </span>
-
-        </div>
-
-      </div>
-
-      <button
-        class="logout-button"
-        id="logoutButton"
-      >
-        Logout
-      </button>
 
     </header>
 
 
-    <div class="dashboard-content">
+    <main class="dashboard-content">
 
-      <section class="welcome">
+        <!-- STATS -->
 
-        <h1>
-          Admin Dashboard
-        </h1>
+        <section class="stats">
 
-        <p id="welcomeText">
-          Manage your website from one place.
-        </p>
+            <div class="stat-card">
+                <span>Hire Requests</span>
+                <strong id="hireCount">0</strong>
+            </div>
 
-      </section>
+            <div class="stat-card">
+                <span>Registrations</span>
+                <strong id="registrationCount">0</strong>
+            </div>
 
+            <div class="stat-card">
+                <span>Reviews</span>
+                <strong id="reviewCount">0</strong>
+            </div>
 
-      <!-- =========================
-           STATISTICS
-      ========================== -->
+            <div class="stat-card">
+                <span>Messages</span>
+                <strong id="messageCount">0</strong>
+            </div>
 
-      <section class="stats">
+            <div class="stat-card">
+                <span>Payments</span>
+                <strong id="paymentCount">0</strong>
+            </div>
 
-        <div class="stat-card">
-          <span>Hire Requests</span>
-          <strong id="hireCount">0</strong>
-        </div>
+        </section>
 
-        <div class="stat-card">
-          <span>Registrations</span>
-          <strong id="registrationCount">0</strong>
-        </div>
 
-        <div class="stat-card">
-          <span>Reviews</span>
-          <strong id="reviewCount">0</strong>
-        </div>
+        <!-- HIRE REQUESTS -->
 
-        <div class="stat-card">
-          <span>Messages</span>
-          <strong id="messageCount">0</strong>
-        </div>
+        <section class="section">
 
-        <div class="stat-card">
-          <span>Payments</span>
-          <strong id="paymentCount">0</strong>
-        </div>
+            <div class="section-header">
 
-      </section>
+                <div>
+                    <h2>💼 Hire Requests</h2>
+                    <span>Client project requests</span>
+                </div>
 
+                <span id="hireUpdated">
+                    Live
+                </span>
 
-      <!-- =========================
-           HIRE REQUESTS
-      ========================== -->
+            </div>
 
-      <section class="panel">
+            <div class="table-wrapper">
 
-        <div class="panel-header">
+                <table>
 
-          <h2>
-            Hire Requests
-          </h2>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Budget</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-          <button
-            class="refresh-button"
-            data-refresh="hire"
-          >
-            Refresh
-          </button>
+                    <tbody id="hireTable">
+                        <tr>
+                            <td colspan="8" class="empty">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
 
-        </div>
+                </table>
 
-        <div class="table-wrapper">
+            </div>
 
-          <table>
+        </section>
 
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Budget</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
 
-            <tbody id="hireTable">
-            </tbody>
+        <!-- REGISTRATIONS -->
 
-          </table>
+        <section class="section">
 
-          <div
-            class="empty"
-            id="hireEmpty"
-          >
-            No hire requests yet.
-          </div>
+            <div class="section-header">
 
-        </div>
+                <div>
+                    <h2>🎓 Class Registrations</h2>
+                    <span>Online class registrations</span>
+                </div>
 
-      </section>
+                <span>
+                    Live
+                </span>
 
+            </div>
 
-      <!-- =========================
-           REGISTRATIONS
-      ========================== -->
+            <div class="table-wrapper">
 
-      <section class="panel">
+                <table>
 
-        <div class="panel-header">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Program</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-          <h2>
-            Program Registrations
-          </h2>
+                    <tbody id="registrationTable">
+                        <tr>
+                            <td colspan="8" class="empty">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
 
-          <button
-            class="refresh-button"
-            data-refresh="registrations"
-          >
-            Refresh
-          </button>
+                </table>
 
-        </div>
+            </div>
 
-        <div class="table-wrapper">
+        </section>
 
-          <table>
 
-            <thead>
-              <tr>
-                <th>Participant</th>
-                <th>Program</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+        <!-- REVIEWS -->
 
-            <tbody id="registrationTable">
-            </tbody>
+        <section class="section">
 
-          </table>
+            <div class="section-header">
 
-          <div
-            class="empty"
-            id="registrationEmpty"
-          >
-            No registrations yet.
-          </div>
+                <div>
+                    <h2>⭐ Reviews</h2>
+                    <span>Customer reviews awaiting approval</span>
+                </div>
 
-        </div>
+                <span>
+                    Live
+                </span>
 
-      </section>
+            </div>
 
+            <div class="table-wrapper">
 
-      <!-- =========================
-           REVIEWS
-      ========================== -->
+                <table>
 
-      <section class="panel">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-        <div class="panel-header">
+                    <tbody id="reviewTable">
+                        <tr>
+                            <td colspan="6" class="empty">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
 
-          <h2>
-            Customer Reviews
-          </h2>
+                </table>
 
-          <button
-            class="refresh-button"
-            data-refresh="reviews"
-          >
-            Refresh
-          </button>
+            </div>
 
-        </div>
+        </section>
 
-        <div class="table-wrapper">
 
-          <table>
+        <!-- CONTACT MESSAGES -->
 
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Rating</th>
-                <th>Review</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+        <section class="section">
 
-            <tbody id="reviewTable">
-            </tbody>
+            <div class="section-header">
 
-          </table>
+                <div>
+                    <h2>📨 Contact Messages</h2>
+                    <span>Messages sent through the website</span>
+                </div>
 
-          <div
-            class="empty"
-            id="reviewEmpty"
-          >
-            No reviews yet.
-          </div>
+                <span>
+                    Live
+                </span>
 
-        </div>
+            </div>
 
-      </section>
+            <div class="table-wrapper">
 
+                <table>
 
-      <!-- =========================
-           CONTACT MESSAGES
-      ========================== -->
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-      <section class="panel">
+                    <tbody id="messageTable">
+                        <tr>
+                            <td colspan="7" class="empty">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
 
-        <div class="panel-header">
+                </table>
 
-          <h2>
-            Contact Messages
-          </h2>
+            </div>
 
-          <button
-            class="refresh-button"
-            data-refresh="messages"
-          >
-            Refresh
-          </button>
+        </section>
 
-        </div>
 
-        <div class="table-wrapper">
+        <!-- PAYMENTS -->
 
-          <table>
+        <section class="section">
 
-            <thead>
-              <tr>
-                <th>Sender</th>
-                <th>Subject</th>
-                <th>Message</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
+            <div class="section-header">
 
-            <tbody id="messageTable">
-            </tbody>
+                <div>
+                    <h2>💰 Payment Requests</h2>
+                    <span>Payment information submitted by clients</span>
+                </div>
 
-          </table>
+                <span>
+                    Live
+                </span>
 
-          <div
-            class="empty"
-            id="messageEmpty"
-          >
-            No messages yet.
-          </div>
+            </div>
 
-        </div>
+            <div class="table-wrapper">
 
-      </section>
+                <table>
 
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Reference</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-      <!-- =========================
-           PAYMENT REQUESTS
-      ========================== -->
+                    <tbody id="paymentTable">
+                        <tr>
+                            <td colspan="10" class="empty">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
 
-      <section class="panel">
+                </table>
 
-        <div class="panel-header">
+            </div>
 
-          <h2>
-            Payment Requests
-          </h2>
+        </section>
 
-          <button
-            class="refresh-button"
-            data-refresh="payments"
-          >
-            Refresh
-          </button>
+    </main>
 
-        </div>
+</div>
 
-        <div class="table-wrapper">
 
-          <table>
+<!-- NOTIFICATION -->
 
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Amount</th>
-                <th>Reference</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
+<div
+    id="notification"
+    class="notification"
+>
+    <strong id="notificationTitle">
+        New activity
+    </strong>
 
-            <tbody id="paymentTable">
-            </tbody>
+    <p id="notificationText">
+        Something changed on your website.
+    </p>
+</div>
 
-          </table>
 
-          <div
-            class="empty"
-            id="paymentEmpty"
-          >
-            No payment requests yet.
-          </div>
+<!-- SUPABASE -->
 
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-      </section>
 
+<script>
 
-      <div class="security-note">
+/* =========================================================
+   SUPABASE CONFIGURATION
+========================================================= */
 
-        🔒 Your dashboard is protected by Supabase
-        Authentication and database Row Level Security.
+const SUPABASE_URL =
+    "https://slusgnhkjcnuitqcmwag.supabase.co";
 
-      </div>
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
 
-    </div>
-
-  </main>
-
-
-  <script>
-
-    /* =====================================================
-       SUPABASE CONFIGURATION
-    ===================================================== */
-
-    const SUPABASE_URL =
-      "https://slusgnhkjcnuitqcmwag.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_QEbq0RoIxbrW5HgmNelWZg_h3FWaMVL";
-
-
-    const supabaseClient =
-      window.supabase.createClient(
+const supabaseClient =
+    window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
-      );
-
-
-    /* =====================================================
-       ELEMENTS
-    ===================================================== */
-
-    const loginScreen =
-      document.getElementById("loginScreen");
-
-    const dashboard =
-      document.getElementById("dashboard");
-
-    const loginForm =
-      document.getElementById("loginForm");
-
-    const loginButton =
-      document.getElementById("loginButton");
-
-    const loginMessage =
-      document.getElementById("loginMessage");
-
-    const logoutButton =
-      document.getElementById("logoutButton");
-
-
-    /* =====================================================
-       HELPER
-    ===================================================== */
-
-    function showLoginMessage(message) {
-      loginMessage.textContent = message;
-    }
-
-
-    function showDashboard() {
-      loginScreen.classList.add("hidden");
-      dashboard.classList.remove("hidden");
-    }
-
-
-    function showLogin() {
-      dashboard.classList.add("hidden");
-      loginScreen.classList.remove("hidden");
-    }
-
-
-    /* =====================================================
-       VERIFY ADMIN
-    ===================================================== */
-
-    async function isAdmin(userId) {
-
-      const { data, error } =
-        await supabaseClient
-          .from("admin_profiles")
-          .select("user_id, display_name, role")
-          .eq("user_id", userId)
-          .eq("role", "admin")
-          .maybeSingle();
-
-      if (error) {
-        console.error(error);
-        return false;
-      }
-
-      return !!data;
-    }
-
-
-    /* =====================================================
-       CHECK EXISTING SESSION
-    ===================================================== */
-
-    async function checkSession() {
-
-      const {
-        data: {
-          session
-        }
-      } = await supabaseClient.auth.getSession();
-
-      if (!session) {
-        showLogin();
-        return;
-      }
-
-      const admin = await isAdmin(
-        session.user.id
-      );
-
-      if (!admin) {
-
-        await supabaseClient.auth.signOut();
-
-        showLoginMessage(
-          "This account is not authorized as an administrator."
-        );
-
-        return;
-      }
-
-      showDashboard();
-
-      await loadDashboard();
-    }
-
-
-    /* =====================================================
-       LOGIN
-    ===================================================== */
-
-    loginForm.addEventListener(
-      "submit",
-      async (event) => {
-
-        event.preventDefault();
-
-        loginButton.disabled = true;
-
-        loginButton.textContent =
-          "Signing in...";
-
-        showLoginMessage("");
-
-        const email =
-          document.getElementById("email")
-            .value
-            .trim();
-
-        const password =
-          document.getElementById("password")
-            .value;
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-
-        if (error) {
-
-          console.error(error);
-
-          showLoginMessage(
-            error.message
-          );
-
-          loginButton.disabled = false;
-
-          loginButton.textContent =
-            "Sign In";
-
-          return;
-        }
-
-
-        const admin =
-          await isAdmin(data.user.id);
-
-
-        if (!admin) {
-
-          await supabaseClient.auth.signOut();
-
-          showLoginMessage(
-            "Login successful, but this account does not have administrator permission."
-          );
-
-          loginButton.disabled = false;
-
-          loginButton.textContent =
-            "Sign In";
-
-          return;
-        }
-
-
-        showDashboard();
-
-        await loadDashboard();
-
-        loginButton.disabled = false;
-
-        loginButton.textContent =
-          "Sign In";
-      }
     );
 
 
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
+/* =========================================================
+   DOM HELPERS
+========================================================= */
 
-    logoutButton.addEventListener(
-      "click",
-      async () => {
+const $ = (selector) =>
+    document.querySelector(selector);
 
-        await supabaseClient.auth.signOut();
-
-        showLogin();
-
-        document.getElementById(
-          "password"
-        ).value = "";
-
-        showLoginMessage(
-          "You have been logged out."
-        );
-      }
-    );
+const $$ = (selector) =>
+    document.querySelectorAll(selector);
 
 
-    /* =====================================================
-       LOAD DASHBOARD
-    ===================================================== */
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
-    async function loadDashboard() {
+const loginScreen =
+    $("#loginScreen");
 
-      await Promise.all([
-        loadHireRequests(),
-        loadRegistrations(),
-        loadReviews(),
-        loadMessages(),
-        loadPayments()
-      ]);
+const dashboard =
+    $("#dashboard");
 
+const loginForm =
+    $("#loginForm");
+
+const loginMessage =
+    $("#loginMessage");
+
+const loginButton =
+    $("#loginButton");
+
+const logoutButton =
+    $("#logoutButton");
+
+const refreshButton =
+    $("#refreshButton");
+
+const realtimeStatus =
+    $("#realtimeStatus");
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+let notificationTimer = null;
+
+function showNotification(title, message) {
+
+    const box =
+        $("#notification");
+
+    $("#notificationTitle").textContent =
+        title;
+
+    $("#notificationText").textContent =
+        message;
+
+    box.classList.add("show");
+
+    clearTimeout(notificationTimer);
+
+    notificationTimer =
+        setTimeout(() => {
+            box.classList.remove("show");
+        }, 5000);
+}
+
+
+/* =========================================================
+   LOGIN MESSAGE
+========================================================= */
+
+function showLoginMessage(message, type = "error") {
+
+    loginMessage.textContent =
+        message;
+
+    loginMessage.className =
+        `message show ${type}`;
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
     }
 
-
-    /* =====================================================
-       HIRE REQUESTS
-    ===================================================== */
-
-    async function loadHireRequests() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("hire_requests")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-      document.getElementById(
-        "hireCount"
-      ).textContent = data.length;
-
-      const table =
-        document.getElementById(
-          "hireTable"
-        );
-
-      const empty =
-        document.getElementById(
-          "hireEmpty"
-        );
-
-      table.innerHTML = "";
-
-      empty.classList.toggle(
-        "hidden",
-        data.length > 0
-      );
-
-
-      data.forEach((item) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            <strong>${escapeHtml(item.name)}</strong>
-            <br>
-            <small>${escapeHtml(item.email)}</small>
-            <br>
-            <small>${escapeHtml(item.phone || "")}</small>
-          </td>
-
-          <td>
-            ${escapeHtml(item.service)}
-          </td>
-
-          <td>
-            ${escapeHtml(item.budget || "-")}
-          </td>
-
-          <td>
-            ${statusBadge(item.status)}
-          </td>
-
-          <td>
-            ${formatDate(item.created_at)}
-          </td>
-
-          <td>
-            ${adminActions(
-              "hire_requests",
-              item.id,
-              item.status
-            )}
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =====================================================
-       REGISTRATIONS
-    ===================================================== */
-
-    async function loadRegistrations() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("registrations")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-      document.getElementById(
-        "registrationCount"
-      ).textContent = data.length;
-
-      const table =
-        document.getElementById(
-          "registrationTable"
-        );
-
-      const empty =
-        document.getElementById(
-          "registrationEmpty"
-        );
-
-      table.innerHTML = "";
-
-      empty.classList.toggle(
-        "hidden",
-        data.length > 0
-      );
-
-
-      data.forEach((item) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            <strong>${escapeHtml(item.name)}</strong>
-            <br>
-            <small>${escapeHtml(item.email)}</small>
-          </td>
-
-          <td>
-            ${escapeHtml(item.program)}
-          </td>
-
-          <td>
-            ${escapeHtml(item.phone || "-")}
-          </td>
-
-          <td>
-            ${statusBadge(item.status)}
-          </td>
-
-          <td>
-            ${formatDate(item.created_at)}
-          </td>
-
-          <td>
-            ${adminActions(
-              "registrations",
-              item.id,
-              item.status
-            )}
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =====================================================
-       REVIEWS
-    ===================================================== */
-
-    async function loadReviews() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("reviews")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-      document.getElementById(
-        "reviewCount"
-      ).textContent = data.length;
-
-      const table =
-        document.getElementById(
-          "reviewTable"
-        );
-
-      const empty =
-        document.getElementById(
-          "reviewEmpty"
-        );
-
-      table.innerHTML = "";
-
-      empty.classList.toggle(
-        "hidden",
-        data.length > 0
-      );
-
-
-      data.forEach((item) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            ${escapeHtml(item.name)}
-          </td>
-
-          <td>
-            ${"★".repeat(item.rating)}
-          </td>
-
-          <td>
-            ${escapeHtml(item.message)}
-          </td>
-
-          <td>
-            ${statusBadge(item.status)}
-          </td>
-
-          <td>
-            ${formatDate(item.created_at)}
-          </td>
-
-          <td>
-            ${adminActions(
-              "reviews",
-              item.id,
-              item.status
-            )}
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =====================================================
-       CONTACT MESSAGES
-    ===================================================== */
-
-    async function loadMessages() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("contact_messages")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-      document.getElementById(
-        "messageCount"
-      ).textContent = data.length;
-
-      const table =
-        document.getElementById(
-          "messageTable"
-        );
-
-      const empty =
-        document.getElementById(
-          "messageEmpty"
-        );
-
-      table.innerHTML = "";
-
-      empty.classList.toggle(
-        "hidden",
-        data.length > 0
-      );
-
-
-      data.forEach((item) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            <strong>${escapeHtml(item.name)}</strong>
-            <br>
-            <small>${escapeHtml(item.email)}</small>
-          </td>
-
-          <td>
-            ${escapeHtml(item.subject || "-")}
-          </td>
-
-          <td>
-            ${escapeHtml(item.message)}
-          </td>
-
-          <td>
-            ${statusBadge(item.status)}
-          </td>
-
-          <td>
-            ${formatDate(item.created_at)}
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =====================================================
-       PAYMENTS
-    ===================================================== */
-
-    async function loadPayments() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("payment_requests")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-      document.getElementById(
-        "paymentCount"
-      ).textContent = data.length;
-
-      const table =
-        document.getElementById(
-          "paymentTable"
-        );
-
-      const empty =
-        document.getElementById(
-          "paymentEmpty"
-        );
-
-      table.innerHTML = "";
-
-      empty.classList.toggle(
-        "hidden",
-        data.length > 0
-      );
-
-
-      data.forEach((item) => {
-
-        const row =
-          document.createElement("tr");
-
-        row.innerHTML = `
-
-          <td>
-            ${escapeHtml(item.name)}
-            <br>
-            <small>${escapeHtml(item.phone || "")}</small>
-          </td>
-
-          <td>
-            ${escapeHtml(item.service)}
-          </td>
-
-          <td>
-            ${item.amount ?? "-"}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              item.transaction_reference || "-"
-            )}
-          </td>
-
-          <td>
-            ${statusBadge(item.status)}
-          </td>
-
-          <td>
-            ${formatDate(item.created_at)}
-          </td>
-
-        `;
-
-        table.appendChild(row);
-
-      });
-
-    }
-
-
-    /* =====================================================
-       ADMIN ACTIONS
-    ===================================================== */
-
-    function adminActions(
-      table,
-      id,
-      currentStatus
-    ) {
-
-      let html = `
-        <div class="actions">
-      `;
-
-
-      if (
-        currentStatus === "pending"
-      ) {
-
-        html += `
-          <button
-            class="action-button approve"
-            onclick="changeStatus(
-              '${table}',
-              '${id}',
-              'approved'
-            )"
-          >
-            Approve
-          </button>
-
-          <button
-            class="action-button reject"
-            onclick="changeStatus(
-              '${table}',
-              '${id}',
-              'rejected'
-            )"
-          >
-            Reject
-          </button>
-        `;
-
-      }
-
-
-      if (
-        table === "hire_requests" &&
-        currentStatus === "approved"
-      ) {
-
-        html += `
-          <button
-            class="action-button complete"
-            onclick="changeStatus(
-              '${table}',
-              '${id}',
-              'completed'
-            )"
-          >
-            Complete
-          </button>
-        `;
-
-      }
-
-
-      html += "</div>";
-
-      return html;
-    }
-
-
-    /* =====================================================
-       CHANGE STATUS
-    ===================================================== */
-
-    async function changeStatus(
-      table,
-      id,
-      newStatus
-    ) {
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from(table)
-          .update({
-            status: newStatus
-          })
-          .eq("id", id);
-
-      if (error) {
-
-        alert(
-          "Could not update the request: " +
-          error.message
-        );
-
-        console.error(error);
-
-        return;
-      }
-
-      await loadDashboard();
-
-    }
-
-
-    /* =====================================================
-       STATUS BADGE
-    ===================================================== */
-
-    function statusBadge(status) {
-
-      return `
-        <span class="status ${escapeHtml(status)}">
-          ${escapeHtml(status)}
-        </span>
-      `;
-    }
-
-
-    /* =====================================================
-       DATE
-    ===================================================== */
-
-    function formatDate(date) {
-
-      if (!date) return "-";
-
-      return new Date(date)
-        .toLocaleString();
-    }
-
-
-    /* =====================================================
-       SECURITY / HTML ESCAPING
-    ===================================================== */
-
-    function escapeHtml(value) {
-
-      return String(value ?? "")
+    return String(value)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDate(value) {
+
+    if (!value) {
+        return "-";
     }
 
+    return new Date(value)
+        .toLocaleString("en-KE", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
+}
 
-    /* =====================================================
-       REFRESH BUTTONS
-    ===================================================== */
 
-    document
-      .querySelectorAll("[data-refresh]")
-      .forEach((button) => {
+/* =========================================================
+   STATUS BADGE
+========================================================= */
 
-        button.addEventListener(
-          "click",
-          loadDashboard
+function statusBadge(status) {
+
+    const safe =
+        status || "pending";
+
+    return `
+        <span class="status ${escapeHtml(safe)}">
+            ${escapeHtml(safe)}
+        </span>
+    `;
+}
+
+
+/* =========================================================
+   ADMIN CHECK
+========================================================= */
+
+async function checkAdmin(userId) {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("admin_profiles")
+        .select("user_id, display_name, role")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (error) {
+
+        console.error(
+            "Admin check error:",
+            error
         );
 
-      });
+        return false;
+    }
+
+    return Boolean(
+        data &&
+        data.role === "admin"
+    );
+}
 
 
-    /* =====================================================
-       AUTH STATE
-    ===================================================== */
+/* =========================================================
+   SHOW DASHBOARD
+========================================================= */
 
-    supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
+async function showDashboard() {
 
-        if (
-          event === "SIGNED_OUT"
-        ) {
+    loginScreen.classList.add("hidden");
 
-          showLogin();
+    dashboard.classList.remove("hidden");
 
+    await loadAllData();
+
+    setupRealtime();
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+loginForm.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+        const email =
+            $("#loginEmail").value.trim();
+
+        const password =
+            $("#loginPassword").value;
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "Signing in...";
+
+        loginMessage.className =
+            "message";
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth
+                .signInWithPassword({
+                    email,
+                    password
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            const user =
+                data.user;
+
+            if (!user) {
+                throw new Error(
+                    "Login succeeded but no user was returned."
+                );
+            }
+
+            const isAdmin =
+                await checkAdmin(user.id);
+
+            if (!isAdmin) {
+
+                await supabaseClient.auth.signOut();
+
+                throw new Error(
+                    "This account is not authorized as an administrator."
+                );
+            }
+
+            await showDashboard();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showLoginMessage(
+                error.message ||
+                "Login failed."
+            );
+
+        } finally {
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login to Dashboard";
         }
 
-      }
+    }
+);
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+logoutButton.addEventListener(
+    "click",
+    async () => {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.reload();
+
+    }
+);
+
+
+/* =========================================================
+   LOAD ALL DATA
+========================================================= */
+
+async function loadAllData() {
+
+    await Promise.all([
+        loadHireRequests(),
+        loadRegistrations(),
+        loadReviews(),
+        loadMessages(),
+        loadPayments()
+    ]);
+
+}
+
+
+/* =========================================================
+   HIRE REQUESTS
+========================================================= */
+
+async function loadHireRequests() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("hire_requests")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(
+            "Hire requests:",
+            error
+        );
+
+        return;
+    }
+
+    $("#hireCount").textContent =
+        data.length;
+
+    const table =
+        $("#hireTable");
+
+    if (!data.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No hire requests yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML =
+        data.map(row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(row.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.email)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.phone)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.service)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.budget)}
+                </td>
+
+                <td>
+                    ${statusBadge(row.status)}
+                </td>
+
+                <td>
+                    ${formatDate(row.created_at)}
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="btn btn-success"
+                            onclick="updateStatus('hire_requests','${row.id}','approved')"
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-warning"
+                            onclick="updateStatus('hire_requests','${row.id}','contacted')"
+                        >
+                            Contacted
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            onclick="updateStatus('hire_requests','${row.id}','rejected')"
+                        >
+                            Reject
+                        </button>
+
+                    </div>
+                </td>
+
+            </tr>
+
+        `).join("");
+}
+
+
+/* =========================================================
+   REGISTRATIONS
+========================================================= */
+
+async function loadRegistrations() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("registrations")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(
+            "Registrations:",
+            error
+        );
+
+        return;
+    }
+
+    $("#registrationCount").textContent =
+        data.length;
+
+    const table =
+        $("#registrationTable");
+
+    if (!data.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No registrations yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML =
+        data.map(row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(row.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.email)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.phone)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.program)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.message)}
+                </td>
+
+                <td>
+                    ${statusBadge(row.status)}
+                </td>
+
+                <td>
+                    ${formatDate(row.created_at)}
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="btn btn-success"
+                            onclick="updateStatus('registrations','${row.id}','approved')"
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-warning"
+                            onclick="updateStatus('registrations','${row.id}','contacted')"
+                        >
+                            Contacted
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            onclick="updateStatus('registrations','${row.id}','rejected')"
+                        >
+                            Reject
+                        </button>
+
+                    </div>
+                </td>
+
+            </tr>
+
+        `).join("");
+}
+
+
+/* =========================================================
+   REVIEWS
+========================================================= */
+
+async function loadReviews() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("reviews")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(
+            "Reviews:",
+            error
+        );
+
+        return;
+    }
+
+    $("#reviewCount").textContent =
+        data.length;
+
+    const table =
+        $("#reviewTable");
+
+    if (!data.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    No reviews yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML =
+        data.map(row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(row.name)}
+                </td>
+
+                <td>
+                    ${"★".repeat(
+                        Math.max(
+                            0,
+                            Math.min(
+                                5,
+                                Number(row.rating) || 0
+                            )
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.message)}
+                </td>
+
+                <td>
+                    ${statusBadge(row.status)}
+                </td>
+
+                <td>
+                    ${formatDate(row.created_at)}
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="btn btn-success"
+                            onclick="updateStatus('reviews','${row.id}','approved')"
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            onclick="updateStatus('reviews','${row.id}','rejected')"
+                        >
+                            Reject
+                        </button>
+
+                    </div>
+                </td>
+
+            </tr>
+
+        `).join("");
+}
+
+
+/* =========================================================
+   CONTACT MESSAGES
+========================================================= */
+
+async function loadMessages() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("contact_messages")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(
+            "Messages:",
+            error
+        );
+
+        return;
+    }
+
+    $("#messageCount").textContent =
+        data.length;
+
+    const table =
+        $("#messageTable");
+
+    if (!data.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No messages yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML =
+        data.map(row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(row.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.email)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.subject)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.message)}
+                </td>
+
+                <td>
+                    ${statusBadge(row.status)}
+                </td>
+
+                <td>
+                    ${formatDate(row.created_at)}
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn btn-success"
+                        onclick="updateStatus('contact_messages','${row.id}','read')"
+                    >
+                        Mark Read
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `).join("");
+}
+
+
+/* =========================================================
+   PAYMENTS
+========================================================= */
+
+async function loadPayments() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("payment_requests")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(
+            "Payments:",
+            error
+        );
+
+        return;
+    }
+
+    $("#paymentCount").textContent =
+        data.length;
+
+    const table =
+        $("#paymentTable");
+
+    if (!data.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="10" class="empty">
+                    No payment requests yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML =
+        data.map(row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(row.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.email)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.phone)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.service)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.amount)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.payment_method)}
+                </td>
+
+                <td>
+                    ${escapeHtml(row.transaction_reference)}
+                </td>
+
+                <td>
+                    ${statusBadge(row.status)}
+                </td>
+
+                <td>
+                    ${formatDate(row.created_at)}
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button
+                            class="btn btn-success"
+                            onclick="updateStatus('payment_requests','${row.id}','approved')"
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-warning"
+                            onclick="updateStatus('payment_requests','${row.id}','completed')"
+                        >
+                            Complete
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            onclick="updateStatus('payment_requests','${row.id}','rejected')"
+                        >
+                            Reject
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `).join("");
+}
+
+
+/* =========================================================
+   UPDATE STATUS
+========================================================= */
+
+async function updateStatus(
+    table,
+    id,
+    status
+) {
+
+    const {
+        error
+    } = await supabaseClient
+        .from(table)
+        .update({
+            status,
+            updated_at:
+                new Date().toISOString()
+        })
+        .eq("id", id);
+
+    if (error) {
+
+        console.error(error);
+
+        showNotification(
+            "Update failed",
+            error.message
+        );
+
+        return;
+    }
+
+    showNotification(
+        "Updated",
+        `Status changed to ${status}.`
+    );
+
+    await loadAllData();
+}
+
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+let realtimeChannel = null;
+
+function setupRealtime() {
+
+    if (realtimeChannel) {
+
+        supabaseClient
+            .removeChannel(
+                realtimeChannel
+            );
+    }
+
+    realtimeChannel =
+        supabaseClient
+            .channel("jay-ouko-admin-live")
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "hire_requests"
+                },
+                handleRealtimeChange
+            )
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "registrations"
+                },
+                handleRealtimeChange
+            )
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "reviews"
+                },
+                handleRealtimeChange
+            )
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "contact_messages"
+                },
+                handleRealtimeChange
+            )
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "payment_requests"
+                },
+                handleRealtimeChange
+            )
+
+            .subscribe((status) => {
+
+                console.log(
+                    "Realtime status:",
+                    status
+                );
+
+                if (status === "SUBSCRIBED") {
+
+                    realtimeStatus.innerHTML = `
+                        <span class="live-dot"></span>
+                        LIVE
+                    `;
+
+                    showNotification(
+                        "Realtime connected",
+                        "Your admin dashboard is now receiving live updates."
+                    );
+
+                } else {
+
+                    realtimeStatus.innerHTML = `
+                        <span class="live-dot"></span>
+                        CONNECTING...
+                    `;
+                }
+
+            });
+}
+
+
+/* =========================================================
+   REALTIME CHANGE HANDLER
+========================================================= */
+
+async function handleRealtimeChange(payload) {
+
+    console.log(
+        "Realtime change:",
+        payload
+    );
+
+    const table =
+        payload.table;
+
+    let title =
+        "Website updated";
+
+    let message =
+        "A new database change was detected.";
+
+    if (payload.eventType === "INSERT") {
+
+        title =
+            "🔔 New submission";
+
+        message =
+            `New information was added to ${table.replaceAll("_", " ")}.`;
+    }
+
+    if (payload.eventType === "UPDATE") {
+
+        title =
+            "🔄 Record updated";
+
+        message =
+            `A record in ${table.replaceAll("_", " ")} was updated.`;
+    }
+
+    if (payload.eventType === "DELETE") {
+
+        title =
+            "🗑️ Record deleted";
+
+        message =
+            `A record was deleted from ${table.replaceAll("_", " ")}.`;
+    }
+
+    showNotification(
+        title,
+        message
+    );
+
+    await loadAllData();
+}
+
+
+/* =========================================================
+   MANUAL REFRESH
+========================================================= */
+
+refreshButton.addEventListener(
+    "click",
+    async () => {
+
+        refreshButton.disabled = true;
+
+        refreshButton.textContent =
+            "Refreshing...";
+
+        await loadAllData();
+
+        refreshButton.disabled = false;
+
+        refreshButton.textContent =
+            "Refresh";
+
+        showNotification(
+            "Dashboard refreshed",
+            "All website data has been updated."
+        );
+    }
+);
+
+
+/* =========================================================
+   CHECK EXISTING SESSION
+========================================================= */
+
+async function checkExistingSession() {
+
+    const {
+        data
+    } = await supabaseClient.auth
+        .getSession();
+
+    const session =
+        data.session;
+
+    if (!session) {
+        return;
+    }
+
+    const isAdmin =
+        await checkAdmin(
+            session.user.id
+        );
+
+    if (!isAdmin) {
+
+        await supabaseClient.auth.signOut();
+
+        return;
+    }
+
+    await showDashboard();
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth
+    .onAuthStateChange(
+        async (event, session) => {
+
+            console.log(
+                "Auth event:",
+                event
+            );
+
+            if (
+                event === "SIGNED_OUT"
+            ) {
+
+                loginScreen
+                    .classList
+                    .remove("hidden");
+
+                dashboard
+                    .classList
+                    .add("hidden");
+            }
+
+        }
     );
 
 
-    /* =====================================================
-       START
-    ===================================================== */
+/* =========================================================
+   START
+========================================================= */
 
-    checkSession();
+checkExistingSession();
 
-  </script>
+</script>
 
 </body>
 </html>
