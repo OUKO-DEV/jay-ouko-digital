@@ -7,7 +7,7 @@
 
     /* =========================================================
        SUPABASE CONFIGURATION
-       ========================================================= */
+    ========================================================= */
 
     const SUPABASE_URL = window.JAY_SUPABASE_URL;
     const SUPABASE_KEY = window.JAY_SUPABASE_KEY;
@@ -27,7 +27,7 @@
 
     /* =========================================================
        BASIC HELPERS
-       ========================================================= */
+    ========================================================= */
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => document.querySelectorAll(selector);
@@ -64,13 +64,17 @@
             throw new Error("Supabase is not configured.");
         }
 
-        const { data: result, error } = await supabaseClient
-            .from(table)
-            .insert([data])
-            .select();
+        const { data: result, error } =
+            await supabaseClient
+                .from(table)
+                .insert([data])
+                .select();
 
         if (error) {
-            console.error(`Supabase error in ${table}:`, error);
+            console.error(
+                `Supabase error in ${table}:`,
+                error
+            );
             throw error;
         }
 
@@ -79,7 +83,7 @@
 
     /* =========================================================
        MOBILE MENU
-       ========================================================= */
+    ========================================================= */
 
     const menuToggle =
         $("#menuToggle") ||
@@ -105,18 +109,23 @@
             );
         });
 
-        $$(".nav-menu a, .navbar-menu a").forEach((link) => {
-            link.addEventListener("click", () => {
-                navMenu.classList.remove("active");
-                menuToggle.classList.remove("active");
-                menuToggle.setAttribute("aria-expanded", "false");
+        $$(".main-nav a, .nav-menu a, .navbar-menu a")
+            .forEach((link) => {
+                link.addEventListener("click", () => {
+                    navMenu.classList.remove("active");
+                    menuToggle.classList.remove("active");
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                });
             });
-        });
     }
 
     /* =========================================================
        THEME TOGGLE
-       ========================================================= */
+    ========================================================= */
 
     const themeToggle =
         $("#themeToggle") ||
@@ -136,16 +145,19 @@
             icon.className = dark
                 ? "fas fa-sun"
                 : "fas fa-moon";
-        }
+        } else {
+            const themeIcon = $("#themeIcon");
 
-        if (!icon) {
-            themeToggle.textContent = dark
-                ? "☀️"
-                : "🌙";
+            if (themeIcon) {
+                themeIcon.textContent = dark
+                    ? "☀️"
+                    : "🌙";
+            }
         }
     }
 
-    const savedTheme = localStorage.getItem("jay-theme");
+    const savedTheme =
+        localStorage.getItem("jay-theme");
 
     if (savedTheme === "dark") {
         document.documentElement.classList.add("dark");
@@ -157,9 +169,14 @@
     if (themeToggle) {
         themeToggle.addEventListener("click", () => {
             const isDark =
-                document.documentElement.classList.toggle("dark");
+                document.documentElement.classList.toggle(
+                    "dark"
+                );
 
-            document.body.classList.toggle("dark-mode", isDark);
+            document.body.classList.toggle(
+                "dark-mode",
+                isDark
+            );
 
             localStorage.setItem(
                 "jay-theme",
@@ -172,7 +189,7 @@
 
     /* =========================================================
        HEADER SCROLL EFFECT
-       ========================================================= */
+    ========================================================= */
 
     const header =
         $("header") ||
@@ -189,35 +206,47 @@
         }
     }
 
-    window.addEventListener("scroll", handleHeaderScroll);
+    window.addEventListener(
+        "scroll",
+        handleHeaderScroll
+    );
+
     handleHeaderScroll();
 
     /* =========================================================
        ACTIVE NAVIGATION
-       ========================================================= */
+    ========================================================= */
 
     const sections = $$("section[id]");
-    const navLinks = $$(".nav-menu a, .navbar-menu a");
+
+    const navLinks = $$(
+        ".main-nav a.nav-link, .nav-menu a, .navbar-menu a"
+    );
 
     function updateActiveNav() {
         let current = "";
 
         sections.forEach((section) => {
-            const top = section.offsetTop - 150;
-            const height = section.offsetHeight;
+            const top =
+                section.offsetTop - 150;
+
+            const height =
+                section.offsetHeight;
 
             if (
                 window.scrollY >= top &&
                 window.scrollY < top + height
             ) {
-                current = section.getAttribute("id");
+                current =
+                    section.getAttribute("id");
             }
         });
 
         navLinks.forEach((link) => {
             link.classList.remove("active");
 
-            const href = link.getAttribute("href");
+            const href =
+                link.getAttribute("href");
 
             if (href === `#${current}`) {
                 link.classList.add("active");
@@ -225,103 +254,222 @@
         });
     }
 
-    window.addEventListener("scroll", updateActiveNav);
+    window.addEventListener(
+        "scroll",
+        updateActiveNav
+    );
+
     updateActiveNav();
 
     /* =========================================================
        SMOOTH SCROLLING
-       ========================================================= */
+    ========================================================= */
 
     $$('a[href^="#"]').forEach((link) => {
-        link.addEventListener("click", (event) => {
-            const targetId = link.getAttribute("href");
+        link.addEventListener(
+            "click",
+            (event) => {
+                const targetId =
+                    link.getAttribute("href");
 
-            if (!targetId || targetId === "#") return;
+                if (
+                    !targetId ||
+                    targetId === "#"
+                ) {
+                    return;
+                }
 
-            const target = document.querySelector(targetId);
+                const target =
+                    document.querySelector(
+                        targetId
+                    );
 
-            if (target) {
-                event.preventDefault();
+                if (target) {
+                    event.preventDefault();
 
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                }
             }
-        });
+        );
     });
 
     /* =========================================================
        REVEAL ANIMATIONS
-       ========================================================= */
+    ========================================================= */
 
     const revealElements = $$(
-        ".reveal, .service-card, .portfolio-card, .pricing-card, .testimonial-card, .about-content, .hero-content"
+        ".reveal, .service-card, .portfolio-card, " +
+        ".pricing-card, .testimonial-card, " +
+        ".about-content, .hero-content"
     );
 
     if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-            (entries, obs) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        obs.unobserve(entry.target);
-                    }
-                });
-            },
-            {
-                threshold: 0.12
+        const observer =
+            new IntersectionObserver(
+                (entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (
+                            entry.isIntersecting
+                        ) {
+                            entry.target.classList.add(
+                                "visible"
+                            );
+
+                            obs.unobserve(
+                                entry.target
+                            );
+                        }
+                    });
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+        revealElements.forEach(
+            (element) => {
+                observer.observe(element);
             }
         );
-
-        revealElements.forEach((element) => {
-            observer.observe(element);
-        });
     } else {
-        revealElements.forEach((element) => {
-            element.classList.add("visible");
-        });
+        revealElements.forEach(
+            (element) => {
+                element.classList.add(
+                    "visible"
+                );
+            }
+        );
     }
 
     /* =========================================================
        CURRENT YEAR
-       ========================================================= */
+    ========================================================= */
 
-    const yearElements = $$("#currentYear, #year, .current-year");
+    const footerYear = $("#footerYear");
+
+    if (footerYear) {
+        footerYear.textContent =
+            new Date().getFullYear();
+    }
+
+    const yearElements = $$(
+        "#currentYear, #year, .current-year"
+    );
 
     yearElements.forEach((element) => {
-        element.textContent = new Date().getFullYear();
+        element.textContent =
+            new Date().getFullYear();
+    });
+
+    /* =========================================================
+       SERVICE HIRE BUTTONS
+    ========================================================= */
+
+    $$(".service-hire").forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
+                const service =
+                    button.dataset.service || "";
+
+                const hireSection =
+                    $("#hire");
+
+                if (hireSection) {
+                    hireSection.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+
+                setTimeout(() => {
+                    const serviceSelect =
+                        $("#hireService");
+
+                    if (
+                        serviceSelect &&
+                        service
+                    ) {
+                        serviceSelect.value =
+                            service;
+                    }
+                }, 500);
+            }
+        );
+    });
+
+    /* =========================================================
+       PRICING PACKAGE BUTTONS
+    ========================================================= */
+
+    $$(".hire-package").forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
+                const packageName =
+                    button.dataset.package || "";
+
+                const hireSection =
+                    $("#hire");
+
+                if (hireSection) {
+                    hireSection.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+
+                setTimeout(() => {
+                    const details =
+                        $("#hireDetails");
+
+                    if (
+                        details &&
+                        packageName
+                    ) {
+                        details.value =
+                            `I am interested in the ${packageName}. Please provide more information.`;
+                        details.focus();
+                    }
+                }, 500);
+            }
+        );
     });
 
     /* =========================================================
        HIRE BUTTONS
-       ========================================================= */
+    ========================================================= */
 
     const hireButtons = $$(
         ".hire-btn, .service-btn, .pricing-btn, [data-hire]"
     );
 
     hireButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const hireSection =
-                $("#hire") ||
-                $("#hire-me") ||
-                $("#contact");
+        button.addEventListener(
+            "click",
+            () => {
+                const hireSection =
+                    $("#hire") ||
+                    $("#hire-me") ||
+                    $("#contact");
 
-            if (hireSection) {
-                hireSection.scrollIntoView({
-                    behavior: "smooth"
-                });
+                if (hireSection) {
+                    hireSection.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
             }
-        });
+        );
     });
 
     /* =========================================================
-       HIRE FORM - SUPABASE
-       TABLE:
-       hire_requests
+       HIRE FORM
        
-       COLUMNS:
+       SUPABASE TABLE:
+       hire_requests
+
+       EXPECTED COLUMNS:
        id
        name
        email
@@ -331,105 +479,148 @@
        project_details
        ========================================================= */
 
-    const hireForm = $("#hireForm");
+    const hireForm =
+        $("#hireForm");
 
     if (hireForm) {
-        hireForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+        hireForm.addEventListener(
+            "submit",
+            async (event) => {
+                event.preventDefault();
 
-            const status =
-                $("#hireStatus") ||
-                hireForm.querySelector(".form-status");
+                const status =
+                    $("#hireStatus") ||
+                    hireForm.querySelector(
+                        ".form-status"
+                    );
 
-            const submitButton =
-                hireForm.querySelector(
-                    'button[type="submit"], input[type="submit"]'
-                );
+                const submitButton =
+                    hireForm.querySelector(
+                        'button[type="submit"], input[type="submit"]'
+                    );
 
-            const name =
-                ($("#hireName")?.value || "").trim();
+                const name =
+                    (
+                        $("#hireName")
+                            ?.value || ""
+                    ).trim();
 
-            const email =
-                ($("#hireEmail")?.value || "").trim();
+                const email =
+                    (
+                        $("#hireEmail")
+                            ?.value || ""
+                    ).trim();
 
-            const phone =
-                ($("#hirePhone")?.value || "").trim();
+                const phone =
+                    (
+                        $("#hirePhone")
+                            ?.value || ""
+                    ).trim();
 
-            const service =
-                ($("#hireService")?.value || "").trim();
+                const service =
+                    (
+                        $("#hireService")
+                            ?.value || ""
+                    ).trim();
 
-            const budget =
-                ($("#hireBudget")?.value || "").trim();
+                const budget =
+                    (
+                        $("#hireBudget")
+                            ?.value || ""
+                    ).trim();
 
-            const projectDetails =
-                ($("#projectDetails")?.value ||
-                    $("#hireMessage")?.value ||
-                    $("#projectDescription")?.value ||
-                    "").trim();
+                /*
+                 * FIXED:
+                 *
+                 * index.html uses:
+                 * id="hireDetails"
+                 *
+                 * So we must read #hireDetails here.
+                 */
 
-            if (!name || !email || !service || !projectDetails) {
-                showStatus(
-                    status,
-                    "Please fill in all required fields.",
-                    "error"
-                );
-                return;
+                const projectDetails =
+                    (
+                        $("#hireDetails")
+                            ?.value || ""
+                    ).trim();
+
+                if (
+                    !name ||
+                    !email ||
+                    !service ||
+                    !projectDetails
+                ) {
+                    showStatus(
+                        status,
+                        "Please fill in all required fields.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                try {
+                    setButtonLoading(
+                        submitButton,
+                        true,
+                        "Submit Project Request"
+                    );
+
+                    const payload = {
+                        name: name,
+                        email: email,
+                        phone:
+                            phone || null,
+                        service: service,
+                        budget:
+                            budget || null,
+                        project_details:
+                            projectDetails
+                    };
+
+                    await insertRow(
+                        "hire_requests",
+                        payload
+                    );
+
+                    showStatus(
+                        status,
+                        "Your hire request has been submitted successfully. I will contact you soon.",
+                        "success"
+                    );
+
+                    hireForm.reset();
+
+                } catch (error) {
+                    console.error(
+                        "Hire form error:",
+                        error
+                    );
+
+                    showStatus(
+                        status,
+                        "Unable to submit your request right now. Please contact me directly on WhatsApp or email.",
+                        "error"
+                    );
+
+                } finally {
+                    setButtonLoading(
+                        submitButton,
+                        false,
+                        "Submit Project Request"
+                    );
+                }
             }
-
-            try {
-                setButtonLoading(
-                    submitButton,
-                    true,
-                    "Submit Request"
-                );
-
-                const payload = {
-                    name: name,
-                    email: email,
-                    phone: phone || null,
-                    service: service,
-                    budget: budget || null,
-                    project_details: projectDetails
-                };
-
-                await insertRow(
-                    "hire_requests",
-                    payload
-                );
-
-                showStatus(
-                    status,
-                    "Your hire request has been submitted successfully. I will contact you soon.",
-                    "success"
-                );
-
-                hireForm.reset();
-
-            } catch (error) {
-                console.error("Hire form error:", error);
-
-                showStatus(
-                    status,
-                    "Unable to submit your request right now. Please contact me directly on WhatsApp or email.",
-                    "error"
-                );
-
-            } finally {
-                setButtonLoading(
-                    submitButton,
-                    false,
-                    "Submit Request"
-                );
-            }
-        });
+        );
     }
 
     /* =========================================================
-       CONTACT FORM - FIXED
+       CONTACT FORM
        
-       IMPORTANT:
-       contact_messages columns are:
-       
+       SUPABASE TABLE:
+       contact_messages
+
+       COLUMNS:
        id
        name
        email
@@ -438,221 +629,282 @@
        created_at
        ========================================================= */
 
-    const contactForm = $("#contactForm");
+    const contactForm =
+        $("#contactForm");
 
     if (contactForm) {
-        contactForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+        contactForm.addEventListener(
+            "submit",
+            async (event) => {
+                event.preventDefault();
 
-            const status =
-                $("#contactStatus") ||
-                contactForm.querySelector(".form-status");
+                const status =
+                    $("#contactStatus") ||
+                    contactForm.querySelector(
+                        ".form-status"
+                    );
 
-            const submitButton =
-                contactForm.querySelector(
-                    'button[type="submit"], input[type="submit"]'
-                );
+                const submitButton =
+                    contactForm.querySelector(
+                        'button[type="submit"], input[type="submit"]'
+                    );
 
-            const name =
-                ($("#contactName")?.value || "").trim();
+                const name =
+                    (
+                        $("#contactName")
+                            ?.value || ""
+                    ).trim();
 
-            const email =
-                ($("#contactEmail")?.value || "").trim();
+                const email =
+                    (
+                        $("#contactEmail")
+                            ?.value || ""
+                    ).trim();
 
-            const service =
-                ($("#contactService")?.value || "").trim();
+                const service =
+                    (
+                        $("#contactService")
+                            ?.value || ""
+                    ).trim();
 
-            const message =
-                ($("#contactMessage")?.value || "").trim();
+                const message =
+                    (
+                        $("#contactMessage")
+                            ?.value || ""
+                    ).trim();
 
-            if (!name || !email || !service || !message) {
-                showStatus(
-                    status,
-                    "Please complete all contact fields.",
-                    "error"
-                );
-                return;
+                if (
+                    !name ||
+                    !email ||
+                    !service ||
+                    !message
+                ) {
+                    showStatus(
+                        status,
+                        "Please complete all contact fields.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                try {
+                    setButtonLoading(
+                        submitButton,
+                        true,
+                        "Send Message"
+                    );
+
+                    const payload = {
+                        name: name,
+                        email: email,
+                        service: service,
+                        message: message
+                    };
+
+                    await insertRow(
+                        "contact_messages",
+                        payload
+                    );
+
+                    showStatus(
+                        status,
+                        "Message sent successfully! I will get back to you soon.",
+                        "success"
+                    );
+
+                    contactForm.reset();
+
+                } catch (error) {
+                    console.error(
+                        "Contact form error:",
+                        error
+                    );
+
+                    showStatus(
+                        status,
+                        "Unable to send your message right now. Please contact me directly.",
+                        "error"
+                    );
+
+                } finally {
+                    setButtonLoading(
+                        submitButton,
+                        false,
+                        "Send Message"
+                    );
+                }
             }
-
-            try {
-                setButtonLoading(
-                    submitButton,
-                    true,
-                    "Send Message"
-                );
-
-                /*
-                 * IMPORTANT:
-                 * Your Supabase table uses "service",
-                 * NOT "subject".
-                 */
-
-                const payload = {
-                    name: name,
-                    email: email,
-                    service: service,
-                    message: message
-                };
-
-                await insertRow(
-                    "contact_messages",
-                    payload
-                );
-
-                showStatus(
-                    status,
-                    "Message sent successfully! I will get back to you soon.",
-                    "success"
-                );
-
-                contactForm.reset();
-
-            } catch (error) {
-                console.error(
-                    "Contact form error:",
-                    error
-                );
-
-                showStatus(
-                    status,
-                    "Unable to send your message right now. Please contact me directly.",
-                    "error"
-                );
-
-            } finally {
-                setButtonLoading(
-                    submitButton,
-                    false,
-                    "Send Message"
-                );
-            }
-        });
+        );
     }
 
     /* =========================================================
        REVIEWS FORM
+       
+       SUPABASE TABLE:
+       reviews
        ========================================================= */
 
-    const reviewForm = $("#reviewForm");
+    const reviewForm =
+        $("#reviewForm");
 
     if (reviewForm) {
-        reviewForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+        reviewForm.addEventListener(
+            "submit",
+            async (event) => {
+                event.preventDefault();
 
-            const status =
-                $("#reviewStatus") ||
-                reviewForm.querySelector(".form-status");
+                const status =
+                    $("#reviewStatus") ||
+                    reviewForm.querySelector(
+                        ".form-status"
+                    );
 
-            const submitButton =
-                reviewForm.querySelector(
-                    'button[type="submit"], input[type="submit"]'
-                );
+                const submitButton =
+                    reviewForm.querySelector(
+                        'button[type="submit"], input[type="submit"]'
+                    );
 
-            const name =
-                ($("#reviewName")?.value || "").trim();
+                const name =
+                    (
+                        $("#reviewName")
+                            ?.value || ""
+                    ).trim();
 
-            const rating =
-                ($("#reviewRating")?.value || "").trim();
+                const rating =
+                    (
+                        $("#reviewRating")
+                            ?.value || ""
+                    ).trim();
 
-            const message =
-                ($("#reviewMessage")?.value || "").trim();
+                const message =
+                    (
+                        $("#reviewMessage")
+                            ?.value || ""
+                    ).trim();
 
-            if (!name || !rating || !message) {
-                showStatus(
-                    status,
-                    "Please complete your review.",
-                    "error"
-                );
-                return;
+                if (
+                    !name ||
+                    !rating ||
+                    !message
+                ) {
+                    showStatus(
+                        status,
+                        "Please complete your review.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                try {
+                    setButtonLoading(
+                        submitButton,
+                        true,
+                        "Submit Review"
+                    );
+
+                    const payload = {
+                        name: name,
+                        rating: Number(rating),
+                        message: message,
+                        status: "pending"
+                    };
+
+                    await insertRow(
+                        "reviews",
+                        payload
+                    );
+
+                    showStatus(
+                        status,
+                        "Thank you! Your review has been submitted for approval.",
+                        "success"
+                    );
+
+                    reviewForm.reset();
+
+                } catch (error) {
+                    console.error(
+                        "Review form error:",
+                        error
+                    );
+
+                    showStatus(
+                        status,
+                        "Unable to submit your review right now.",
+                        "error"
+                    );
+
+                } finally {
+                    setButtonLoading(
+                        submitButton,
+                        false,
+                        "Submit Review"
+                    );
+                }
             }
-
-            try {
-                setButtonLoading(
-                    submitButton,
-                    true,
-                    "Submit Review"
-                );
-
-                const payload = {
-                    name: name,
-                    rating: Number(rating),
-                    message: message,
-                    status: "pending"
-                };
-
-                await insertRow(
-                    "reviews",
-                    payload
-                );
-
-                showStatus(
-                    status,
-                    "Thank you! Your review has been submitted for approval.",
-                    "success"
-                );
-
-                reviewForm.reset();
-
-            } catch (error) {
-                console.error(
-                    "Review form error:",
-                    error
-                );
-
-                showStatus(
-                    status,
-                    "Unable to submit your review right now.",
-                    "error"
-                );
-
-            } finally {
-                setButtonLoading(
-                    submitButton,
-                    false,
-                    "Submit Review"
-                );
-            }
-        });
+        );
     }
 
     /* =========================================================
        LOAD APPROVED REVIEWS
-       ========================================================= */
+    ========================================================= */
 
     async function loadReviews() {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+            return;
+        }
 
         const reviewContainer =
+            $("#reviewsList") ||
             $("#reviewsContainer") ||
             $("#reviewsGrid") ||
             $(".reviews-grid");
 
-        if (!reviewContainer) return;
+        if (!reviewContainer) {
+            return;
+        }
 
         try {
-            const { data, error } =
-                await supabaseClient
-                    .from("reviews")
-                    .select(
-                        "id, name, rating, message"
-                    )
-                    .eq("status", "approved")
-                    .order(
-                        "created_at",
-                        {
-                            ascending: false
-                        }
-                    );
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("reviews")
+                .select(
+                    "id, name, rating, message"
+                )
+                .eq(
+                    "status",
+                    "approved"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
 
             if (error) {
                 console.error(
                     "Unable to load reviews:",
                     error
                 );
+
                 return;
             }
 
-            if (!data || data.length === 0) {
+            if (
+                !data ||
+                data.length === 0
+            ) {
+                reviewContainer.innerHTML = `
+                    <div class="review-loading">
+                        No approved reviews yet.
+                    </div>
+                `;
+
                 return;
             }
 
@@ -660,7 +912,9 @@
 
             data.forEach((review) => {
                 const card =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 card.className =
                     "testimonial-card review-card";
@@ -670,13 +924,17 @@
                         0,
                         Math.min(
                             5,
-                            Number(review.rating) || 0
+                            Number(
+                                review.rating
+                            ) || 0
                         )
                     );
 
                 const stars =
                     "★".repeat(rating) +
-                    "☆".repeat(5 - rating);
+                    "☆".repeat(
+                        5 - rating
+                    );
 
                 card.innerHTML = `
                     <div class="review-stars">
@@ -684,15 +942,21 @@
                     </div>
 
                     <p class="review-message">
-                        "${escapeHtml(review.message)}"
+                        "${escapeHtml(
+                            review.message
+                        )}"
                     </p>
 
                     <h4>
-                        ${escapeHtml(review.name)}
+                        ${escapeHtml(
+                            review.name
+                        )}
                     </h4>
                 `;
 
-                reviewContainer.appendChild(card);
+                reviewContainer.appendChild(
+                    card
+                );
             });
 
         } catch (error) {
@@ -705,33 +969,58 @@
 
     /* =========================================================
        HTML ESCAPE
-       ========================================================= */
+    ========================================================= */
 
     function escapeHtml(value) {
         return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
     }
 
     loadReviews();
 
     /* =========================================================
-       FLOATING WHATSAPP
-       ========================================================= */
+       WHATSAPP
+       
+       Kenyan international format:
+       254 + local number without first 0
+       
+       CURRENT NUMBER:
+       0142617814
+       
+       IMPORTANT:
+       014... is not a standard Kenyan mobile prefix.
+       The code below preserves the number you supplied.
+    ========================================================= */
 
-    const WHATSAPP_NUMBER = "254142617814";
+    const WHATSAPP_NUMBER =
+        "254142617814";
+
+    const whatsappMessage =
+        "Hello Jay Ouko, I would like to know more about your services.";
 
     const whatsappURL =
         `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-            "Hello Jay Ouko, I would like to know more about your services."
+            whatsappMessage
         )}`;
-
-    /*
-     * Fix existing WhatsApp buttons automatically.
-     */
 
     const whatsappLinks = $$(
         'a[href*="wa.me"], [data-whatsapp]'
@@ -752,20 +1041,7 @@
             "rel",
             "noopener noreferrer"
         );
-
-        link.addEventListener("click", () => {
-            window.open(
-                whatsappURL,
-                "_blank",
-                "noopener,noreferrer"
-            );
-        });
     });
-
-    /*
-     * If the HTML already contains a WhatsApp button,
-     * make sure it works.
-     */
 
     const whatsappButton =
         $("#whatsappButton") ||
@@ -791,10 +1067,11 @@
     }
 
     /* =========================================================
-       FLOATING CALL BUTTON
-       ========================================================= */
+       CALL BUTTON
+    ========================================================= */
 
-    const CALL_NUMBER = "tel:+254142617814";
+    const CALL_NUMBER =
+        "tel:+254142617814";
 
     const callLinks = $$(
         'a[href^="tel:"], [data-call]'
@@ -809,15 +1086,17 @@
 
     /* =========================================================
        CREATE FLOATING WHATSAPP BUTTON IF MISSING
-       ========================================================= */
+    ========================================================= */
 
     if (!whatsappButton) {
         const floatingWhatsApp =
             document.createElement("a");
 
-        floatingWhatsApp.href = whatsappURL;
+        floatingWhatsApp.href =
+            whatsappURL;
 
-        floatingWhatsApp.target = "_blank";
+        floatingWhatsApp.target =
+            "_blank";
 
         floatingWhatsApp.rel =
             "noopener noreferrer";
@@ -830,8 +1109,13 @@
             "Chat with Jay Ouko on WhatsApp"
         );
 
+        floatingWhatsApp.setAttribute(
+            "title",
+            "Chat on WhatsApp"
+        );
+
         floatingWhatsApp.innerHTML =
-            '<i class="fab fa-whatsapp"></i>';
+            "💬";
 
         Object.assign(
             floatingWhatsApp.style,
@@ -862,7 +1146,7 @@
 
     /* =========================================================
        BACK TO TOP
-       ========================================================= */
+    ========================================================= */
 
     const backToTop =
         $("#backToTop") ||
@@ -872,10 +1156,16 @@
         window.addEventListener(
             "scroll",
             () => {
-                if (window.scrollY > 500) {
-                    backToTop.classList.add("show");
+                if (
+                    window.scrollY > 500
+                ) {
+                    backToTop.classList.add(
+                        "show"
+                    );
                 } else {
-                    backToTop.classList.remove("show");
+                    backToTop.classList.remove(
+                        "show"
+                    );
                 }
             }
         );
@@ -893,7 +1183,7 @@
 
     /* =========================================================
        CHATBOT
-       ========================================================= */
+    ========================================================= */
 
     const chatToggle =
         $("#chatToggle") ||
@@ -917,18 +1207,31 @@
         $("#chatSend") ||
         $(".chat-send");
 
-    function addChatMessage(message, sender = "bot") {
-        if (!chatMessages) return;
+    const chatClose =
+        $("#chatbotClose");
+
+    function addChatMessage(
+        message,
+        sender = "bot"
+    ) {
+        if (!chatMessages) {
+            return;
+        }
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         bubble.className =
             `chat-message ${sender}`;
 
-        bubble.textContent = message;
+        bubble.textContent =
+            message;
 
-        chatMessages.appendChild(bubble);
+        chatMessages.appendChild(
+            bubble
+        );
 
         chatMessages.scrollTop =
             chatMessages.scrollHeight;
@@ -965,7 +1268,13 @@
             text.includes("whatsapp") ||
             text.includes("contact")
         ) {
-            return "You can contact Jay directly through WhatsApp or email at emmanuelouko21@gmail.com.";
+            return "You can contact Jay through WhatsApp or email at emmanuelouko21@gmail.com.";
+        }
+
+        if (
+            text.includes("email")
+        ) {
+            return "You can email Jay Ouko at emmanuelouko21@gmail.com.";
         }
 
         if (
@@ -973,26 +1282,43 @@
             text.includes("classes") ||
             text.includes("course")
         ) {
-            return "Free online classes are available daily at 9:00 PM. Check the Classes section for registration information.";
+            return "Free online classes are available daily at 9:00 PM. Check the Classes section for more information.";
         }
 
         if (
             text.includes("hire") ||
             text.includes("work")
         ) {
-            return "Great! Use the Hire Me section to submit your project details and I will get back to you.";
+            return "Great! Use the Hire Me section to submit your project details and Jay will get back to you.";
+        }
+
+        if (
+            text.includes("website")
+        ) {
+            return "Jay offers responsive website development for businesses, personal brands, portfolios and projects.";
+        }
+
+        if (
+            text.includes("graphic") ||
+            text.includes("design")
+        ) {
+            return "Jay provides graphic design services including posters, social media graphics, branding and promotional materials.";
         }
 
         return "Thanks for your message! For a detailed response, please use the Hire Me or Contact section.";
     }
 
     function sendChatMessage() {
-        if (!chatInput) return;
+        if (!chatInput) {
+            return;
+        }
 
         const message =
             chatInput.value.trim();
 
-        if (!message) return;
+        if (!message) {
+            return;
+        }
 
         addChatMessage(
             message,
@@ -1009,11 +1335,41 @@
         }, 500);
     }
 
-    if (chatToggle && chatBox) {
+    if (
+        chatToggle &&
+        chatBox
+    ) {
         chatToggle.addEventListener(
             "click",
             () => {
-                chatBox.classList.toggle("active");
+                chatBox.classList.toggle(
+                    "active"
+                );
+
+                chatBox.setAttribute(
+                    "aria-hidden",
+                    chatBox.classList.contains(
+                        "active"
+                    )
+                        ? "false"
+                        : "true"
+                );
+            }
+        );
+    }
+
+    if (chatClose && chatBox) {
+        chatClose.addEventListener(
+            "click",
+            () => {
+                chatBox.classList.remove(
+                    "active"
+                );
+
+                chatBox.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
             }
         );
     }
@@ -1029,7 +1385,9 @@
         chatInput.addEventListener(
             "keydown",
             (event) => {
-                if (event.key === "Enter") {
+                if (
+                    event.key === "Enter"
+                ) {
                     event.preventDefault();
                     sendChatMessage();
                 }
@@ -1039,7 +1397,7 @@
 
     /* =========================================================
        EMAIL LINKS
-       ========================================================= */
+    ========================================================= */
 
     const emailLinks =
         $$('a[href^="mailto:"]');
@@ -1052,8 +1410,8 @@
     });
 
     /* =========================================================
-       PREVENT DOUBLE FORM SUBMISSIONS
-       ========================================================= */
+       FORM UX
+    ========================================================= */
 
     $$("form").forEach((form) => {
         form.addEventListener(
@@ -1067,8 +1425,8 @@
     });
 
     /* =========================================================
-       STARTUP MESSAGE
-       ========================================================= */
+       STARTUP
+    ========================================================= */
 
     console.log(
         "Jay Ouko website loaded successfully."
