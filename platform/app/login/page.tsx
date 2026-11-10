@@ -3,7 +3,8 @@ import { signIn } from "@/lib/auth/actions";
 
 const errors: Record<string, string> = {
   "invalid-details": "Enter a valid email address and password.",
-  "signin-failed": "Sign-in failed. Check your details and verify your email address."
+  "signin-failed": "Sign-in failed. Check your details and verify your email address.",
+  "confirmation-failed": "That confirmation link is invalid or expired. Request a new one or contact support."
 };
 
 export default async function LoginPage({
@@ -35,7 +36,7 @@ export default async function LoginPage({
           </label>
           <label>
             Password
-            <input name="password" type="password" autoComplete="current-password" required />
+            <input name="password" type="password" autoComplete="current-password" required maxLength={128} />
           </label>
           <button type="submit">Sign in securely</button>
           <p className="form-note">New to the platform? <Link href="/sign-up">Create an account</Link>.</p>
