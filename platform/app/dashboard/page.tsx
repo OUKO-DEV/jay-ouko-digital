@@ -32,6 +32,7 @@ export default async function DashboardPage({ searchParams }: {
       <header className="topbar">
         <Link className="brand" href="/"><span className="brand-mark">EO</span><span>EMMANUEL OUKO</span></Link>
         <nav className="nav-links" aria-label="Account navigation">
+          <Link href="/learning">Learning</Link><Link href="/bookings">Bookings</Link><Link href="/payments">Payments</Link>
           {profile?.role === "admin" ? <Link href="/admin">Admin</Link> : null}
           <form action={signOut}><button type="submit">Sign out</button></form>
         </nav>
