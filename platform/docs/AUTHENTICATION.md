@@ -85,7 +85,7 @@ from the Auth server is required.
 1. Copy `.env.example` to `.env.local` in `platform/`.
 2. Set the Supabase project URL and publishable key. Set `SITE_URL` to
    `http://localhost:3000`.
-3. In Supabase Authentication > URL Configuration, add
+3. In Supabase Authentication settings, enable email confirmation. Under URL Configuration, add
    `http://localhost:3000/auth/confirm` to the allowed redirect URLs.
 4. Run `supabase/migrations/0001_auth_profiles.sql` in the Supabase SQL Editor.
 5. From `platform/`, run `npm install`, then `npm run dev`.
