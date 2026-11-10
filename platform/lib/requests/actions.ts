@@ -30,15 +30,16 @@ export async function submitServiceRequest(formData: FormData) {
 
   const supabase = await createClient();
   const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
-  const userId = claimsData?.claims?.sub;
+  const claims = claimsData?.claims;
+  const userId = claims?.sub;
 
   if (claimsError || typeof userId !== "string") {
     redirect("/login");
   }
 
   const email =
-    typeof claimsData.claims.email === "string"
-      ? claimsData.claims.email
+    typeof claims?.email === "string"
+      ? claims.email
       : null;
 
   const { error } = await supabase.from("service_requests").insert({
