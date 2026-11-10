@@ -2,6 +2,8 @@ import Link from "next/link";
 import { signOut } from "@/lib/auth/actions";
 import { requireAdmin } from "@/lib/auth/guards";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const { email } = await requireAdmin();
 
