@@ -107,3 +107,12 @@ h1 span { color: var(--accent-2); }
   .nav-links { gap: 12px; font-size: 12px; }
   .auth-card { padding: 25px; }
 }
+
+.request-list { display: grid; gap: 14px; }
+.request-list .feature { min-width: 0; }
+textarea, select {
+  width: 100%; border: 1px solid var(--line); border-radius: 11px;
+  padding: 13px 14px; color: var(--text); background: #091626;
+}
+textarea { resize: vertical; line-height: 1.6; }
+.form-note { color: var(--muted); font-size: 12px; line-height: 1.6; }
