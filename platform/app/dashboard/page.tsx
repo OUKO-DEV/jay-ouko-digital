@@ -2,6 +2,8 @@ import Link from "next/link";
 import { signOut } from "@/lib/auth/actions";
 import { requireUser } from "@/lib/auth/guards";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const { userId, email, supabase } = await requireUser();
   const { data: profile } = await supabase
