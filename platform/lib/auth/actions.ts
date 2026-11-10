@@ -8,6 +8,16 @@ function readText(formData: FormData, key: string) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function readPassword(formData: FormData) {
+  const value = formData.get("password");
+  // Passwords are intentionally not trimmed: leading/trailing spaces are valid.
+  return typeof value === "string" ? value : "";
+}
+
+function isValidEmail(email: string) {
+  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function getSiteUrl() {
   const value = process.env.SITE_URL;
 
@@ -26,9 +36,9 @@ function getSiteUrl() {
 export async function signUp(formData: FormData) {
   const fullName = readText(formData, "fullName");
   const email = readText(formData, "email").toLowerCase();
-  const password = readText(formData, "password");
+  const password = readPassword(formData);
 
-  if (fullName.length < 2 || fullName.length > 80 || !email.includes("@")) {
+  if (fullName.length < 2 || fullName.length > 80 || !isValidEmail(email)) {
     redirect("/sign-up?error=invalid-details");
   }
 
@@ -56,9 +66,9 @@ export async function signUp(formData: FormData) {
 
 export async function signIn(formData: FormData) {
   const email = readText(formData, "email").toLowerCase();
-  const password = readText(formData, "password");
+  const password = readPassword(formData);
 
-  if (!email.includes("@") || !password) {
+  if (!isValidEmail(email) || !password || password.length > 128) {
     redirect("/login?error=invalid-details");
   }
 
