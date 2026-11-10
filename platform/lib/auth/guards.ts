@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 export async function requireUser() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
+  const claims = data?.claims;
+  const userId = claims?.sub;
 
   if (error || typeof userId !== "string") {
     redirect("/login");
@@ -14,8 +15,8 @@ export async function requireUser() {
     supabase,
     userId,
     email:
-      typeof data.claims.email === "string"
-        ? data.claims.email
+      typeof claims?.email === "string"
+        ? claims.email
         : "Verified account"
   };
 }
