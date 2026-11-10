@@ -11,12 +11,13 @@ function read(formData: FormData, key: string, max: number) {
 async function session() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
+  const claims = data?.claims;
+  const userId = claims?.sub;
   if (error || typeof userId !== "string") redirect("/login");
   return {
     supabase,
     userId,
-    email: typeof data.claims.email === "string" ? data.claims.email : null
+    email: typeof claims?.email === "string" ? claims.email : null
   };
 }
 
