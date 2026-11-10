@@ -56,6 +56,10 @@ create policy "clients_request_enrollment"
   with check (
     user_id = (select auth.uid())
     and status = 'pending'
+    and exists (
+      select 1 from public.courses c
+      where c.id = course_id and c.published = true
+    )
   );
 
 drop policy if exists "admins_manage_enrollments" on public.course_enrollments;
