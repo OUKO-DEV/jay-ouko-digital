@@ -81,3 +81,42 @@ export async function submitPaymentReference(formData: FormData) {
   if (error) redirect("/payments?error=payment-failed");
   redirect("/payments?submitted=1");
 }
+
+
+async function requireAdminClient() {
+  const current = await session();
+  const { data: profile, error } = await current.supabase
+    .from("profiles").select("role").eq("id", current.userId).maybeSingle();
+  if (error || profile?.role !== "admin") redirect("/dashboard");
+  return current;
+}
+
+export async function updateBooking(formData: FormData) {
+  const bookingId = read(formData, "bookingId", 64);
+  const status = read(formData, "status", 20);
+  const adminNotes = read(formData, "adminNotes", 1500);
+  if (!/^[0-9a-f-]{36}$/i.test(bookingId) ||
+      !["requested", "confirmed", "completed", "cancelled"].includes(status)) {
+    redirect("/admin?error=invalid-booking-update");
+  }
+  const { supabase } = await requireAdminClient();
+  const { error } = await supabase.from("booking_requests")
+    .update({ status, admin_notes: adminNotes || null }).eq("id", bookingId);
+  if (error) redirect("/admin?error=booking-update-failed");
+  redirect("/admin?bookingUpdated=1");
+}
+
+export async function reconcilePayment(formData: FormData) {
+  const paymentId = read(formData, "paymentId", 64);
+  const status = read(formData, "status", 20);
+  const adminNotes = read(formData, "adminNotes", 1500);
+  if (!/^[0-9a-f-]{36}$/i.test(paymentId) ||
+      !["verifying", "confirmed", "rejected"].includes(status)) {
+    redirect("/admin?error=invalid-payment-update");
+  }
+  const { supabase } = await requireAdminClient();
+  const { error } = await supabase.from("payment_submissions")
+    .update({ status, admin_notes: adminNotes || null }).eq("id", paymentId);
+  if (error) redirect("/admin?error=payment-update-failed");
+  redirect("/admin?paymentUpdated=1");
+}
