@@ -24,6 +24,7 @@ export default function HomePage() {
           <span>EMMANUEL OUKO</span>
         </Link>
         <nav className="nav-links" aria-label="Main navigation">
+          <Link href="/learning">Learning</Link>
           <Link href="/login">Sign in</Link>
           <Link className="button" href="/sign-up">Create account</Link>
         </nav>
